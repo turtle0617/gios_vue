@@ -1,8 +1,11 @@
 <template>
-  <div class="home">
-    <GIOS_Header />
+<div class="home">
+  <GIOS_Header />
+  <div class="Auth__container">
     <Auth_register />
   </div>
+
+</div>
 </template>
 
 <script>
@@ -20,3 +23,9 @@ export default {
   }
 };
 </script>
+<style scoped lang="scss">
+.Auth__container {
+    max-width: 570px;
+    margin: 0 auto;
+}
+</style>

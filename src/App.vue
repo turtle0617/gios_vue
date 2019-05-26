@@ -5,6 +5,7 @@
 </template>
 
 <style lang="scss">
+@import "./assets/form.scss";
 body {
   margin: 0;
 }

@@ -4,6 +4,9 @@
       <div class="header__title">
         <h1>田阿姨便當</h1>
       </div>
+      <div class="header__account">
+        <font-awesome-icon icon="user-circle" size="2x"></font-awesome-icon>
+      </div>
     </div>
   </div>
 </template>
@@ -21,6 +24,7 @@ export default {
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
+    align-items: center;
   }
 }
 </style>

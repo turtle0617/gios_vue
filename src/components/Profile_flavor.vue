@@ -1,21 +1,49 @@
 <template>
-<div class="profile-code form__container">
-  <div class="profile-code__title form__title">
-    <span>密碼</span>
-    <hr />
-  </div>
-  <form class="profile-code__detail form__detail" action="/code" method="post">
-    <div class="code__detail--code">
-      <span>舊密碼</span>
-      <input type="password" name="" value="" placeholder="請輸入密碼" />
-    </div>
-    <div class="code__detail--new-code">
-      <span>新密碼</span>
-      <input type="password" name="" value="" placeholder="請輸入新密碼" />
-    </div>
-    <button type="submit" name="button">更改</button>
-  </form>
-</div>
+  <section class="flavor-detail col-sm-12 col-md-4 ">
+    <form>
+      <fieldset id="account__form">
+        <legend>常用口味</legend>
+        <div class="row">
+          <div class="col-sm-12 col-md-12">
+            <label for="account__username">飯量</label>
+          </div>
+          <div class="col-sm-12 col-md-12">
+            <select class="group--select" name="account__group">
+              <option value="多飯">多飯</option>
+              <option value="正常">正常</option>
+              <option value="1/2飯">1/2飯</option>
+              <option value="1/3飯">1/3飯</option>
+              <option value="2/3飯">2/3飯</option>
+              <option value="1/4飯">1/4飯</option>
+              <option value="不飯">不飯</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 col-md-12">
+            <label for="account__mail">菜量</label>
+          </div>
+          <div class="col-sm-12 col-md-12">
+            <select class="group--select" name="account__group">
+              <option value="多菜">多菜</option>
+              <option value="正常">正常</option>
+              <option value="少菜">少菜</option>
+              <option value="不菜">不菜</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 col-md-12">
+            <label for="account__Remark">備註</label>
+          </div>
+          <div class="col-sm-12 col-md-12">
+            <input type="text" id="account__Remark" placeholder="請輸入備註" />
+          </div>
+        </div>
+        <button class="primary large" type="submit">更改</button>
+      </fieldset>
+    </form>
+  </section>
 </template>
 
 <script>
@@ -23,3 +51,6 @@ export default {
   name: "Profile_code"
 };
 </script>
+<style scoped lang="scss">
+@import "@/assets/form.scss";
+</style>

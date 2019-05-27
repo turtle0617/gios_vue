@@ -1,24 +1,36 @@
 <template>
-<div class="Auth-login form__container">
-  <div class="Auth-login__title form__title">
-    <span>登入</span>
-    <hr />
-  </div>
-  <form class="Auth-login__detail form__detail" action="/login" method="post">
-    <div class="login__detail--email">
-      <span>信箱</span>
-      <input type="text" name="" value="" placeholder="請輸入信箱" />
-    </div>
-    <div class="login__detail--code">
-      <span>密碼</span>
-      <input type="password" name="" value="" placeholder="請輸入密碼" />
-    </div>
-    <button type="submit" name="button">登入</button>
-    <a href="/register">
-      <span>註冊</span>
-    </a>
-  </form>
-</div>
+  <section class="login-detail col-sm-12 col-md-4 ">
+    <form action="/profile" method="post">
+      <fieldset id="login__form">
+        <legend>註冊</legend>
+        <div class="row">
+          <div class="col-sm-12 col-md-12">
+            <label for="login__username">使用者名稱</label>
+          </div>
+          <div class="col-sm-12 col-md-12">
+            <input
+              type="text"
+              id="login__username"
+              placeholder="請輸入使用者名稱"
+            />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 col-md-12">
+            <label for="login__code">密碼</label>
+          </div>
+          <div class="col-sm-12 col-md-12">
+            <input type="password" id="login__code" placeholder="請輸入密碼" />
+          </div>
+        </div>
+
+        <button class="primary large" type="submit">登入</button>
+        <a href="/login">
+          <span>註冊</span>
+        </a>
+      </fieldset>
+    </form>
+  </section>
 </template>
 
 <script>
@@ -26,3 +38,7 @@ export default {
   name: "Auth_login"
 };
 </script>
+
+<style scoped lang="scss">
+@import "@/assets/form.scss";
+</style>

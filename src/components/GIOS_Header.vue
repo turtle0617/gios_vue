@@ -1,14 +1,12 @@
 <template>
-  <div class="header">
+  <header class="header">
     <div class="header__container">
-      <div class="header__title">
-        <h1>田阿姨便當</h1>
-      </div>
-      <div class="header__account">
+      <a href="#" class="logo">田阿姨便當</a>
+      <div class="header__account button">
         <font-awesome-icon icon="user-circle" size="2x"></font-awesome-icon>
       </div>
     </div>
-  </div>
+  </header>
 </template>
 
 <script>
@@ -18,7 +16,6 @@ export default {
 </script>
 <style scoped lang="scss">
 .header {
-  box-shadow: 0px 5px 20px 0px rgba(0, 0, 0, 0.1);
   &__container {
     width: 90%;
     margin: 0 auto;

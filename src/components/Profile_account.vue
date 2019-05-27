@@ -1,31 +1,46 @@
 <template>
-<div class="profile-account form__container">
-    <div class="profile-account__title form__title" >
-      <span>我的帳戶</span>
-      <hr />
-    </div>
-    <form class="profile-account__detail form__detail" action="/account" method="post">
-      <div class="account__detail--userid form__userid">
-        <span>使用者名稱</span>
-        <input type="text" name="" value="" placeholder="請輸入使用者名稱" />
-      </div>
-      <div class="account__detail--email form__email">
-        <span>信箱</span>
-        <input type="text" name="" value="" placeholder="請輸入信箱" />
-      </div>
-      <div class="account__detail--group form__group">
-        <span>團體</span>
-        <select class="group--select" name="groupName">
-          <option value="好想工作室">好想工作室</option>
-          <option value="Howard家">Howard家</option>
-          <option value="大灣">大灣</option>
-          <option value="佳音">佳音</option>
-          <option value="個人">個人</option>
-        </select>
-      </div>
-      <button type="submit" name="button">更改</button>
+  <section class="account-detail col-sm-12 col-md-4 ">
+    <form>
+      <fieldset id="account__form">
+        <legend>我的帳戶</legend>
+        <div class="row">
+          <div class="col-sm-12 col-md-12">
+            <label for="account__username">使用者名稱</label>
+          </div>
+          <div class="col-sm-12 col-md-12">
+            <input
+              type="text"
+              id="account__username"
+              placeholder="請輸入使用者名稱"
+            />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 col-md-12">
+            <label for="account__mail">信箱</label>
+          </div>
+          <div class="col-sm-12 col-md-12">
+            <input type="text" id="account__mail" placeholder="請輸入信箱" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 col-md-12">
+            <label for="account__group">團體</label>
+          </div>
+          <div class="col-sm-12 col-md-12">
+            <select class="group--select" name="account__group">
+              <option value="好想工作室">好想工作室</option>
+              <option value="Howard家">Howard家</option>
+              <option value="大灣">大灣</option>
+              <option value="佳音">佳音</option>
+              <option value="個人">個人</option>
+            </select>
+          </div>
+        </div>
+        <button class="primary large" type="submit">更改</button>
+      </fieldset>
     </form>
-</div>
+  </section>
 </template>
 
 <script>
@@ -33,3 +48,6 @@ export default {
   name: "Profile_account"
 };
 </script>
+<style scoped lang="scss">
+@import "@/assets/form.scss";
+</style>

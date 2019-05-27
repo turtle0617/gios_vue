@@ -1,11 +1,15 @@
 <template>
-<div class="home">
-  <GIOS_Header />
-  <div class="Auth__container">
-    <Auth_register />
+  <div class="home">
+    <GIOS_Header />
+    <div class="container">
+      <div class="row ">
+        <Auth_login />
+      </div>
+      <div class="row ">
+        <Auth_register />
+      </div>
+    </div>
   </div>
-
-</div>
 </template>
 
 <script>
@@ -25,7 +29,7 @@ export default {
 </script>
 <style scoped lang="scss">
 .Auth__container {
-    max-width: 570px;
-    margin: 0 auto;
+  max-width: 570px;
+  margin: 0 auto;
 }
 </style>

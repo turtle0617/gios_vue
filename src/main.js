@@ -4,10 +4,16 @@ import router from "./router";
 import store from "./store";
 import "mini.css/dist/mini-default.css";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUserCircle,
+  faPlusCircle,
+  faMinusCircle
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 library.add(faUserCircle);
+library.add(faPlusCircle);
+library.add(faMinusCircle);
 
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 Vue.config.productionTip = false;

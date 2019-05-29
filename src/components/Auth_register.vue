@@ -17,10 +17,14 @@
         </div>
         <div class="row">
           <div class="col-sm-12 col-md-12">
-            <label for="register__mail">信箱</label>
+            <label for="register__mail">使用者帳戶</label>
           </div>
           <div class="col-sm-12 col-md-12">
-            <input type="text" id="register__mail" placeholder="請輸入信箱" />
+            <input
+              type="text"
+              id="register__mail"
+              placeholder="請輸入使用者帳戶"
+            />
           </div>
         </div>
         <div class="row">

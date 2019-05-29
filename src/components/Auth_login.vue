@@ -5,22 +5,26 @@
         <legend>註冊</legend>
         <div class="row">
           <div class="col-sm-12 col-md-12">
-            <label for="login__username">使用者名稱</label>
+            <label for="login__userAccount">使用者帳戶</label>
           </div>
           <div class="col-sm-12 col-md-12">
             <input
               type="text"
-              id="login__username"
+              id="login__userAccount"
               placeholder="請輸入使用者名稱"
             />
           </div>
         </div>
         <div class="row">
           <div class="col-sm-12 col-md-12">
-            <label for="login__code">密碼</label>
+            <label for="login__userCode">密碼</label>
           </div>
           <div class="col-sm-12 col-md-12">
-            <input type="password" id="login__code" placeholder="請輸入密碼" />
+            <input
+              type="password"
+              id="login__userCode"
+              placeholder="請輸入密碼"
+            />
           </div>
         </div>
 

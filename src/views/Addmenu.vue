@@ -1,20 +1,20 @@
 <template>
-  <div class="statistic">
+  <div class="addmenu">
     <GIOS_Header />
     <div class="container">
-      <Statistic_admin />
+      <Menu />
     </div>
   </div>
 </template>
 
 <script>
 import GIOS_Header from "@/components/GIOS_Header.vue";
-import Statistic_admin from "@/components/Statistic_admin.vue";
+import Menu from "@/components/Menu.vue";
 export default {
-  name: "statistic",
+  name: "addmenu",
   components: {
     GIOS_Header,
-    Statistic_admin
+    Menu
   }
 };
 </script>

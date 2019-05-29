@@ -5,6 +5,7 @@ import Profile from "./views/Profile.vue";
 import Order from "./views/Order.vue";
 import History from "./views/History.vue";
 import Statistic from "./views/Statistic.vue";
+import Addmenu from "./views/Addmenu.vue";
 
 Vue.use(Router);
 
@@ -36,6 +37,11 @@ export default new Router({
       path: "/statistic",
       name: "statistic",
       component: Statistic
+    },
+    {
+      path: "/addmenu",
+      name: "addmenu",
+      component: Addmenu
     }
   ]
 });

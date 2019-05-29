@@ -1,5 +1,5 @@
 <template>
-  <div class="order">
+  <div class="history">
     <GIOS_Header />
     <div class="container">
       <History_admin />
@@ -11,7 +11,7 @@
 import GIOS_Header from "@/components/GIOS_Header.vue";
 import History_admin from "@/components/History_admin.vue";
 export default {
-  name: "order",
+  name: "history",
   components: {
     GIOS_Header,
     History_admin

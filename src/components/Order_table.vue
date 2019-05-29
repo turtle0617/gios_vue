@@ -1,7 +1,7 @@
 <template>
   <table class="order-table hoverable">
     <caption class="order-table__title ">
-      <div class="order-table__titleDate">
+      <div class="order-table__date">
         <label for="orderDate">日期</label>
         <select class="group--select" name="orderDate">
           <option value="6/1">6/1</option>
@@ -13,7 +13,7 @@
           <option value="6/7">6/7</option>
         </select>
       </div>
-      <div class="order-table__titleDeadline">
+      <div class="order-table__deadline">
         <h2>收單時間 ： 16:00</h2>
       </div>
     </caption>
@@ -527,7 +527,7 @@ export default {
     justify-content: flex-start;
     flex-wrap: wrap;
   }
-  &__titleDate {
+  &__date {
     margin-right: 100px;
   }
   &__flavor {

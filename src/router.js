@@ -3,6 +3,8 @@ import Router from "vue-router";
 import Home from "./views/Home.vue";
 import Profile from "./views/Profile.vue";
 import Order from "./views/Order.vue";
+import History from "./views/History.vue";
+import Statistic from "./views/Statistic.vue";
 
 Vue.use(Router);
 
@@ -24,6 +26,16 @@ export default new Router({
       path: "/order",
       name: "order",
       component: Order
+    },
+    {
+      path: "/history",
+      name: "history",
+      component: History
+    },
+    {
+      path: "/statistic",
+      name: "statistic",
+      component: Statistic
     }
   ]
 });

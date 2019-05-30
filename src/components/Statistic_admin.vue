@@ -233,6 +233,9 @@ export default {
     width: 100%;
     overflow: visible;
     max-height: none;
+    thead {
+      z-index: 1;
+    }
   }
 }
 .rice-statistic {

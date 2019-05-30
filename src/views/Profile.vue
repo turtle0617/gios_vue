@@ -1,6 +1,6 @@
 <template>
   <div class="profile">
-    <GIOS_Header />
+    <Header_user />
     <div class="container">
       <div class="row profile-account">
         <Profile_account />
@@ -16,14 +16,14 @@
 </template>
 
 <script>
-import GIOS_Header from "@/components/GIOS_Header.vue";
+import Header_user from "@/components/Header_user.vue";
 import Profile_account from "@/components/Profile_account.vue";
 import Profile_code from "@/components/Profile_code.vue";
 import Profile_flavor from "@/components/Profile_flavor.vue";
 export default {
   name: "profile",
   components: {
-    GIOS_Header,
+    Header_user,
     Profile_account,
     Profile_code,
     Profile_flavor

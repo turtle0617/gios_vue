@@ -6,6 +6,7 @@ import Order from "./views/Order.vue";
 import History from "./views/History.vue";
 import Statistic from "./views/Statistic.vue";
 import Addmenu from "./views/Addmenu.vue";
+import Bill from "./views/Bill.vue";
 
 Vue.use(Router);
 
@@ -42,6 +43,11 @@ export default new Router({
       path: "/addmenu",
       name: "addmenu",
       component: Addmenu
+    },
+    {
+      path: "/bill",
+      name: "bill",
+      component: Bill
     }
   ]
 });

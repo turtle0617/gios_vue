@@ -1,6 +1,6 @@
 <template>
   <div class="history">
-    <GIOS_Header />
+    <Header_user />
     <div class="container">
       <History_admin />
     </div>
@@ -8,12 +8,12 @@
 </template>
 
 <script>
-import GIOS_Header from "@/components/GIOS_Header.vue";
+import Header_user from "@/components/Header_user.vue";
 import History_admin from "@/components/History_admin.vue";
 export default {
   name: "history",
   components: {
-    GIOS_Header,
+    Header_user,
     History_admin
   }
 };

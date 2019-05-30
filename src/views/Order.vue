@@ -1,6 +1,6 @@
 <template>
   <div class="order">
-    <GIOS_Header />
+    <Header_user />
     <div class="container">
       <Order_table />
     </div>
@@ -8,12 +8,12 @@
 </template>
 
 <script>
-import GIOS_Header from "@/components/GIOS_Header.vue";
+import Header_user from "@/components/Header_user.vue";
 import Order_table from "@/components/Order_table.vue";
 export default {
   name: "order",
   components: {
-    GIOS_Header,
+    Header_user,
     Order_table
   }
 };

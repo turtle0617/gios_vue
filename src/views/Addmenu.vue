@@ -1,6 +1,6 @@
 <template>
   <div class="addmenu">
-    <GIOS_Header />
+    <Header_user />
     <div class="container">
       <Menu />
     </div>
@@ -8,12 +8,12 @@
 </template>
 
 <script>
-import GIOS_Header from "@/components/GIOS_Header.vue";
+import Header_user from "@/components/Header_user.vue";
 import Menu from "@/components/Menu.vue";
 export default {
   name: "addmenu",
   components: {
-    GIOS_Header,
+    Header_user,
     Menu
   }
 };

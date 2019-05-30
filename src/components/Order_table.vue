@@ -516,10 +516,8 @@ export default {
   input:not([type="checkbox"]) {
     width: 100%;
   }
-  td {
-    // align-items: center;
-    // display: flex;
-    // flex-wrap: wrap;
+  thead {
+    z-index: 1;
   }
   &__title {
     display: flex;

@@ -5,9 +5,9 @@
       <div class="row ">
         <Auth_login />
       </div>
-      <div class="row ">
+      <!-- <div class="row ">
         <Auth_register />
-      </div>
+      </div> -->
     </div>
   </div>
 </template>

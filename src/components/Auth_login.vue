@@ -1,8 +1,8 @@
 <template>
   <section class="login-detail col-sm-12 col-md-4 ">
-    <form action="/profile" method="post">
+    <form @submit.prevent="login">
       <fieldset id="login__form">
-        <legend>註冊</legend>
+        <legend>登入</legend>
         <div class="row">
           <div class="col-sm-12 col-md-12">
             <label for="login__userAccount">使用者帳戶</label>
@@ -12,6 +12,7 @@
               type="text"
               id="login__userAccount"
               placeholder="請輸入使用者名稱"
+              v-model="useraccount"
             />
           </div>
         </div>
@@ -24,6 +25,7 @@
               type="password"
               id="login__userCode"
               placeholder="請輸入密碼"
+              v-model="password"
             />
           </div>
         </div>
@@ -39,7 +41,28 @@
 
 <script>
 export default {
-  name: "Auth_login"
+  name: "Auth_login",
+  data() {
+    return {
+      useraccount: "",
+      password: ""
+    };
+  },
+  methods: {
+    login() {
+      this.$store
+        .dispatch("retriveToken", {
+          useraccount: this.useraccount,
+          password: this.password
+        })
+        .then(response => {
+          console.log(response);
+          this.$router.push({
+            name: "order"
+          });
+        });
+    }
+  }
 };
 </script>
 

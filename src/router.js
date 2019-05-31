@@ -7,10 +7,11 @@ import History from "./views/History.vue";
 import Statistic from "./views/Statistic.vue";
 import Addmenu from "./views/Addmenu.vue";
 import Bill from "./views/Bill.vue";
+import Logout from "./components/Auth_logout.vue";
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   mode: "history",
   base: process.env.BASE_URL,
   routes: [
@@ -48,6 +49,18 @@ export default new Router({
       path: "/bill",
       name: "bill",
       component: Bill
+    },
+    {
+      path: "/logout",
+      name: "logout",
+      component: Logout
     }
   ]
 });
+
+// router.beforeEach((to, from, next) => {
+//   console.log(this.$store.state.access_token);
+//   next();
+// });
+
+export default router;

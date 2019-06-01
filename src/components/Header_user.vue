@@ -28,15 +28,14 @@ export default {
       visible: false
     };
   },
-  created() {
-    document.addEventListener("click", this.documentClick);
-  },
   destroyed() {
-    // important to clean up!!
     document.removeEventListener("click", this.documentClick);
   },
   computed: {
     loggedIn() {
+      if (this.$store.getters.loggedIn) {
+        document.addEventListener("click", this.documentClick);
+      }
       return this.$store.getters.loggedIn;
     }
   },

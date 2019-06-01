@@ -65,7 +65,23 @@
 
 <script>
 export default {
-  name: "Auth_register"
+  name: "Auth_register",
+  data() {
+    return {
+      username: "",
+      useraccount: "",
+      password: ""
+    };
+  },
+  methods: {
+    register() {
+      this.$store.dispatch("register").then(res => {
+        this.$router.push({
+          name: "home"
+        });
+      });
+    }
+  }
 };
 </script>
 

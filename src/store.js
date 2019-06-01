@@ -21,6 +21,17 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    register(context, data) {
+      return new Promise(function(resolve, reject) {
+        API.Register("/register", data)
+          .then(response => {
+            resolve(response);
+          })
+          .catch(err => {
+            reject(err);
+          });
+      });
+    },
     retriveToken(context, credentials) {
       return new Promise(function(resolve, reject) {
         API.Login("/login", credentials)
@@ -46,6 +57,7 @@ export default new Vuex.Store({
             resolve("logout success", res);
           })
           .catch(err => {
+            context.commit("destroyToken");
             reject(err);
           });
       });

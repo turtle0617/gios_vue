@@ -24,17 +24,36 @@ function Login(url, credentials) {
     });
 }
 
-function Logout(url, token) {
+function Register(url, data) {
   const config = {
     headers: {
       "Access-Control-Allow-Origin": "*"
     }
   };
+  return axios
+    .post(
+      domain + url,
+      {
+        name: data.username,
+        account: data.useraccount,
+        password: data.password
+      },
+      config
+    )
+    .then(({ data }) => {
+      return data;
+    })
+    .catch(err => {
+      return err;
+    });
+}
+
+function Logout(url, token) {
   axios.defaults.headers.common["Authorization"] = token;
   return axios
-    .delete(domain + url, config)
-    .then(res => {
-      return res;
+    .delete(domain + url)
+    .then(({ state }) => {
+      return state;
     })
     .catch(err => {
       return err;
@@ -43,5 +62,6 @@ function Logout(url, token) {
 
 export default {
   Login,
+  Register,
   Logout
 };

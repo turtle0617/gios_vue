@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Router from "vue-router";
 import Home from "./views/Home.vue";
+import Register from "./views/Register.vue";
 import Profile from "./views/Profile.vue";
 import Order from "./views/Order.vue";
 import History from "./views/History.vue";
@@ -18,49 +19,76 @@ const router = new Router({
     {
       path: "/",
       name: "home",
-      component: Home
+      component: Home,
+      meta: {
+        requiresVisitor: true
+      }
+    },
+    {
+      path: "/",
+      name: "register",
+      component: Register,
+      meta: {
+        requiresVisitor: true
+      }
     },
     {
       path: "/profile",
       name: "profile",
-      component: Profile
+      component: Profile,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: "/order",
       name: "order",
-      component: Order
+      component: Order,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: "/history",
       name: "history",
-      component: History
+      component: History,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: "/statistic",
       name: "statistic",
-      component: Statistic
+      component: Statistic,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: "/addmenu",
       name: "addmenu",
-      component: Addmenu
+      component: Addmenu,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: "/bill",
       name: "bill",
-      component: Bill
+      component: Bill,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: "/logout",
       name: "logout",
-      component: Logout
+      component: Logout,
+      meta: {
+        requiresAuth: true
+      }
     }
   ]
 });
-
-// router.beforeEach((to, from, next) => {
-//   console.log(this.$store.state.access_token);
-//   next();
-// });
 
 export default router;

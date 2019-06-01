@@ -1,23 +1,21 @@
 <template>
-  <div class="home">
+  <div class="register">
     <Header_user />
-    <div class="container">
-      <div class="row ">
-        <Auth_login />
-      </div>
+    <div class="row ">
+      <Auth_register />
     </div>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import Auth_login from "@/components/Auth_login.vue";
+import Auth_register from "@/components/Auth_register.vue";
 import Header_user from "@/components/Header_user.vue";
 
 export default {
-  name: "home",
+  name: "register",
   components: {
-    Auth_login,
+    Auth_register,
     Header_user
   }
 };

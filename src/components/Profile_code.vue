@@ -1,7 +1,7 @@
 <template>
-  <section class="code-detail col-sm-12 col-md-4 ">
-    <form>
-      <fieldset id="account__form">
+  <section class="code-detail col-sm-12 col-md-6 col-lg-4 ">
+    <form @submit.prevent="changeCode">
+      <fieldset id="changecode__form">
         <legend>更改密碼</legend>
         <div class="row">
           <div class="col-sm-12 col-md-12">

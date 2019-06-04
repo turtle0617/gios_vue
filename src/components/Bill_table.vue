@@ -20,51 +20,51 @@
       </select>
     </div>
     <div class="person-statistic row col-sm-12">
-      <div class="col-sm-12 col-md-4">
+      <div class="col-sm-12 col-md-6 col-lg-4">
         <span>Howard</span>
         <span>1000</span>
       </div>
-      <div class="col-sm-12 col-md-4">
+      <div class="col-sm-12 col-md-6 col-lg-4">
         <span>chris</span>
         <span>1000</span>
       </div>
-      <div class="col-sm-12 col-md-4">
+      <div class="col-sm-12 col-md-6 col-lg-4">
         <span>john</span>
         <span>1000</span>
       </div>
-      <div class="col-sm-12 col-md-4">
+      <div class="col-sm-12 col-md-6 col-lg-4">
         <span>john</span>
         <span>1000</span>
       </div>
-      <div class="col-sm-12 col-md-4">
+      <div class="col-sm-12 col-md-6 col-lg-4">
         <span>john</span>
         <span>1000</span>
       </div>
-      <div class="col-sm-12 col-md-4">
+      <div class="col-sm-12 col-md-6 col-lg-4">
         <span>john</span>
         <span>1000</span>
       </div>
-      <div class="col-sm-12 col-md-4">
+      <div class="col-sm-12 col-md-6 col-lg-4">
         <span>john</span>
         <span>1000</span>
       </div>
-      <div class="col-sm-12 col-md-4">
+      <div class="col-sm-12 col-md-6 col-lg-4">
         <span>john</span>
         <span>1000</span>
       </div>
-      <div class="col-sm-12 col-md-4">
+      <div class="col-sm-12 col-md-6 col-lg-4">
         <span>john</span>
         <span>1000</span>
       </div>
-      <div class="col-sm-12 col-md-4">
+      <div class="col-sm-12 col-md-6 col-lg-4">
         <span>john</span>
         <span>1000</span>
       </div>
-      <div class="col-sm-12 col-md-4">
+      <div class="col-sm-12 col-md-6 col-lg-4">
         <span>john</span>
         <span>1000</span>
       </div>
-      <div class="col-sm-12 col-md-4">
+      <div class="col-sm-12 col-md-6 col-lg-4">
         <span>john</span>
         <span>1000</span>
       </div>

@@ -1,18 +1,18 @@
 <template>
-  <section class="login-detail col-sm-12 col-md-4 ">
+  <section class="login-detail col-sm-12 col-md-6 col-lg-4 ">
     <form @submit.prevent="login">
       <fieldset id="login__form">
         <legend>登入</legend>
         <div class="row">
           <div class="col-sm-12 col-md-12">
-            <label for="login__userAccount">使用者帳戶</label>
+            <label for="login__account">使用者帳戶</label>
           </div>
           <div class="col-sm-12 col-md-12">
             <input
               type="text"
-              id="login__userAccount"
+              id="login__account"
               placeholder="請輸入使用者名稱"
-              v-model="useraccount"
+              v-model="account"
             />
           </div>
         </div>
@@ -31,7 +31,7 @@
         </div>
 
         <button class="primary large" type="submit">登入</button>
-        <a href="/login">
+        <a href="/register">
           <span>註冊</span>
         </a>
       </fieldset>
@@ -44,7 +44,7 @@ export default {
   name: "Auth_login",
   data() {
     return {
-      useraccount: "",
+      account: "",
       password: ""
     };
   },
@@ -52,14 +52,16 @@ export default {
     login() {
       this.$store
         .dispatch("retriveToken", {
-          useraccount: this.useraccount,
+          account: this.account,
           password: this.password
         })
         .then(response => {
-          console.log(response);
           this.$router.push({
             name: "order"
           });
+        })
+        .catch(err => {
+          console.error("login ERROR", err);
         });
     }
   }

@@ -1,11 +1,11 @@
 <template>
-  <section class="flavor-detail col-sm-12 col-md-4 ">
+  <section class="flavor-detail col-sm-12 col-md-6 col-lg-4 ">
     <form>
       <fieldset id="account__form">
         <legend>常用口味</legend>
         <div class="row">
           <div class="col-sm-12 col-md-12">
-            <label for="account__username">飯量</label>
+            <label for="account__name">飯量</label>
           </div>
           <div class="col-sm-12 col-md-12">
             <select class="group--select" name="account__group">

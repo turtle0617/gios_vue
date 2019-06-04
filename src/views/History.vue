@@ -2,20 +2,22 @@
   <div class="history">
     <Header_user />
     <div class="container">
-      <History_admin />
+      <History_user />
     </div>
   </div>
 </template>
 
 <script>
 import Header_user from "@/components/Header_user.vue";
-import History_admin from "@/components/History_admin.vue";
+import History_user from "@/components/History_user.vue";
 export default {
   name: "history",
   components: {
     Header_user,
-    History_admin
+    History_user
   }
 };
 </script>
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+
+</style>

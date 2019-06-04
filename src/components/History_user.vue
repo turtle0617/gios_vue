@@ -102,7 +102,10 @@ export default {
 
 <style scoped lang="scss">
 .history-table {
-  min-height: 80vh;
+  max-height: none;
+  thead {
+    z-index: 1;
+  }
   &__title {
     text-align: left;
   }

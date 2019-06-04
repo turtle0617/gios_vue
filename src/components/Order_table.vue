@@ -512,7 +512,7 @@ export default {
   min-width: $minWidth;
 }
 .order-table {
-  max-height: 80vh;
+  max-height: none;
   input:not([type="checkbox"]) {
     width: 100%;
   }

@@ -9,7 +9,7 @@
           </div>
           <div class="col-sm-12 col-md-12">
             <input
-              v-model ="user_datail.name"
+              v-model="user_datail.name"
               type="text"
               id="account__name"
               placeholder="請輸入使用者名稱"
@@ -22,8 +22,11 @@
           </div>
           <div class="col-sm-12 col-md-12">
             <input
-            v-model ="user_datail.account"
-            type="text" id="account__account" placeholder="請輸入信箱" />
+              v-model="user_datail.account"
+              type="text"
+              id="account__account"
+              placeholder="請輸入信箱"
+            />
           </div>
         </div>
         <div class="row">
@@ -31,7 +34,11 @@
             <label for="account__group">團體</label>
           </div>
           <div class="col-sm-12 col-md-12">
-            <select v-model ="user_datail.group_id" class="group--select" name="account__group">
+            <select
+              v-model="user_datail.group_id"
+              class="group--select"
+              name="account__group"
+            >
               <option value=""></option>
               <option value="1">好想工作室</option>
               <option value="2">Howard家</option>
@@ -46,7 +53,11 @@
             <label for="account__name">飯量</label>
           </div>
           <div class="col-sm-12 col-md-12">
-            <select v-model ="user_datail.rice" class="group--select" name="account__group">
+            <select
+              v-model="user_datail.rice"
+              class="group--select"
+              name="account__group"
+            >
               <option value="7">多飯</option>
               <option value="1">正常</option>
               <option value="2">1/2飯</option>
@@ -62,7 +73,11 @@
             <label for="account__vegetable">菜量</label>
           </div>
           <div class="col-sm-12 col-md-12">
-            <select v-model ="user_datail.vegetable"class="group--select" name="account__group">
+            <select
+              v-model="user_datail.vegetable"
+              class="group--select"
+              name="account__group"
+            >
               <option value="2">多菜</option>
               <option value="1">正常</option>
               <option value="3">少菜</option>
@@ -75,7 +90,12 @@
             <label for="account__Remark">備註</label>
           </div>
           <div class="col-sm-12 col-md-12">
-            <input v-model ="user_datail.note" type="text" id="account__Remark" placeholder="請輸入備註" />
+            <input
+              v-model="user_datail.note"
+              type="text"
+              id="account__Remark"
+              placeholder="請輸入備註"
+            />
           </div>
         </div>
         <div class="row">
@@ -92,7 +112,7 @@
               type="password"
               placeholder="請輸入密碼"
               v-model="user_password"
-              @blur ="checkPassword"
+              @blur="checkPassword"
             />
           </div>
         </div>
@@ -105,26 +125,25 @@
 <script>
 export default {
   name: "Profile_account",
-  data(){
-    return{
+  data() {
+    return {
       user_datail: null,
-      user_password:'',
+      user_password: "",
       isEmpty: false
-    }
+    };
   },
-  created(){
+  created() {
     this.user_datail = this.$store.state.user_datail;
   },
-  methods:{
-    changeProfile(){
-      if(!this.user_password) {
+  methods: {
+    changeProfile() {
+      if (!this.user_password) {
         this.isEmpty = true;
-        return
+        return;
       }
-      this.$store.dispatch('changeProfile')
     },
-    checkPassword(){
-      if(!this.user_password){
+    checkPassword() {
+      if (!this.user_password) {
         this.isEmpty = true;
         return;
       }
@@ -135,11 +154,11 @@ export default {
 </script>
 <style scoped lang="scss">
 @import "@/assets/form.scss";
-span{
+span {
   color: red;
 }
-.active{
-  background-color: rgba(255,0,0,.1);
+.active {
+  background-color: rgba(255, 0, 0, 0.1);
   border: 1px solid red;
 }
 </style>

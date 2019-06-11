@@ -21,7 +21,7 @@ export default {
   components: {
     Header_user,
     Profile_account,
-    Profile_code,
+    Profile_code
   }
 };
 </script>

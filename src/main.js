@@ -25,10 +25,19 @@ router.beforeEach((to, from, next) => {
         name: "home"
       });
     } else {
-      next();
+      if (to.matched.some(record => record.meta.isAdmin)) {
+        if (!store.getters.isAdmin) {
+          next({
+            name: "order"
+          });
+        } else {
+          next();
+        }
+      } else {
+        next();
+      }
     }
-  }
-  if (to.matched.some(record => record.meta.requiresVisitor)) {
+  } else if (to.matched.some(record => record.meta.guest)) {
     if (store.getters.loggedIn) {
       next({
         name: "order"
@@ -37,7 +46,6 @@ router.beforeEach((to, from, next) => {
       next();
     }
   }
-  next();
 });
 
 new Vue({

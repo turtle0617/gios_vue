@@ -6,6 +6,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     token: localStorage.getItem("access_token") || null,
+    isAdmin: localStorage.getItem("admin") || null,
     user_datail: {
       id: "",
       account: "",
@@ -19,6 +20,9 @@ export default new Vuex.Store({
   getters: {
     loggedIn(state) {
       return state.token !== null;
+    },
+    isAdmin(state) {
+      return state.isAdmin !== null;
     }
   },
   mutations: {
@@ -50,13 +54,27 @@ export default new Vuex.Store({
           });
       });
     },
-    retriveToken(context, credentials) {
+    retriveCustomerToken(context, credentials) {
       return new Promise(function(resolve, reject) {
         API.Login("/login", credentials)
           .then(data => {
-            // localStorage.setItem("access_token", data.access_token);
+            localStorage.setItem("access_token", data.access_token);
             context.commit("retriveToken", data.access_token);
             context.commit("updateUserDetail", data);
+            resolve("success");
+          })
+          .catch(err => {
+            reject(err);
+          });
+      });
+    },
+    retriveTraderToken(context, credentials) {
+      return new Promise(function(resolve, reject) {
+        API.Login("/boss/login", credentials)
+          .then(data => {
+            // localStorage.setItem("access_token", data.access_token);
+            // localStorage.setItem("admin", true);
+            context.commit("retriveToken", data.access_token);
             resolve("success");
           })
           .catch(err => {

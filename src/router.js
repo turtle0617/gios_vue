@@ -21,7 +21,7 @@ const router = new Router({
       name: "home",
       component: Home,
       meta: {
-        requiresVisitor: true
+        guest: true
       }
     },
     {
@@ -29,7 +29,7 @@ const router = new Router({
       name: "register",
       component: Register,
       meta: {
-        requiresVisitor: true
+        guest: true
       }
     },
     {
@@ -61,7 +61,8 @@ const router = new Router({
       name: "statistic",
       component: Statistic,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        isAdmin: true
       }
     },
     {
@@ -69,7 +70,8 @@ const router = new Router({
       name: "addmenu",
       component: Addmenu,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        isAdmin: true
       }
     },
     {
@@ -77,7 +79,8 @@ const router = new Router({
       name: "bill",
       component: Bill,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        isAdmin: true
       }
     },
     {

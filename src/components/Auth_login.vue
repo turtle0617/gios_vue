@@ -29,7 +29,17 @@
             />
           </div>
         </div>
-
+        <div class="row">
+          <div class="col-sm-12 col-md-12">
+            <label for="login__role">角色</label>
+          </div>
+          <div class="col-sm-12 col-md-12">
+            <select v-model="role_id" class="group--select">
+              <option value="customer">顧客</option>
+              <option value="trader">店家</option>
+            </select>
+          </div>
+        </div>
         <button class="primary large" type="submit">登入</button>
         <a href="/register">
           <span>註冊</span>
@@ -45,24 +55,43 @@ export default {
   data() {
     return {
       account: "",
-      password: ""
+      password: "",
+      role_id: "customer"
     };
   },
   methods: {
     login() {
-      this.$store
-        .dispatch("retriveToken", {
-          account: this.account,
-          password: this.password
-        })
-        .then(response => {
-          this.$router.push({
-            name: "order"
+      if (this.role_id === "customer") {
+        console.log("customer");
+        this.$store
+          .dispatch("retriveCustomerToken", {
+            account: this.account,
+            password: this.password
+          })
+          .then(response => {
+            this.$router.push({
+              name: "order"
+            });
+          })
+          .catch(err => {
+            console.error("login ERROR", err);
           });
-        })
-        .catch(err => {
-          console.error("login ERROR", err);
-        });
+      } else {
+        console.log("trader");
+        this.$store
+          .dispatch("retriveTraderToken", {
+            account: this.account,
+            password: this.password
+          })
+          .then(response => {
+            this.$router.push({
+              name: "statistic"
+            });
+          })
+          .catch(err => {
+            console.error("login ERROR", err);
+          });
+      }
     }
   }
 };

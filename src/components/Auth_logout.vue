@@ -6,11 +6,20 @@
 export default {
   name: "Auth_logout",
   created() {
-    this.$store.dispatch("destroyToken").then(res => {
-      this.$router.push({
-        name: "home"
+    const login_role = this.$store.getters.loggedIn;
+    if (login_role === "customer") {
+      this.$store.dispatch("destroyCustomerToken").then(res => {
+        this.$router.push({
+          name: "home"
+        });
       });
-    });
+    } else {
+      this.$store.dispatch("destroyTraderToken").then(res => {
+        this.$router.push({
+          name: "adminLogin"
+        });
+      });
+    }
   }
 };
 </script>

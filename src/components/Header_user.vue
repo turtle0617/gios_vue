@@ -3,7 +3,7 @@
     <div class="header__container">
       <router-link :to="{ name: 'home' }" class="logo">田阿姨便當</router-link>
       <div
-        v-if="loggedIn"
+        v-if="loggedIn === 'customer'"
         @click="visible = !visible"
         ref="dropdownMenu"
         class="dropdown header__account"
@@ -16,6 +16,13 @@
           <router-link :to="{ name: 'logout' }">登出</router-link>
         </div>
       </div>
+      <nav v-else-if="loggedIn === 'trader'" class="menuNavbar">
+        <router-link :to="{ name: 'bill' }">收錢</router-link>
+        <router-link :to="{ name: 'addmenu' }">新增菜單</router-link>
+        <router-link :to="{ name: 'statistic' }">訂單</router-link>
+        <router-link :to="{ name: 'history' }">歷史訂單</router-link>
+        <router-link :to="{ name: 'logout' }">登出</router-link>
+      </nav>
     </div>
   </header>
 </template>
@@ -33,7 +40,7 @@ export default {
   },
   computed: {
     loggedIn() {
-      if (this.$store.getters.loggedIn) {
+      if (this.$store.getters.loggedIn === "customer") {
         document.addEventListener("click", this.documentClick);
       }
       return this.$store.getters.loggedIn;
@@ -83,6 +90,16 @@ export default {
     &:hover {
       background-color: rgba(0, 0, 0, 0.2);
     }
+  }
+}
+.menuNavbar {
+  border: none;
+  margin-left: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  a {
+    display: inline-block;
   }
 }
 </style>

@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Router from "vue-router";
 import Home from "./views/Home.vue";
+import Adminlogin from "./views/Home_admin.vue";
 import Register from "./views/Register.vue";
 import Profile from "./views/Profile.vue";
 import Order from "./views/Order.vue";
@@ -20,6 +21,14 @@ const router = new Router({
       path: "/",
       name: "home",
       component: Home,
+      meta: {
+        guest: true
+      }
+    },
+    {
+      path: "/admin",
+      name: "adminLogin",
+      component: Adminlogin,
       meta: {
         guest: true
       }

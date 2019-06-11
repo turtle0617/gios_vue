@@ -2,7 +2,7 @@
   <section class="login-detail col-sm-12 col-md-6 col-lg-4 ">
     <form @submit.prevent="login">
       <fieldset id="login__form">
-        <legend>登入</legend>
+        <legend>店家登入</legend>
         <div class="row">
           <div class="col-sm-12 col-md-12">
             <label for="login__account">使用者帳戶</label>
@@ -30,9 +30,6 @@
           </div>
         </div>
         <button class="primary large" type="submit">登入</button>
-        <a href="/register">
-          <span>註冊</span>
-        </a>
       </fieldset>
     </form>
   </section>
@@ -40,7 +37,7 @@
 
 <script>
 export default {
-  name: "Auth_login",
+  name: "Auth_loginAdmin",
   data() {
     return {
       account: "",
@@ -50,13 +47,13 @@ export default {
   methods: {
     login() {
       this.$store
-        .dispatch("retriveCustomerToken", {
+        .dispatch("retriveTraderToken", {
           account: this.account,
           password: this.password
         })
         .then(response => {
           this.$router.push({
-            name: "order"
+            name: "statistic"
           });
         })
         .catch(err => {

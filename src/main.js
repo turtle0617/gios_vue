@@ -26,7 +26,7 @@ router.beforeEach((to, from, next) => {
       });
     } else {
       if (to.matched.some(record => record.meta.isAdmin)) {
-        if (!store.getters.isAdmin) {
+        if (store.getters.loggedIn !== "trader") {
           next({
             name: "order"
           });

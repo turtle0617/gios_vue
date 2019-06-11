@@ -6,7 +6,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     token: localStorage.getItem("access_token") || null,
-    isAdmin: localStorage.getItem("admin") || null,
+    login_role: localStorage.getItem("login_role") || null,
     user_datail: {
       id: "",
       account: "",
@@ -19,10 +19,7 @@ export default new Vuex.Store({
   },
   getters: {
     loggedIn(state) {
-      return state.token !== null;
-    },
-    isAdmin(state) {
-      return state.isAdmin !== null;
+      return state.login_role;
     }
   },
   mutations: {
@@ -31,6 +28,7 @@ export default new Vuex.Store({
     },
     destroyToken(state) {
       state.token = null;
+      state.login_role = null;
     },
     updateUserDetail(state, data) {
       state.user_datail.id = data.id;
@@ -40,6 +38,9 @@ export default new Vuex.Store({
       state.user_datail.vegetable = data.vegetable;
       state.user_datail.group_id = data.group_id;
       state.user_datail.note = data.note;
+    },
+    updateLoginRole(state, role) {
+      state.login_role = role;
     }
   },
   actions: {
@@ -58,9 +59,10 @@ export default new Vuex.Store({
       return new Promise(function(resolve, reject) {
         API.Login("/login", credentials)
           .then(data => {
-            localStorage.setItem("access_token", data.access_token);
+            // localStorage.setItem("access_token", data.access_token);
             context.commit("retriveToken", data.access_token);
             context.commit("updateUserDetail", data);
+            context.commit("updateLoginRole", "customer");
             resolve("success");
           })
           .catch(err => {
@@ -75,6 +77,7 @@ export default new Vuex.Store({
             // localStorage.setItem("access_token", data.access_token);
             // localStorage.setItem("admin", true);
             context.commit("retriveToken", data.access_token);
+            context.commit("updateLoginRole", "trader");
             resolve("success");
           })
           .catch(err => {
@@ -82,15 +85,35 @@ export default new Vuex.Store({
           });
       });
     },
-    destroyToken({ commit, state }) {
+    destroyCustomerToken({ commit, state }) {
       return new Promise(function(resolve, reject) {
         API.Logout(
-          "/logout",
+          "/member/logout",
           state.user_datail.id,
           "XZ5lqmYivXXiaqf3YvFlke4pENX0JaEQMLyXkcD2BdKarwvRZWT9jDPZ3SGK"
         )
           .then(res => {
             localStorage.removeItem("access_token");
+            localStorage.removeItem("login_role");
+            commit("destroyToken");
+            resolve("logout success", res);
+          })
+          .catch(err => {
+            commit("destroyToken");
+            reject(err);
+          });
+      });
+    },
+    destroyTraderToken({ commit, state }) {
+      return new Promise(function(resolve, reject) {
+        API.Logout(
+          "/boss/logout",
+          state.user_datail.id,
+          "XZ5lqmYivXXiaqf3YvFlke4pENX0JaEQMLyXkcD2BdKarwvRZWT9jDPZ3SGK"
+        )
+          .then(res => {
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("login_role");
             commit("destroyToken");
             resolve("logout success", res);
           })

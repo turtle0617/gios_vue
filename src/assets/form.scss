@@ -5,6 +5,10 @@ section {
   div{
     text-align: left;
   }
+  span{
+    color: red;
+    padding: calc(var(--universal-padding) / 2) var(--universal-padding);
+  }
   input {
     width: 100%;
     height: 44px;
@@ -28,4 +32,9 @@ section {
   a{
     display: block;
   }
+}
+
+.error {
+  background-color: rgba(255, 0, 0, 0.1);
+  border: 1px solid red;
 }

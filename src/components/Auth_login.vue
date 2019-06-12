@@ -31,7 +31,7 @@
         </div>
         <button class="primary large" type="submit">登入</button>
         <a href="/register">
-          <span>註冊</span>
+          註冊
         </a>
       </fieldset>
     </form>
@@ -43,7 +43,7 @@ export default {
   name: "Auth_login",
   data() {
     return {
-      account: "",
+      account: this.$route.params.account || "",
       password: ""
     };
   },

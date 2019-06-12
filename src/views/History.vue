@@ -1,20 +1,32 @@
 <template>
   <div class="history">
-    <Header_user />
+    <Header />
     <div class="container">
-      <History_user />
+      <template v-if="loggedIn === 'customer'">
+        <History_user />
+      </template>
+      <template v-else-if="loggedIn === 'trader'">
+        <History_admin />
+      </template>
     </div>
   </div>
 </template>
 
 <script>
-import Header_user from "@/components/Header_user.vue";
+import Header from "@/components/Header.vue";
 import History_user from "@/components/History_user.vue";
+import History_admin from "@/components/History_admin.vue";
 export default {
   name: "history",
   components: {
-    Header_user,
-    History_user
+    Header,
+    History_user,
+    History_admin
+  },
+  computed: {
+    loggedIn() {
+      return this.$store.getters.loggedIn;
+    }
   }
 };
 </script>

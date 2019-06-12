@@ -11,9 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-library.add(faUserCircle);
-library.add(faPlusCircle);
-library.add(faMinusCircle);
+library.add(faUserCircle, faPlusCircle, faMinusCircle);
 
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 Vue.config.productionTip = false;
@@ -27,14 +25,22 @@ router.beforeEach((to, from, next) => {
     } else {
       if (to.matched.some(record => record.meta.isAdmin)) {
         if (store.getters.loggedIn !== "trader") {
+          console.log("not trader redirect order");
           next({
             name: "order"
           });
         } else {
+          console.log("is trader");
           next();
         }
       } else {
+        // if (store.getters.loggedIn === "customer") {
+        //   console.log("is customer page and auth is customer");
         next();
+        // } else {
+        //   console.log("is customer page and auth is trader");
+        //   next({ name: "statistic" });
+        // }
       }
     }
   } else if (to.matched.some(record => record.meta.guest)) {

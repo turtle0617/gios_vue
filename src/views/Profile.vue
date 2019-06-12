@@ -1,6 +1,6 @@
 <template>
   <div class="profile">
-    <Header_user />
+    <Header />
     <div class="container">
       <div class="row profile-account">
         <Profile_account />
@@ -13,13 +13,13 @@
 </template>
 
 <script>
-import Header_user from "@/components/Header_user.vue";
+import Header from "@/components/Header.vue";
 import Profile_account from "@/components/Profile_account.vue";
 import Profile_code from "@/components/Profile_code.vue";
 export default {
   name: "profile",
   components: {
-    Header_user,
+    Header,
     Profile_account,
     Profile_code
   }

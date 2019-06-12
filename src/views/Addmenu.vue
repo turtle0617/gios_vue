@@ -1,6 +1,6 @@
 <template>
   <div class="addmenu">
-    <Header_user />
+    <Header />
     <div class="container">
       <Menu />
     </div>
@@ -8,12 +8,12 @@
 </template>
 
 <script>
-import Header_user from "@/components/Header_user.vue";
+import Header from "@/components/Header.vue";
 import Menu from "@/components/Menu.vue";
 export default {
   name: "addmenu",
   components: {
-    Header_user,
+    Header,
     Menu
   }
 };

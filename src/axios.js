@@ -1,53 +1,43 @@
 import axios from "axios";
 
-const domain = "http://private-66bd2d-turtle0617.apiary-mock.com";
-// const domain = "http://3.130.129.213/api";
+// const domain = "http://private-66bd2d-turtle0617.apiary-mock.com";
+const domain = "http://3.130.129.213/api";
+
+function GET(url, token) {
+  if (token) {
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  }
+  return axios.get(domain + url);
+}
 
 function Login(url, credentials) {
-  const config = {
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Expose-Headers": "Location"
-    }
-  };
   return axios
-    .post(
-      domain + url,
-      {
-        account: credentials.account,
-        password: credentials.password
-      },
-      config
-    )
+    .post(domain + url, {
+      account: credentials.account,
+      password: credentials.password
+    })
     .then(res => {
+      if (typeof res.data === "string") throw new Error(res.data);
       return res.data;
     })
     .catch(err => {
-      return err;
+      throw new Error(err);
     });
 }
 
 function Register(url, data) {
-  const config = {
-    headers: {
-      "Access-Control-Allow-Origin": "*"
-    }
-  };
   return axios
-    .post(
-      domain + url,
-      {
-        name: data.name,
-        account: data.account,
-        password: data.password
-      },
-      config
-    )
-    .then(({ data }) => {
-      return data;
+    .post(domain + url, {
+      name: data.name,
+      account: data.account,
+      password: data.password,
+      group_id: data.group_id
+    })
+    .then(res => {
+      return res.data;
     })
     .catch(err => {
-      return err;
+      throw new Error(err);
     });
 }
 
@@ -59,12 +49,13 @@ function Logout(url, id, token) {
       return state;
     })
     .catch(err => {
-      return err;
+      throw new Error(err);
     });
 }
 
 export default {
   Login,
   Register,
-  Logout
+  Logout,
+  GET
 };

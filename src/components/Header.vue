@@ -1,35 +1,43 @@
 <template>
   <header class="header">
     <div class="header__container">
-      <router-link :to="{ name: 'home' }" class="logo">田阿姨便當</router-link>
-      <div
-        v-if="loggedIn === 'customer'"
-        @click="visible = !visible"
-        ref="dropdownMenu"
-        class="dropdown header__account"
-      >
-        <font-awesome-icon icon="user-circle" size="2x"></font-awesome-icon>
-        <div v-if="visible" class="dropdown-content">
-          <router-link :to="{ name: 'profile' }">個人檔案</router-link>
-          <router-link :to="{ name: 'order' }">訂餐</router-link>
+      <template v-if="loggedIn === 'customer'">
+        <router-link :to="{ name: 'home' }" class="logo"
+          >田阿姨便當</router-link
+        >
+        <div
+          @click="visible = !visible"
+          ref="dropdownMenu"
+          class="dropdown header__account"
+        >
+          <font-awesome-icon icon="user-circle" size="2x"></font-awesome-icon>
+          <div v-if="visible" class="dropdown-content">
+            <router-link :to="{ name: 'profile' }">個人檔案</router-link>
+            <router-link :to="{ name: 'order' }">訂餐</router-link>
+            <router-link :to="{ name: 'history' }">歷史訂單</router-link>
+            <router-link :to="{ name: 'logout' }">登出</router-link>
+          </div>
+        </div>
+      </template>
+      <template v-else-if="loggedIn === 'trader'">
+        <router-link :to="{ name: 'statistic' }" class="logo"
+          >田阿姨便當</router-link
+        >
+        <nav class="menuNavbar">
+          <router-link :to="{ name: 'bill' }">收錢</router-link>
+          <router-link :to="{ name: 'addmenu' }">新增菜單</router-link>
+          <router-link :to="{ name: 'statistic' }">訂單</router-link>
           <router-link :to="{ name: 'history' }">歷史訂單</router-link>
           <router-link :to="{ name: 'logout' }">登出</router-link>
-        </div>
-      </div>
-      <nav v-else-if="loggedIn === 'trader'" class="menuNavbar">
-        <router-link :to="{ name: 'bill' }">收錢</router-link>
-        <router-link :to="{ name: 'addmenu' }">新增菜單</router-link>
-        <router-link :to="{ name: 'statistic' }">訂單</router-link>
-        <router-link :to="{ name: 'history' }">歷史訂單</router-link>
-        <router-link :to="{ name: 'logout' }">登出</router-link>
-      </nav>
+        </nav>
+      </template>
     </div>
   </header>
 </template>
 
 <script>
 export default {
-  name: "Header_user",
+  name: "Header",
   data() {
     return {
       visible: false

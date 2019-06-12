@@ -3,6 +3,9 @@
     <form @submit.prevent="register">
       <fieldset id="register__form">
         <legend>註冊</legend>
+        <div v-if="error" class="row">
+          <span>請填寫完整</span>
+        </div>
         <div class="row">
           <div class="col-sm-12 col-md-12">
             <label for="register__name">使用者名稱</label>
@@ -10,6 +13,7 @@
           <div class="col-sm-12 col-md-12">
             <input
               type="text"
+              v-bind:class="{ error: error }"
               v-model="name"
               id="register__name"
               placeholder="請輸入使用者名稱"
@@ -52,19 +56,18 @@
               class="group--select"
               name="register__group"
             >
-              <option value="1">好想工作室</option>
-              <option value="2">Howard家</option>
-              <option value="3">大灣</option>
-              <option value="4">佳音</option>
-              <option value="5">個人</option>
+              <option
+                v-for="group in groups"
+                :value="group.id"
+                :key="group.id"
+                >{{ group.name }}</option
+              >
             </select>
           </div>
         </div>
 
         <button class="primary large" type="submit">註冊</button>
-        <a href="/">
-          <span>登入</span>
-        </a>
+        <a href="/">登入</a>
       </fieldset>
     </form>
   </section>
@@ -78,24 +81,37 @@ export default {
       name: "",
       account: "",
       password: "",
-      group_id: ""
+      group_id: "1",
+      error: false
     };
+  },
+  created() {
+    this.$store.dispatch("retrieveGroups");
+  },
+  computed: {
+    groups() {
+      return this.$store.state.groups;
+    }
   },
   methods: {
     register() {
+      if (!this.name || !this.account || !this.password) {
+        this.error = true;
+        return;
+      }
       this.$store
         .dispatch("register", {
           name: this.name,
           account: this.account,
           password: this.password,
-          group_id: this.group_id,
-          rice: "1",
-          vegetable: "1",
-          note: ""
+          group_id: this.group_id
         })
         .then(res => {
           this.$router.push({
-            name: "home"
+            name: "home",
+            params: {
+              account: res.account
+            }
           });
         })
         .catch(err => {

@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <Header_user />
+    <Header />
     <div class="container">
       <div class="row ">
         <Auth_login />
@@ -12,13 +12,13 @@
 <script>
 // @ is an alias to /src
 import Auth_login from "@/components/Auth_login.vue";
-import Header_user from "@/components/Header_user.vue";
+import Header from "@/components/Header.vue";
 
 export default {
   name: "home",
   components: {
     Auth_login,
-    Header_user
+    Header
   }
 };
 </script>

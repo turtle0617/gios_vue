@@ -1,6 +1,6 @@
 <template>
   <div class="statistic">
-    <Header_user />
+    <Header />
     <div class="container">
       <Statistic_admin />
     </div>
@@ -8,12 +8,12 @@
 </template>
 
 <script>
-import Header_user from "@/components/Header_user.vue";
+import Header from "@/components/Header.vue";
 import Statistic_admin from "@/components/Statistic_admin.vue";
 export default {
   name: "statistic",
   components: {
-    Header_user,
+    Header,
     Statistic_admin
   }
 };

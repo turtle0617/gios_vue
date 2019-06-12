@@ -1,6 +1,6 @@
 <template>
   <div class="order">
-    <Header_user />
+    <Header />
     <div class="container">
       <Order_table />
     </div>
@@ -8,12 +8,12 @@
 </template>
 
 <script>
-import Header_user from "@/components/Header_user.vue";
+import Header from "@/components/Header.vue";
 import Order_table from "@/components/Order_table.vue";
 export default {
   name: "order",
   components: {
-    Header_user,
+    Header,
     Order_table
   }
 };

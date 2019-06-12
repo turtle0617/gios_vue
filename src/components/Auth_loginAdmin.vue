@@ -3,6 +3,9 @@
     <form @submit.prevent="login">
       <fieldset id="login__form">
         <legend>店家登入</legend>
+        <div v-if="error" class="row errorMessage">
+          <span>你的帳號或密碼不正確，請稍後再試</span>
+        </div>
         <div class="row">
           <div class="col-sm-12 col-md-12">
             <label for="login__account">使用者帳戶</label>
@@ -41,7 +44,8 @@ export default {
   data() {
     return {
       account: "",
-      password: ""
+      password: "",
+      error: false
     };
   },
   methods: {
@@ -57,6 +61,7 @@ export default {
           });
         })
         .catch(err => {
+          this.error = true;
           console.error("login ERROR", err);
         });
     }

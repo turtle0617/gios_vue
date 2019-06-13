@@ -16,6 +16,8 @@ section {
     border-radius: 6px;
     padding: 0 15px;
     box-sizing: border-box;
+    outline: none;
+    margin-bottom: 1rem
   }
 
   select {
@@ -37,4 +39,26 @@ section {
 .error {
   background-color: rgba(255, 0, 0, 0.1);
   border: 1px solid red;
+}
+
+.input-box{
+  position: relative;
+  label{
+    position: absolute;
+    top: 10px;
+    left: 16px;
+    color: rgb(112, 112, 112);
+  }
+  input:focus{
+    background-color: #f0f0f0;
+    border: 1px solid black !important;
+  }
+  input:focus ~ label{
+    top: 0;
+    left: 0;
+    transform: translate(10px,-15px) scale(.72);
+    transition: all 150ms;
+    background-color: #f0f0f0;
+    color: black;
+  }
 }

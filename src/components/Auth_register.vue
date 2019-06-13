@@ -65,7 +65,6 @@
             </select>
           </div>
         </div>
-
         <button class="primary large" type="submit">註冊</button>
         <a href="/">登入</a>
       </fieldset>

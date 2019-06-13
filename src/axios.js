@@ -10,6 +10,12 @@ function GET(url, token) {
   return axios.get(domain + url);
 }
 
+function PATCH(url, token, data) {
+  if (!token) throw new Error("no Token");
+  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  return axios.patch(domain + url, data);
+}
+
 function Login(url, credentials) {
   return axios
     .post(domain + url, {
@@ -57,5 +63,6 @@ export default {
   Login,
   Register,
   Logout,
-  GET
+  GET,
+  PATCH
 };

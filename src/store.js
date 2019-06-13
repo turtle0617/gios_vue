@@ -7,9 +7,9 @@ export default new Vuex.Store({
   state: {
     token: localStorage.getItem("api_token") || null,
     login_role: localStorage.getItem("login_role") || null,
-    user_datail: JSON.parse(localStorage.getItem("user_profile")) || null,
+    member_profile: JSON.parse(localStorage.getItem("user_profile")) || null,
     user_id: localStorage.getItem("user_id") || null,
-    groups: localStorage.getItem("groups") || null
+    groups: JSON.parse(localStorage.getItem("groups")) || null
   },
   getters: {
     loggedIn(state) {
@@ -23,7 +23,16 @@ export default new Vuex.Store({
       state.user_id = auth_detail.id;
     },
     initialMemberProfile(state, data) {
-      state.user_datail = data;
+      const profile = {
+        name: data.name,
+        account: data.account,
+        rice: data.rice,
+        vegetable: data.vegetable,
+        group_id: data.group_id,
+        note: data.note
+      };
+      localStorage.setItem("user_profile", JSON.stringify(profile));
+      state.member_profile = profile;
     },
     retrieveGroups(state, groups) {
       state.groups = groups;
@@ -49,12 +58,24 @@ export default new Vuex.Store({
     retrieveGroups(context) {
       API.GET("/groups")
         .then(({ data }) => {
-          localStorage.setItem("groups", data);
+          localStorage.setItem("groups", JSON.stringify(data));
           context.commit("retrieveGroups", data);
         })
         .catch(err => {
           throw new Error(err);
         });
+    },
+    updateMemberProfile({ commit, state }, profile) {
+      return new Promise(function(resolve, reject) {
+        API.PATCH(`/member/${state.user_id}`, state.token, profile)
+          .then(res => {
+            commit("initialMemberProfile", res.data);
+            resolve("success");
+          })
+          .catch(err => {
+            reject(err.response.data.message);
+          });
+      });
     },
     retrieveMemberToken(context, credentials) {
       return new Promise(function(resolve, reject) {
@@ -62,15 +83,15 @@ export default new Vuex.Store({
           .then(data => {
             const auth_detail = {
               id: data.id,
-              api_token: data.api.token,
+              api_token: data.api_token,
               role: "member"
             };
             localStorage.setItem("user_id", auth_detail.id);
             localStorage.setItem("api_token", auth_detail.api_token);
             localStorage.setItem("login_role", auth_detail.role);
-            localStorage.setItem("user_profile", JSON.stringify(data));
             context.commit("initialAuthDetail", auth_detail);
             context.commit("initialMemberProfile", data);
+            context.dispatch("retrieveGroups");
             resolve("success");
           })
           .catch(err => {
@@ -84,13 +105,14 @@ export default new Vuex.Store({
           .then(data => {
             const auth_detail = {
               id: data.id,
-              api_token: data.api.token,
+              api_token: data.api_token,
               role: "boss"
             };
             localStorage.setItem("user_id", auth_detail.id);
             localStorage.setItem("api_token", auth_detail.api_token);
             localStorage.setItem("login_role", auth_detail.role);
             context.commit("initialAuthDetail", auth_detail);
+            context.dispatch("retrieveGroups");
             resolve("success");
           })
           .catch(err => {

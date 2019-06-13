@@ -7,7 +7,7 @@ export default {
   name: "Auth_logout",
   created() {
     const login_role = this.$store.getters.loggedIn;
-    this.$store.dispatch("destroyToken", login_role).then(res => {
+    this.$store.dispatch("destroyAuthDetail", login_role).then(res => {
       this.$router.push({
         name: "home"
       });

@@ -50,7 +50,7 @@ export default {
   methods: {
     login() {
       this.$store
-        .dispatch("retriveCustomerToken", {
+        .dispatch("retrieveMemberToken", {
           account: this.account,
           password: this.password
         })

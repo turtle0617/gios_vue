@@ -17,21 +17,21 @@ export default new Vuex.Store({
     }
   },
   mutations: {
-    retrieveToken(state, token) {
-      state.token = token;
+    initialAuthDetail(state, auth_detail) {
+      state.token = auth_detail.api_token;
+      state.login_role = auth_detail.role;
+      state.user_id = auth_detail.id;
     },
-    destroyToken(state) {
-      state.token = null;
-      state.login_role = null;
-    },
-    updateLoginRole(state, role) {
-      state.login_role = role;
-    },
-    updateId(state, id) {
-      state.user_id = id;
+    initialMemberProfile(state, data) {
+      state.user_datail = data;
     },
     retrieveGroups(state, groups) {
       state.groups = groups;
+    },
+    destroyAuthDetail(state) {
+      state.token = null;
+      state.login_role = null;
+      state.user_id = null;
     }
   },
   actions: {
@@ -56,17 +56,21 @@ export default new Vuex.Store({
           throw new Error(err);
         });
     },
-    retrieveCustomerToken(context, credentials) {
+    retrieveMemberToken(context, credentials) {
       return new Promise(function(resolve, reject) {
-        API.Login("/login", credentials)
+        API.Login("/member/login", credentials)
           .then(data => {
-            localStorage.setItem("api_token", data.api_token);
-            localStorage.setItem("login_role", "customer");
+            const auth_detail = {
+              id: data.id,
+              api_token: data.api.token,
+              role: "member"
+            };
+            localStorage.setItem("user_id", auth_detail.id);
+            localStorage.setItem("api_token", auth_detail.api_token);
+            localStorage.setItem("login_role", auth_detail.role);
             localStorage.setItem("user_profile", JSON.stringify(data));
-            localStorage.setItem("updateId", data.id);
-            context.commit("retrieveToken", data.api_token);
-            context.commit("updateLoginRole", "customer");
-            context.commit("updateId", data.id);
+            context.commit("initialAuthDetail", auth_detail);
+            context.commit("initialMemberProfile", data);
             resolve("success");
           })
           .catch(err => {
@@ -74,16 +78,19 @@ export default new Vuex.Store({
           });
       });
     },
-    retrieveTraderToken(context, credentials) {
+    retrieveBossToken(context, credentials) {
       return new Promise(function(resolve, reject) {
         API.Login("/boss/login", credentials)
           .then(data => {
-            localStorage.setItem("api_token", data.api_token);
-            localStorage.setItem("login_role", "trader");
-            localStorage.setItem("updateId", data.id);
-            context.commit("retrieveToken", data.api_token);
-            context.commit("updateLoginRole", "trader");
-            context.commit("updateId", data.id);
+            const auth_detail = {
+              id: data.id,
+              api_token: data.api.token,
+              role: "boss"
+            };
+            localStorage.setItem("user_id", auth_detail.id);
+            localStorage.setItem("api_token", auth_detail.api_token);
+            localStorage.setItem("login_role", auth_detail.role);
+            context.commit("initialAuthDetail", auth_detail);
             resolve("success");
           })
           .catch(err => {
@@ -91,34 +98,17 @@ export default new Vuex.Store({
           });
       });
     },
-    destroyCustomerToken({ commit, state }) {
+    destroyAuthDetail({ commit, state }, role) {
+      const url = `/${role}/logout`;
       return new Promise(function(resolve, reject) {
-        API.Logout(
-          "/member/logout",
-          state.user_id,
-          "XZ5lqmYivXXiaqf3YvFlke4pENX0JaEQMLyXkcD2BdKarwvRZWT9jDPZ3SGK"
-        )
+        API.Logout(url, state.user_id, state.token)
           .then(res => {
             localStorage.clear();
-            commit("destroyToken");
+            commit("destroyAuthDetail");
             resolve("logout success", res);
           })
           .catch(err => {
-            commit("destroyToken");
-            reject(err);
-          });
-      });
-    },
-    destroyTraderToken({ commit, state }) {
-      return new Promise(function(resolve, reject) {
-        API.Logout("/boss/logout", state.user_id, state.token)
-          .then(res => {
-            localStorage.clear();
-            commit("destroyToken");
-            resolve("logout success", res);
-          })
-          .catch(err => {
-            commit("destroyToken");
+            commit("destroyAuthDetail");
             reject(err);
           });
       });

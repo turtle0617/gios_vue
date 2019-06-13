@@ -24,21 +24,21 @@ router.beforeEach((to, from, next) => {
       });
     } else {
       if (to.matched.some(record => record.meta.isAdmin)) {
-        if (store.getters.loggedIn !== "trader") {
-          console.log("not trader redirect order");
+        if (store.getters.loggedIn !== "boss") {
+          console.log("not boss redirect order");
           next({
             name: "order"
           });
         } else {
-          console.log("is trader");
+          console.log("is boss");
           next();
         }
       } else {
-        // if (store.getters.loggedIn === "customer") {
-        //   console.log("is customer page and auth is customer");
+        // if (store.getters.loggedIn === "member") {
+        //   console.log("is member page and auth is member");
         next();
         // } else {
-        //   console.log("is customer page and auth is trader");
+        //   console.log("is member page and auth is boss");
         //   next({ name: "statistic" });
         // }
       }

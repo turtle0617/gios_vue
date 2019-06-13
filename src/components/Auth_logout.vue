@@ -7,19 +7,11 @@ export default {
   name: "Auth_logout",
   created() {
     const login_role = this.$store.getters.loggedIn;
-    if (login_role === "customer") {
-      this.$store.dispatch("destroyCustomerToken").then(res => {
-        this.$router.push({
-          name: "home"
-        });
+    this.$store.dispatch("destroyToken", login_role).then(res => {
+      this.$router.push({
+        name: "home"
       });
-    } else {
-      this.$store.dispatch("destroyTraderToken").then(res => {
-        this.$router.push({
-          name: "adminLogin"
-        });
-      });
-    }
+    });
   }
 };
 </script>

@@ -2,10 +2,10 @@
   <div class="history">
     <Header />
     <div class="container">
-      <template v-if="loggedIn === 'customer'">
+      <template v-if="loggedIn === 'member'">
         <History_user />
       </template>
-      <template v-else-if="loggedIn === 'trader'">
+      <template v-else-if="loggedIn === 'boss'">
         <History_admin />
       </template>
     </div>

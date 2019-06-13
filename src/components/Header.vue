@@ -1,7 +1,7 @@
 <template>
   <header class="header">
     <div class="header__container">
-      <template v-if="loggedIn === 'customer'">
+      <template v-if="loggedIn === 'member'">
         <router-link :to="{ name: 'home' }" class="logo"
           >田阿姨便當</router-link
         >
@@ -19,7 +19,7 @@
           </div>
         </div>
       </template>
-      <template v-else-if="loggedIn === 'trader'">
+      <template v-else-if="loggedIn === 'boss'">
         <router-link :to="{ name: 'statistic' }" class="logo"
           >田阿姨便當</router-link
         >
@@ -48,7 +48,7 @@ export default {
   },
   computed: {
     loggedIn() {
-      if (this.$store.getters.loggedIn === "customer") {
+      if (this.$store.getters.loggedIn === "member") {
         document.addEventListener("click", this.documentClick);
       }
       return this.$store.getters.loggedIn;

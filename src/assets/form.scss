@@ -1,3 +1,16 @@
+%labelTransition{
+  background-color: #f0f0f0;
+  border: 1px solid black !important;
+  ~ label{
+    top: -5px;
+    left: 20px;
+    font-size: 0.7rem;
+    transition: all 150ms;
+    background-color: #f0f0f0;
+    color: black;
+  }
+}
+
 section {
   margin: 0 auto;
   padding-top: 50px;
@@ -17,7 +30,7 @@ section {
     padding: 0 15px;
     box-sizing: border-box;
     outline: none;
-    margin-bottom: 1rem
+    margin-bottom: 1rem;
   }
 
   select {
@@ -25,7 +38,7 @@ section {
     height: 44px;
     border: 1px solid #dbe2e8;
     border-radius: 6px;
-    padding: 0 15px;
+    margin-bottom: 1rem;
     box-sizing: border-box;
   }
   button{
@@ -47,18 +60,27 @@ section {
     position: absolute;
     top: 10px;
     left: 16px;
+    padding: 0 5px;
+    transition: all 150ms;
     color: rgb(112, 112, 112);
   }
   input:focus{
-    background-color: #f0f0f0;
-    border: 1px solid black !important;
+    @extend %labelTransition;
   }
-  input:focus ~ label{
-    top: 0;
-    left: 0;
-    transform: translate(10px,-15px) scale(.72);
-    transition: all 150ms;
-    background-color: #f0f0f0;
-    color: black;
+  input:not(:placeholder-shown){
+    @extend %labelTransition;
   }
+  select{
+    outline: none;
+    &:valid{
+      @extend %labelTransition;
+    }
+  }
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active  {
+    -webkit-box-shadow: 0 0 0 30px #f0f0f0 inset !important;
 }

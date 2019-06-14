@@ -4,29 +4,25 @@
       <fieldset id="login__form">
         <legend>登入</legend>
         <div class="row">
-          <div class="col-sm-12 col-md-12">
-            <label for="login__account">使用者帳戶</label>
-          </div>
-          <div class="col-sm-12 col-md-12">
+          <div class="col-sm-12 col-md-12 input-box">
             <input
               type="text"
               id="login__account"
-              placeholder="請輸入使用者名稱"
+              placeholder=" "
               v-model="account"
             />
+            <label for="login__account">使用者帳戶</label>
           </div>
         </div>
         <div class="row">
-          <div class="col-sm-12 col-md-12">
-            <label for="login__userCode">密碼</label>
-          </div>
-          <div class="col-sm-12 col-md-12">
+          <div class="col-sm-12 col-md-12 input-box">
             <input
               type="password"
               id="login__userCode"
-              placeholder="請輸入密碼"
+              placeholder=" "
               v-model="password"
             />
+            <label for="login__userCode">密碼</label>
           </div>
         </div>
         <button class="primary large" type="submit">登入</button>

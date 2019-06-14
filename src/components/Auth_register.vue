@@ -7,50 +7,41 @@
           <span>請填寫完整</span>
         </div>
         <div class="row">
-          <div class="col-sm-12 col-md-12">
-            <label for="register__name">使用者名稱</label>
-          </div>
-          <div class="col-sm-12 col-md-12">
+          <div class="col-sm-12 col-md-12 input-box">
             <input
               type="text"
               v-bind:class="{ error: error }"
               v-model="name"
               id="register__name"
-              placeholder="請輸入使用者名稱"
+              placeholder=" "
             />
+            <label for="register__name">使用者名稱</label>
           </div>
         </div>
         <div class="row">
-          <div class="col-sm-12 col-md-12">
-            <label for="register__account">使用者帳戶</label>
-          </div>
-          <div class="col-sm-12 col-md-12">
+          <div class="col-sm-12 col-md-12 input-box">
             <input
               type="text"
               v-model="account"
               id="register__account"
-              placeholder="請輸入使用者帳戶"
+              placeholder=" "
             />
+            <label for="register__account">使用者帳戶</label>
           </div>
         </div>
         <div class="row">
-          <div class="col-sm-12 col-md-12">
-            <label for="register__code">密碼</label>
-          </div>
-          <div class="col-sm-12 col-md-12">
+          <div class="col-sm-12 col-md-12 input-box">
             <input
               type="password"
               v-model="password"
               id="register__code"
-              placeholder="請輸入密碼"
+              placeholder=" "
             />
+            <label for="register__code">密碼</label>
           </div>
         </div>
         <div class="row">
-          <div class="col-sm-12 col-md-12">
-            <label for="register__group">團體</label>
-          </div>
-          <div class="col-sm-12 col-md-12">
+          <div class="col-sm-12 col-md-12 input-box">
             <select
               v-model="group_id"
               class="group--select"
@@ -63,6 +54,7 @@
                 >{{ group.name }}</option
               >
             </select>
+            <label for="register__group">團體</label>
           </div>
         </div>
         <button class="primary large" type="submit">註冊</button>

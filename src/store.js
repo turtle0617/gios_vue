@@ -55,6 +55,32 @@ export default new Vuex.Store({
           });
       });
     },
+    addGroup({ state, dispatch }, data) {
+      return new Promise(function(resolve, reject) {
+        API.POST("/groups", state.token, data)
+          .then(res => {
+            if (typeof res.data === "string") throw res.data;
+            dispatch("retrieveGroups");
+            resolve(res);
+          })
+          .catch(err => {
+            reject(err);
+          });
+      });
+    },
+    deleteGroup({ state, dispatch }, group_id) {
+      return new Promise(function(resolve, reject) {
+        API.DELETE("/groups", group_id, state.token)
+          .then(res => {
+            dispatch("retrieveGroups");
+            resolve(res);
+          })
+          .catch(err => {
+            dispatch("retrieveGroups");
+            reject(err);
+          });
+      });
+    },
     retrieveGroups(context) {
       API.GET("/groups")
         .then(({ data }) => {
@@ -124,7 +150,7 @@ export default new Vuex.Store({
     destroyAuthDetail({ commit, state }, role) {
       const url = `/${role}/logout`;
       return new Promise(function(resolve, reject) {
-        API.Logout(url, state.user_id, state.token)
+        API.DELETE(url, state.user_id, state.token)
           .then(res => {
             localStorage.clear();
             commit("destroyAuthDetail");

@@ -16,6 +16,13 @@ function PATCH(url, token, data) {
   return axios.patch(domain + url, data);
 }
 
+function POST(url, token, data) {
+  if (token) {
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  }
+  return axios.post(domain + url, data);
+}
+
 function Login(url, credentials) {
   return axios
     .post(domain + url, {
@@ -47,7 +54,7 @@ function Register(url, data) {
     });
 }
 
-function Logout(url, id, token) {
+function DELETE(url, id, token) {
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   return axios
     .delete(domain + url + "/" + id)
@@ -62,7 +69,8 @@ function Logout(url, id, token) {
 export default {
   Login,
   Register,
-  Logout,
+  DELETE,
   GET,
+  POST,
   PATCH
 };

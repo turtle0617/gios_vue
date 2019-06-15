@@ -8,9 +8,16 @@ export default {
   created() {
     const login_role = this.$store.getters.loggedIn;
     this.$store.dispatch("destroyAuthDetail", login_role).then(res => {
-      this.$router.push({
-        name: "home"
-      });
+      if(login_role === "boss"){
+        this.$router.push({
+          name: "adminLogin"
+        });
+      }else{
+        this.$router.push({
+          name: "home"
+        });
+      }
+
     });
   }
 };

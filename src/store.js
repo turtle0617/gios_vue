@@ -69,11 +69,12 @@ export default new Vuex.Store({
       return new Promise(function(resolve, reject) {
         API.PATCH(`/member/${state.user_id}`, state.token, profile)
           .then(res => {
+            if (typeof res.data === "string") throw res.data;
             commit("initialMemberProfile", res.data);
-            resolve("success");
+            resolve(res);
           })
           .catch(err => {
-            reject(err.response.data.message);
+            reject(err);
           });
       });
     },

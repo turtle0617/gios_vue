@@ -9,6 +9,7 @@ import History from "./views/History.vue";
 import Statistic from "./views/Statistic.vue";
 import Addmenu from "./views/Addmenu.vue";
 import Bill from "./views/Bill.vue";
+import Groups from "./views/Groups.vue";
 import Logout from "./components/Auth_logout.vue";
 
 Vue.use(Router);
@@ -87,6 +88,15 @@ const router = new Router({
       path: "/bill",
       name: "bill",
       component: Bill,
+      meta: {
+        requiresAuth: true,
+        isAdmin: true
+      }
+    },
+    {
+      path: "/groups",
+      name: "groups",
+      component: Groups,
       meta: {
         requiresAuth: true,
         isAdmin: true

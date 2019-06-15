@@ -3,12 +3,20 @@
     <form @submit.prevent="login">
       <fieldset id="login__form">
         <legend>登入</legend>
+        <div v-if="error" class="row update-error">
+          <div class="col-sm-12 col-md-12">
+            <label>
+              帳號或密碼不符
+            </label>
+          </div>
+        </div>
         <div class="row">
           <div class="col-sm-12 col-md-12 input-box">
             <input
               type="text"
               id="login__account"
               placeholder=" "
+              @focus="error = false"
               v-model="account"
             />
             <label for="login__account">使用者帳戶</label>
@@ -20,6 +28,7 @@
               type="password"
               id="login__userCode"
               placeholder=" "
+              @focus="error = false"
               v-model="password"
             />
             <label for="login__userCode">密碼</label>
@@ -40,7 +49,8 @@ export default {
   data() {
     return {
       account: this.$route.params.account || "",
-      password: ""
+      password: "",
+      error: false
     };
   },
   methods: {
@@ -56,6 +66,7 @@ export default {
           });
         })
         .catch(err => {
+          this.error = !this.error;
           console.error("login ERROR", err);
         });
     }

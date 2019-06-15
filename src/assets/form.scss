@@ -30,7 +30,6 @@ section {
     padding: 0 15px;
     box-sizing: border-box;
     outline: none;
-    margin-bottom: 1rem;
   }
 
   select {
@@ -56,9 +55,10 @@ section {
 
 .input-box{
   position: relative;
+  margin-bottom: 1rem;
   label{
     position: absolute;
-    top: 10px;
+    top: 15px;
     left: 16px;
     padding: 0 5px;
     transition: all 150ms;

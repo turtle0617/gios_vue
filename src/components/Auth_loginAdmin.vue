@@ -51,7 +51,7 @@ export default {
   methods: {
     login() {
       this.$store
-        .dispatch("retriveBossToken", {
+        .dispatch("retrieveBossToken", {
           account: this.account,
           password: this.password
         })

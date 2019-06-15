@@ -23,7 +23,7 @@ function Login(url, credentials) {
       password: credentials.password
     })
     .then(res => {
-      if (typeof res.data === "string") throw new Error(res.data);
+      if (typeof res.data === "string") throw res.data;
       return res.data;
     })
     .catch(err => {

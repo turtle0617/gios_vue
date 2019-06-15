@@ -10,6 +10,13 @@
             </label>
           </div>
         </div>
+        <div v-if="error" class="row update-error">
+          <div class="col-sm-12 col-md-12">
+            <label>
+              密碼錯誤
+            </label>
+          </div>
+        </div>
         <div class="row name">
           <div class="col-sm-12 col-md-12 input-box">
             <input
@@ -131,7 +138,8 @@ export default {
       original_profile: null,
       member_password: "",
       isEmpty: false,
-      success: false
+      success: false,
+      error: false
     };
   },
   created() {
@@ -160,6 +168,10 @@ export default {
           this.success = !this.success;
         })
         .catch(err => {
+          console.log(err, err === "error password");
+          if (err === "error password") {
+            this.error = !this.error;
+          }
           throw new Error(err);
         });
     },
@@ -169,6 +181,7 @@ export default {
     hideAllMessage() {
       this.success = false;
       this.isEmpty = false;
+      this.error = false;
     },
     checkPassword() {
       if (!this.member_password) {

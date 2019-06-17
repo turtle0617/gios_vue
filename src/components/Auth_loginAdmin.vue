@@ -55,7 +55,7 @@ export default {
           account: this.account,
           password: this.password
         })
-        .then(response => {
+        .then(() => {
           this.$router.push({
             name: "statistic"
           });

@@ -44,123 +44,112 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    register(context, data) {
-      return new Promise(function(resolve, reject) {
-        API.Register("/member", data)
-          .then(response => {
-            resolve(response);
-          })
-          .catch(err => {
-            reject(err);
-          });
-      });
+    async register(context, data) {
+      try {
+        let res = await API.Register("/member", data);
+        return res.data;
+      } catch (e) {
+        throw e;
+      }
     },
-    addGroup({ state, dispatch }, data) {
-      return new Promise(function(resolve, reject) {
-        API.POST("/groups", state.token, data)
-          .then(res => {
-            if (typeof res.data === "string") throw res.data;
-            dispatch("retrieveGroups");
-            resolve(res);
-          })
-          .catch(err => {
-            reject(err);
-          });
-      });
+    async addGroup({ state, dispatch }, data) {
+      try {
+        let res = await API.POST("/groups", state.token, data);
+        if (typeof res.data === "string") throw res;
+        dispatch("retrieveGroups");
+      } catch (e) {
+        throw e.response.data.message;
+      }
     },
-    deleteGroup({ state, dispatch }, group_id) {
-      return new Promise(function(resolve, reject) {
-        API.DELETE("/groups", group_id, state.token)
-          .then(res => {
-            dispatch("retrieveGroups");
-            resolve(res);
-          })
-          .catch(err => {
-            dispatch("retrieveGroups");
-            reject(err);
-          });
-      });
-    },
-    retrieveGroups(context) {
-      API.GET("/groups")
-        .then(({ data }) => {
-          localStorage.setItem("groups", JSON.stringify(data));
-          context.commit("retrieveGroups", data);
-        })
-        .catch(err => {
-          throw new Error(err);
+    async updateGroup({ state, dispatch }, data) {
+      try {
+        let res = await API.PATCH(`/groups/${data.id}`, state.token, {
+          name: data.name
         });
+        if (typeof res.data === "string") throw res.data;
+        dispatch("retrieveGroups");
+      } catch (e) {
+        throw e;
+      }
     },
-    updateMemberProfile({ commit, state }, profile) {
-      return new Promise(function(resolve, reject) {
-        API.PATCH(`/member/${state.user_id}`, state.token, profile)
-          .then(res => {
-            if (typeof res.data === "string") throw res.data;
-            commit("initialMemberProfile", res.data);
-            resolve(res);
-          })
-          .catch(err => {
-            reject(err);
-          });
-      });
+    async deleteGroup({ state, dispatch }, group_id) {
+      try {
+        let res = await API.DELETE("/groups", group_id, state.token);
+        dispatch("retrieveGroups");
+      } catch (e) {
+        dispatch("retrieveGroups");
+        throw e;
+      }
     },
-    retrieveMemberToken(context, credentials) {
-      return new Promise(function(resolve, reject) {
-        API.Login("/member/login", credentials)
-          .then(data => {
-            const auth_detail = {
-              id: data.id,
-              api_token: data.api_token,
-              role: "member"
-            };
-            localStorage.setItem("user_id", auth_detail.id);
-            localStorage.setItem("api_token", auth_detail.api_token);
-            localStorage.setItem("login_role", auth_detail.role);
-            context.commit("initialAuthDetail", auth_detail);
-            context.commit("initialMemberProfile", data);
-            context.dispatch("retrieveGroups");
-            resolve("success");
-          })
-          .catch(err => {
-            reject(err);
-          });
-      });
+    async retrieveGroups(context) {
+      try {
+        let { data } = await API.GET("/groups");
+        localStorage.setItem("groups", JSON.stringify(data));
+        context.commit("retrieveGroups", data);
+      } catch (e) {
+        throw e;
+      }
     },
-    retrieveBossToken(context, credentials) {
-      return new Promise(function(resolve, reject) {
-        API.Login("/boss/login", credentials)
-          .then(data => {
-            const auth_detail = {
-              id: data.id,
-              api_token: data.api_token,
-              role: "boss"
-            };
-            localStorage.setItem("user_id", auth_detail.id);
-            localStorage.setItem("api_token", auth_detail.api_token);
-            localStorage.setItem("login_role", auth_detail.role);
-            context.commit("initialAuthDetail", auth_detail);
-            context.dispatch("retrieveGroups");
-            resolve("success");
-          })
-          .catch(err => {
-            reject(err);
-          });
-      });
+    async updateMemberProfile({ commit, state }, profile) {
+      try {
+        let { data } = API.PATCH(
+          `/member/${state.user_id}`,
+          state.token,
+          profile
+        );
+        if (typeof data === "string") throw data;
+        commit("initialMemberProfile", data);
+      } catch (e) {
+        throw e;
+      }
     },
-    destroyAuthDetail({ commit, state }, role) {
+    async retrieveMemberToken(context, credentials) {
+      try {
+        let { data } = await API.Login("/member/login", credentials);
+        if (typeof data === "string") throw data;
+        const auth_detail = {
+          id: data.id,
+          api_token: data.api_token,
+          role: "member"
+        };
+        localStorage.setItem("user_id", auth_detail.id);
+        localStorage.setItem("api_token", auth_detail.api_token);
+        localStorage.setItem("login_role", auth_detail.role);
+        context.commit("initialAuthDetail", auth_detail);
+        context.commit("initialMemberProfile", data);
+      } catch (e) {
+        throw e;
+      }
+    },
+    async retrieveBossToken(context, credentials) {
+      try {
+        let { data } = await API.Login("/boss/login", credentials);
+        if (typeof data === "string") throw data;
+        const auth_detail = {
+          id: data.id,
+          api_token: data.api_token,
+          role: "boss"
+        };
+        localStorage.setItem("user_id", auth_detail.id);
+        localStorage.setItem("api_token", auth_detail.api_token);
+        localStorage.setItem("login_role", auth_detail.role);
+        context.commit("initialAuthDetail", auth_detail);
+        return data;
+      } catch (e) {
+        throw e;
+      }
+    },
+    async destroyAuthDetail({ commit, state }, role) {
       const url = `/${role}/logout`;
-      return new Promise(function(resolve, reject) {
-        API.DELETE(url, state.user_id, state.token)
-          .then(res => {
-            localStorage.clear();
-            commit("destroyAuthDetail");
-            resolve("logout success", res);
-          })
-          .catch(err => {
-            commit("destroyAuthDetail");
-            reject(err);
-          });
-      });
+      try {
+        let res = API.DELETE(url, state.user_id, state.token);
+        localStorage.clear();
+        commit("destroyAuthDetail");
+        return res;
+      } catch (e) {
+        commit("destroyAuthDetail");
+        throw e;
+      }
     }
   }
 });

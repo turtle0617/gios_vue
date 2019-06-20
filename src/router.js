@@ -109,47 +109,18 @@ const router = new Router({
   ]
 });
 
-const noAuth = ["home", "adminLogin", "register"];
-const memberAuth = ["profile", "order", "history", "logout"];
-const traderAuth = [
-  "statistic",
-  "addmenu",
-  "bill",
-  "groups",
-  "history",
-  "logout"
-];
-
+const role = {
+  guest: ["home", "adminLogin", "register"],
+  member: ["order", "profile", "history", "logout"],
+  boss: ["statistic", "addmenu", "bill", "groups", "history", "logout"]
+};
 router.beforeEach((to, from, next) => {
   const loggedIn = store.getters.loggedIn;
-  if (!loggedIn) {
-    const canPass = noAuth.includes(to.name);
-    if (canPass) {
-      console.log(loggedIn, "canPass");
-      return next();
-    } else {
-      console.log(loggedIn, "! canPass");
-      return next({ name: "home" });
-    }
-  } else if (loggedIn === "member") {
-    const canPass = memberAuth.includes(to.name);
-    if (canPass) {
-      console.log(loggedIn, "canPass");
-      return next();
-    } else {
-      console.log(loggedIn, "! canPass");
-      return next({ name: "order" });
-    }
-  } else if (loggedIn === "boss") {
-    const canPass = traderAuth.includes(to.name);
-    if (canPass) {
-      console.log(loggedIn, "canPass");
-      return next();
-    } else {
-      console.log(loggedIn, "! canPass");
-      return next({ name: "statistic" });
-    }
+  const pages = role[loggedIn];
+  if (pages.includes(to.name)) {
+    return next();
   }
+  return next({ name: pages[0] });
 });
 
 export default router;

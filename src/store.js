@@ -6,7 +6,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     token: localStorage.getItem("api_token") || null,
-    login_role: localStorage.getItem("login_role") || null,
+    login_role: localStorage.getItem("login_role") || "guest",
     member_profile: JSON.parse(localStorage.getItem("user_profile")) || null,
     user_id: localStorage.getItem("user_id") || null,
     groups: JSON.parse(localStorage.getItem("groups")) || null
@@ -45,7 +45,7 @@ export default new Vuex.Store({
     },
     destroyAuthDetail(state) {
       state.token = null;
-      state.login_role = null;
+      state.login_role = "guest";
       state.user_id = null;
     }
   },

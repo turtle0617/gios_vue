@@ -11,6 +11,7 @@ import Addmenu from "./views/Addmenu.vue";
 import Bill from "./views/Bill.vue";
 import Groups from "./views/Groups.vue";
 import Logout from "./components/Auth_logout.vue";
+import store from "./store";
 
 Vue.use(Router);
 
@@ -21,26 +22,17 @@ const router = new Router({
     {
       path: "/",
       name: "home",
-      component: Home,
-      meta: {
-        guest: true
-      }
+      component: Home
     },
     {
       path: "/admin",
       name: "adminLogin",
-      component: Adminlogin,
-      meta: {
-        guest: true
-      }
+      component: Adminlogin
     },
     {
       path: "/register",
       name: "register",
-      component: Register,
-      meta: {
-        guest: true
-      }
+      component: Register
     },
     {
       path: "/profile",
@@ -48,6 +40,10 @@ const router = new Router({
       component: Profile,
       meta: {
         requiresAuth: true
+      },
+      beforeEnter: (to, from, next) => {
+        console.log("beforeEnter > ", store);
+        next();
       }
     },
     {
@@ -72,7 +68,7 @@ const router = new Router({
       component: Statistic,
       meta: {
         requiresAuth: true,
-        isAdmin: true
+        isBoss: true
       }
     },
     {
@@ -81,7 +77,7 @@ const router = new Router({
       component: Addmenu,
       meta: {
         requiresAuth: true,
-        isAdmin: true
+        isBoss: true
       }
     },
     {
@@ -90,7 +86,7 @@ const router = new Router({
       component: Bill,
       meta: {
         requiresAuth: true,
-        isAdmin: true
+        isBoss: true
       }
     },
     {
@@ -99,7 +95,7 @@ const router = new Router({
       component: Groups,
       meta: {
         requiresAuth: true,
-        isAdmin: true
+        isBoss: true
       }
     },
     {
@@ -111,6 +107,49 @@ const router = new Router({
       }
     }
   ]
+});
+
+const noAuth = ["home", "adminLogin", "register"];
+const memberAuth = ["profile", "order", "history", "logout"];
+const traderAuth = [
+  "statistic",
+  "addmenu",
+  "bill",
+  "groups",
+  "history",
+  "logout"
+];
+
+router.beforeEach((to, from, next) => {
+  const loggedIn = store.getters.loggedIn;
+  if (!loggedIn) {
+    const canPass = noAuth.includes(to.name);
+    if (canPass) {
+      console.log(loggedIn, "canPass");
+      return next();
+    } else {
+      console.log(loggedIn, "! canPass");
+      return next({ name: "home" });
+    }
+  } else if (loggedIn === "member") {
+    const canPass = memberAuth.includes(to.name);
+    if (canPass) {
+      console.log(loggedIn, "canPass");
+      return next();
+    } else {
+      console.log(loggedIn, "! canPass");
+      return next({ name: "order" });
+    }
+  } else if (loggedIn === "boss") {
+    const canPass = traderAuth.includes(to.name);
+    if (canPass) {
+      console.log(loggedIn, "canPass");
+      return next();
+    } else {
+      console.log(loggedIn, "! canPass");
+      return next({ name: "statistic" });
+    }
+  }
 });
 
 export default router;

@@ -81,7 +81,7 @@ export default {
   },
   computed: {
     groups() {
-      return this.$store.state.groups;
+      return this.$store.getters.groups;
     }
   },
   methods: {

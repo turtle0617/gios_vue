@@ -9,7 +9,7 @@
           type="text"
           @focus="error = false"
           v-model="new_groupName"
-          @keyup.enter="addGroup"
+          @keypress.enter="addGroup"
           placeholder=" "
         />
         <label for="register__name">團體名稱</label>
@@ -32,6 +32,7 @@
             type="text"
             v-bind:value="group.name"
             @input="getGroupName"
+            @keypress.enter="updateGroup(group.name, group.id, index)"
             id="change-groupName"
             placeholder=" "
           />
@@ -62,14 +63,15 @@ export default {
     };
   },
   created() {
+    console.log(this.moment());
     this.$store.dispatch("retrieveGroups");
   },
   computed: {
     groups() {
       this.original_groups = JSON.parse(
-        JSON.stringify(this.$store.state.groups)
+        JSON.stringify(this.$store.getters.groups)
       );
-      return this.$store.state.groups;
+      return this.$store.getters.groups;
     }
   },
   methods: {
@@ -83,7 +85,8 @@ export default {
       }
       this.$store
         .dispatch("addGroup", {
-          name: this.new_groupName
+          name: this.new_groupName,
+          time_limit: 0
         })
         .catch(err => {
           console.error(err);
@@ -103,8 +106,12 @@ export default {
         return;
       }
       this.modify = null;
+      this.$store.commit("updateGroups", {
+        index: index,
+        name: change_name
+      });
       this.$store
-        .dispatch("updateGroup", {
+        .dispatch("updateGroups", {
           name: change_name,
           id: id
         })
@@ -127,7 +134,7 @@ export default {
 <style scoped lang="scss">
 @import "@/assets/form.scss";
 .groups_detail {
-  justify-content: space-around;
+  justify-content: space-between;
 }
 .group-info {
   text-align: center;

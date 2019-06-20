@@ -10,49 +10,14 @@ import {
   faMinusCircle
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import moment from "moment";
 
 library.add(faUserCircle, faPlusCircle, faMinusCircle);
 
+Vue.prototype.moment = moment;
+
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 Vue.config.productionTip = false;
-
-router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (!store.getters.loggedIn) {
-      next({
-        name: "home"
-      });
-    } else {
-      if (to.matched.some(record => record.meta.isAdmin)) {
-        if (store.getters.loggedIn !== "boss") {
-          console.log("not boss redirect order");
-          next({
-            name: "order"
-          });
-        } else {
-          console.log("is boss");
-          next();
-        }
-      } else {
-        // if (store.getters.loggedIn === "member") {
-        //   console.log("is member page and auth is member");
-        next();
-        // } else {
-        //   console.log("is member page and auth is boss");
-        //   next({ name: "statistic" });
-        // }
-      }
-    }
-  } else if (to.matched.some(record => record.meta.guest)) {
-    if (store.getters.loggedIn) {
-      next({
-        name: "order"
-      });
-    } else {
-      next();
-    }
-  }
-});
 
 new Vue({
   router,

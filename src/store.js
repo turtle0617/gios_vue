@@ -14,6 +14,9 @@ export default new Vuex.Store({
   getters: {
     loggedIn(state) {
       return state.login_role;
+    },
+    groups(state) {
+      return state.groups;
     }
   },
   mutations: {
@@ -36,6 +39,9 @@ export default new Vuex.Store({
     },
     retrieveGroups(state, groups) {
       state.groups = groups;
+    },
+    updateGroups(state, group) {
+      state.groups[group.index].name = group.name;
     },
     destroyAuthDetail(state) {
       state.token = null;
@@ -61,7 +67,7 @@ export default new Vuex.Store({
         throw e.response.data.message;
       }
     },
-    async updateGroup({ state, dispatch }, data) {
+    async updateGroups({ state, dispatch }, data) {
       try {
         let res = await API.PATCH(`/groups/${data.id}`, state.token, {
           name: data.name
@@ -76,6 +82,7 @@ export default new Vuex.Store({
       try {
         let res = await API.DELETE("/groups", group_id, state.token);
         dispatch("retrieveGroups");
+        return res;
       } catch (e) {
         dispatch("retrieveGroups");
         throw e;

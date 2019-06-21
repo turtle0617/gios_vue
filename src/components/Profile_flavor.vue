@@ -8,7 +8,7 @@
             <label for="account__name">飯量</label>
           </div>
           <div class="col-sm-12 col-md-12">
-            <select class="group--select" name="account__group">
+            <select class=" group--select" name="account__group">
               <option value="多飯">多飯</option>
               <option value="正常">正常</option>
               <option value="1/2飯">1/2飯</option>
@@ -52,5 +52,5 @@ export default {
 };
 </script>
 <style scoped lang="scss">
-@import "@/assets/form.scss";
+@import "@/assets/scss/form.scss";
 </style>

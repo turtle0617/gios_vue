@@ -25,14 +25,3 @@ export default {
   }
 };
 </script>
-<style lang="scss">
-.profile__container {
-  max-width: 570px;
-  margin: 0 auto;
-}
-
-.empty {
-  background-color: rgba(255, 0, 0, 0.1) !important;
-  border: 1px solid red !important;
-}
-</style>

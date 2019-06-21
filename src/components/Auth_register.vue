@@ -7,10 +7,9 @@
           <span>請填寫完整</span>
         </div>
         <div class="row">
-          <div class="col-sm-12 col-md-12 input-box">
+          <div :class="{ error: error }"class="col-sm-12 col-md-12 input-box">
             <input
               type="text"
-              v-bind:class="{ error: error }"
               v-model="name"
               id="register__name"
               placeholder=" "
@@ -114,5 +113,5 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "@/assets/form.scss";
+@import "@/assets/scss/form.scss";
 </style>

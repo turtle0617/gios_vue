@@ -109,5 +109,5 @@ export default {
 };
 </script>
 <style scoped lang="scss">
-@import "@/assets/form.scss";
+@import "@/assets/scss/form.scss";
 </style>

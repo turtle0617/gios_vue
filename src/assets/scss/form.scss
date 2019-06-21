@@ -37,7 +37,7 @@ section {
     height: 44px;
     border: 1px solid #dbe2e8;
     border-radius: 6px;
-    margin-bottom: 1rem;
+    // margin-bottom: 1rem;
     box-sizing: border-box;
   }
   button{
@@ -49,8 +49,10 @@ section {
 }
 
 .error {
-  background-color: rgba(255, 0, 0, 0.1);
-  border: 1px solid red;
+  > input{
+    background-color: rgba(255, 0, 0, 0.1);
+    border: 1px solid red;
+  }
 }
 
 .input-box{

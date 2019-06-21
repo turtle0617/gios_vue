@@ -40,8 +40,8 @@ export default new Vuex.Store({
     retrieveGroups(state, groups) {
       state.groups = groups;
     },
-    updateGroups(state, group) {
-      state.groups[group.index].name = group.name;
+    updateGroups(state, data) {
+      state.groups[data.index] = data.change_group;
     },
     destroyAuthDetail(state) {
       state.token = null;
@@ -69,10 +69,12 @@ export default new Vuex.Store({
     },
     async updateGroups({ state, dispatch }, data) {
       try {
-        let res = await API.PATCH(`/groups/${data.id}`, state.token, {
-          name: data.name
-        });
-        if (typeof res.data === "string") throw res.data;
+        let res = await API.PATCH(
+          `/groups/${data.id}`,
+          state.token,
+          data.change_group
+        );
+        if (typeof res.data === "string") throw res;
         dispatch("retrieveGroups");
       } catch (e) {
         throw e;

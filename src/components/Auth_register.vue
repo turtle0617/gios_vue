@@ -7,7 +7,7 @@
           <span>請填寫完整</span>
         </div>
         <div class="row">
-          <div :class="{ error: error }"class="col-sm-12 col-md-12 input-box">
+          <div :class="{ error: error }" class="col-sm-12 col-md-12 input-box">
             <input
               type="text"
               v-model="name"

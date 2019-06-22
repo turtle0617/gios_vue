@@ -11,46 +11,12 @@ Date.CultureInfo = {
   name: "en-US",
   englishName: "English (United States)",
   nativeName: "English (United States)",
-  dayNames: [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday"
-  ],
+  dayNames: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
   abbreviatedDayNames: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
   shortestDayNames: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
   firstLetterDayNames: ["S", "M", "T", "W", "T", "F", "S"],
-  monthNames: [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December"
-  ],
-  abbreviatedMonthNames: [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec"
-  ],
+  monthNames: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+  abbreviatedMonthNames: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
   amDesignator: "AM",
   pmDesignator: "PM",
   firstDayOfWeek: 0,
@@ -110,18 +76,37 @@ Date.CultureInfo = {
     ordinalSuffix: /^\s*(st|nd|rd|th)/i,
     timeContext: /^\s*(\:|a(?!u|p)|p)/i
   },
-  timezones: [
-    { name: "UTC", offset: "-000" },
-    { name: "GMT", offset: "-000" },
-    { name: "EST", offset: "-0500" },
-    { name: "EDT", offset: "-0400" },
-    { name: "CST", offset: "-0600" },
-    { name: "CDT", offset: "-0500" },
-    { name: "MST", offset: "-0700" },
-    { name: "MDT", offset: "-0600" },
-    { name: "PST", offset: "-0800" },
-    { name: "PDT", offset: "-0700" }
-  ]
+  timezones: [{
+    name: "UTC",
+    offset: "-000"
+  }, {
+    name: "GMT",
+    offset: "-000"
+  }, {
+    name: "EST",
+    offset: "-0500"
+  }, {
+    name: "EDT",
+    offset: "-0400"
+  }, {
+    name: "CST",
+    offset: "-0600"
+  }, {
+    name: "CDT",
+    offset: "-0500"
+  }, {
+    name: "MST",
+    offset: "-0700"
+  }, {
+    name: "MDT",
+    offset: "-0600"
+  }, {
+    name: "PST",
+    offset: "-0800"
+  }, {
+    name: "PDT",
+    offset: "-0700"
+  }]
 };
 (function() {
   var $D = Date,
@@ -155,13 +140,13 @@ Date.CultureInfo = {
     if (isNaN(date1) || isNaN(date2)) {
       throw new Error(date1 + " - " + date2);
     } else if (date1 instanceof Date && date2 instanceof Date) {
-      return date1 < date2 ? -1 : date1 > date2 ? 1 : 0;
+      return (date1 < date2) ? -1 : (date1 > date2) ? 1 : 0;
     } else {
       throw new TypeError(date1 + " - " + date2);
     }
   };
   $D.equals = function(date1, date2) {
-    return date1.compareTo(date2) === 0;
+    return (date1.compareTo(date2) === 0);
   };
   $D.getDayNumberFromName = function(name) {
     var n = $C.dayNames,
@@ -169,11 +154,7 @@ Date.CultureInfo = {
       o = $C.shortestDayNames,
       s = name.toLowerCase();
     for (var i = 0; i < n.length; i++) {
-      if (
-        n[i].toLowerCase() == s ||
-        m[i].toLowerCase() == s ||
-        o[i].toLowerCase() == s
-      ) {
+      if (n[i].toLowerCase() == s || m[i].toLowerCase() == s || o[i].toLowerCase() == s) {
         return i;
       }
     }
@@ -191,23 +172,10 @@ Date.CultureInfo = {
     return -1;
   };
   $D.isLeapYear = function(year) {
-    return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+    return ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0);
   };
   $D.getDaysInMonth = function(year, month) {
-    return [
-      31,
-      $D.isLeapYear(year) ? 29 : 28,
-      31,
-      30,
-      31,
-      30,
-      31,
-      31,
-      30,
-      31,
-      30,
-      31
-    ][month];
+    return [31, ($D.isLeapYear(year) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month];
   };
   $D.getTimezoneAbbreviation = function(offset) {
     var z = $C.timezones,
@@ -245,15 +213,13 @@ Date.CultureInfo = {
     return this.compareTo(date || new Date()) === 1;
   };
   $P.isBefore = function(date) {
-    return this.compareTo(date || new Date()) === -1;
+    return (this.compareTo(date || new Date()) === -1);
   };
   $P.isToday = function() {
     return this.isSameDay(new Date());
   };
   $P.isSameDay = function(date) {
-    return this.clone()
-      .clearTime()
-      .equals(date.clone().clearTime());
+    return this.clone().clearTime().equals(date.clone().clearTime());
   };
   $P.addMilliseconds = function(value) {
     this.setMilliseconds(this.getMilliseconds() + value);
@@ -279,9 +245,7 @@ Date.CultureInfo = {
     var n = this.getDate();
     this.setDate(1);
     this.setMonth(this.getMonth() + value);
-    this.setDate(
-      Math.min(n, $D.getDaysInMonth(this.getFullYear(), this.getMonth()))
-    );
+    this.setDate(Math.min(n, $D.getDaysInMonth(this.getFullYear(), this.getMonth())));
     return this;
   };
   $P.addYears = function(value) {
@@ -322,33 +286,33 @@ Date.CultureInfo = {
   var $y, $m, $d;
   $P.getWeek = function() {
     var a, b, c, d, e, f, g, n, s, w;
-    $y = !$y ? this.getFullYear() : $y;
-    $m = !$m ? this.getMonth() + 1 : $m;
-    $d = !$d ? this.getDate() : $d;
+    $y = (!$y) ? this.getFullYear() : $y;
+    $m = (!$m) ? this.getMonth() + 1 : $m;
+    $d = (!$d) ? this.getDate() : $d;
     if ($m <= 2) {
       a = $y - 1;
-      b = ((a / 4) | 0) - ((a / 100) | 0) + ((a / 400) | 0);
-      c = (((a - 1) / 4) | 0) - (((a - 1) / 100) | 0) + (((a - 1) / 400) | 0);
+      b = (a / 4 | 0) - (a / 100 | 0) + (a / 400 | 0);
+      c = ((a - 1) / 4 | 0) - ((a - 1) / 100 | 0) + ((a - 1) / 400 | 0);
       s = b - c;
       e = 0;
-      f = $d - 1 + 31 * ($m - 1);
+      f = $d - 1 + (31 * ($m - 1));
     } else {
       a = $y;
-      b = ((a / 4) | 0) - ((a / 100) | 0) + ((a / 400) | 0);
-      c = (((a - 1) / 4) | 0) - (((a - 1) / 100) | 0) + (((a - 1) / 400) | 0);
+      b = (a / 4 | 0) - (a / 100 | 0) + (a / 400 | 0);
+      c = ((a - 1) / 4 | 0) - ((a - 1) / 100 | 0) + ((a - 1) / 400 | 0);
       s = b - c;
       e = s + 1;
-      f = $d + (153 * ($m - 3) + 2) / 5 + 58 + s;
+      f = $d + ((153 * ($m - 3) + 2) / 5) + 58 + s;
     }
     g = (a + b) % 7;
     d = (f + g - e) % 7;
     n = (f + 3 - d) | 0;
     if (n < 0) {
-      w = 53 - (((g - s) / 5) | 0);
+      w = 53 - ((g - s) / 5 | 0);
     } else if (n > 364 + s) {
       w = 1;
     } else {
-      w = ((n / 7) | 0) + 1;
+      w = (n / 7 | 0) + 1;
     }
     $y = $m = $d = null;
     return w;
@@ -427,7 +391,9 @@ Date.CultureInfo = {
     return this;
   };
   $P.moveToFirstDayOfMonth = function() {
-    return this.set({ day: 1 });
+    return this.set({
+      day: 1
+    });
   };
   $P.moveToLastDayOfMonth = function() {
     return this.set({
@@ -445,59 +411,47 @@ Date.CultureInfo = {
       }
       return this;
     }
-    return this.moveToFirstDayOfMonth()
-      .addDays(-1)
-      .moveToDayOfWeek(dayOfWeek, +1)
-      .addWeeks(shift);
+    return this.moveToFirstDayOfMonth().addDays(-1).moveToDayOfWeek(dayOfWeek, +1).addWeeks(shift);
   };
   $P.moveToDayOfWeek = function(dayOfWeek, orient) {
     var diff = (dayOfWeek - this.getDay() + 7 * (orient || +1)) % 7;
-    return this.addDays(diff === 0 ? (diff += 7 * (orient || +1)) : diff);
+    return this.addDays((diff === 0) ? diff += 7 * (orient || +1) : diff);
   };
   $P.moveToMonth = function(month, orient) {
     var diff = (month - this.getMonth() + 12 * (orient || +1)) % 12;
-    return this.addMonths(diff === 0 ? (diff += 12 * (orient || +1)) : diff);
+    return this.addMonths((diff === 0) ? diff += 12 * (orient || +1) : diff);
   };
   $P.getOrdinalNumber = function() {
-    return (
-      Math.ceil(
-        (this.clone().clearTime() - new Date(this.getFullYear(), 0, 1)) /
-          86400000
-      ) + 1
-    );
+    return Math.ceil((this.clone().clearTime() - new Date(this.getFullYear(), 0, 1)) / 86400000) + 1;
   };
   $P.getTimezone = function() {
     return $D.getTimezoneAbbreviation(this.getUTCOffset());
   };
   $P.setTimezoneOffset = function(offset) {
     var here = this.getTimezoneOffset(),
-      there = (Number(offset) * -6) / 10;
+      there = Number(offset) * -6 / 10;
     return this.addMinutes(there - here);
   };
   $P.setTimezone = function(offset) {
     return this.setTimezoneOffset($D.getTimezoneOffset(offset));
   };
   $P.hasDaylightSavingTime = function() {
-    return (
-      Date.today()
-        .set({ month: 0, day: 1 })
-        .getTimezoneOffset() !==
-      Date.today()
-        .set({ month: 6, day: 1 })
-        .getTimezoneOffset()
-    );
+    return (Date.today().set({
+      month: 0,
+      day: 1
+    }).getTimezoneOffset() !== Date.today().set({
+      month: 6,
+      day: 1
+    }).getTimezoneOffset());
   };
   $P.isDaylightSavingTime = function() {
-    return (
-      this.hasDaylightSavingTime() &&
-      new Date().getTimezoneOffset() ===
-        Date.today()
-          .set({ month: 6, day: 1 })
-          .getTimezoneOffset()
-    );
+    return (this.hasDaylightSavingTime() && new Date().getTimezoneOffset() === Date.today().set({
+      month: 6,
+      day: 1
+    }).getTimezoneOffset());
   };
   $P.getUTCOffset = function() {
-    var n = (this.getTimezoneOffset() * -10) / 6,
+    var n = this.getTimezoneOffset() * -10 / 6,
       r;
     if (n < 0) {
       r = (n - 10000).toString();
@@ -513,23 +467,14 @@ Date.CultureInfo = {
   if (!$P.toISOString) {
     $P.toISOString = function() {
       function f(n) {
-        return n < 10 ? "0" + n : n;
+        return n < 10 ? '0' + n : n;
       }
-      return (
-        '"' +
-        this.getUTCFullYear() +
-        "-" +
-        f(this.getUTCMonth() + 1) +
-        "-" +
-        f(this.getUTCDate()) +
-        "T" +
-        f(this.getUTCHours()) +
-        ":" +
-        f(this.getUTCMinutes()) +
-        ":" +
-        f(this.getUTCSeconds()) +
-        'Z"'
-      );
+      return '"' + this.getUTCFullYear() + '-' +
+        f(this.getUTCMonth() + 1) + '-' +
+        f(this.getUTCDate()) + 'T' +
+        f(this.getUTCHours()) + ':' +
+        f(this.getUTCMinutes()) + ':' +
+        f(this.getUTCSeconds()) + 'Z"';
     };
   }
   $P._toString = $P.toString;
@@ -577,67 +522,60 @@ Date.CultureInfo = {
           return "th";
       }
     };
-    return format
-      ? format.replace(
-          /(\\)?(dd?d?d?|MM?M?M?|yy?y?y?|hh?|HH?|mm?|ss?|tt?|S)/g,
-          function(m) {
-            if (m.charAt(0) === "\\") {
-              return m.replace("\\", "");
-            }
-            x.h = x.getHours;
-            switch (m) {
-              case "hh":
-                return p(x.h() < 13 ? (x.h() === 0 ? 12 : x.h()) : x.h() - 12);
-              case "h":
-                return x.h() < 13 ? (x.h() === 0 ? 12 : x.h()) : x.h() - 12;
-              case "HH":
-                return p(x.h());
-              case "H":
-                return x.h();
-              case "mm":
-                return p(x.getMinutes());
-              case "m":
-                return x.getMinutes();
-              case "ss":
-                return p(x.getSeconds());
-              case "s":
-                return x.getSeconds();
-              case "yyyy":
-                return p(x.getFullYear(), 4);
-              case "yy":
-                return p(x.getFullYear());
-              case "dddd":
-                return $C.dayNames[x.getDay()];
-              case "ddd":
-                return $C.abbreviatedDayNames[x.getDay()];
-              case "dd":
-                return p(x.getDate());
-              case "d":
-                return x.getDate();
-              case "MMMM":
-                return $C.monthNames[x.getMonth()];
-              case "MMM":
-                return $C.abbreviatedMonthNames[x.getMonth()];
-              case "MM":
-                return p(x.getMonth() + 1);
-              case "M":
-                return x.getMonth() + 1;
-              case "t":
-                return x.h() < 12
-                  ? $C.amDesignator.substring(0, 1)
-                  : $C.pmDesignator.substring(0, 1);
-              case "tt":
-                return x.h() < 12 ? $C.amDesignator : $C.pmDesignator;
-              case "S":
-                return ord(x.getDate());
-              default:
-                return m;
-            }
-          }
-        )
-      : this._toString();
+    return format ? format.replace(/(\\)?(dd?d?d?|MM?M?M?|yy?y?y?|hh?|HH?|mm?|ss?|tt?|S)/g, function(m) {
+      if (m.charAt(0) === "\\") {
+        return m.replace("\\", "");
+      }
+      x.h = x.getHours;
+      switch (m) {
+        case "hh":
+          return p(x.h() < 13 ? (x.h() === 0 ? 12 : x.h()) : (x.h() - 12));
+        case "h":
+          return x.h() < 13 ? (x.h() === 0 ? 12 : x.h()) : (x.h() - 12);
+        case "HH":
+          return p(x.h());
+        case "H":
+          return x.h();
+        case "mm":
+          return p(x.getMinutes());
+        case "m":
+          return x.getMinutes();
+        case "ss":
+          return p(x.getSeconds());
+        case "s":
+          return x.getSeconds();
+        case "yyyy":
+          return p(x.getFullYear(), 4);
+        case "yy":
+          return p(x.getFullYear());
+        case "dddd":
+          return $C.dayNames[x.getDay()];
+        case "ddd":
+          return $C.abbreviatedDayNames[x.getDay()];
+        case "dd":
+          return p(x.getDate());
+        case "d":
+          return x.getDate();
+        case "MMMM":
+          return $C.monthNames[x.getMonth()];
+        case "MMM":
+          return $C.abbreviatedMonthNames[x.getMonth()];
+        case "MM":
+          return p((x.getMonth() + 1));
+        case "M":
+          return x.getMonth() + 1;
+        case "t":
+          return x.h() < 12 ? $C.amDesignator.substring(0, 1) : $C.pmDesignator.substring(0, 1);
+        case "tt":
+          return x.h() < 12 ? $C.amDesignator : $C.pmDesignator;
+        case "S":
+          return ord(x.getDate());
+        default:
+          return m;
+      }
+    }) : this._toString();
   };
-})();
+}());
 (function() {
   var $D = Date,
     $P = $D.prototype,
@@ -678,36 +616,28 @@ Date.CultureInfo = {
   $P.weekday = function() {
     if (this._is) {
       this._is = false;
-      return !this.is().sat() && !this.is().sun();
+      return (!this.is().sat() && !this.is().sun());
     }
     return false;
   };
   $P.at = function(time) {
-    return typeof time === "string"
-      ? $D.parse(this.toString("d") + " " + time)
-      : this.set(time);
+    return (typeof time === "string") ? $D.parse(this.toString("d") + " " + time) : this.set(time);
   };
   $N.fromNow = $N.after = function(date) {
     var c = {};
     c[this._dateElement] = this;
-    return (!date ? new Date() : date.clone()).add(c);
+    return ((!date) ? new Date() : date.clone()).add(c);
   };
   $N.ago = $N.before = function(date) {
     var c = {};
     c[this._dateElement] = this * -1;
-    return (!date ? new Date() : date.clone()).add(c);
+    return ((!date) ? new Date() : date.clone()).add(c);
   };
-  var dx = "sunday monday tuesday wednesday thursday friday saturday".split(
-      /\s/
-    ),
-    mx = "january february march april may june july august september october november december".split(
-      /\s/
-    ),
-    px = "Millisecond Second Minute Hour Day Week Month Year".split(/\s/),
-    pxf = "Milliseconds Seconds Minutes Hours Date Week Month FullYear".split(
-      /\s/
-    ),
-    nth = "final first second third fourth fifth".split(/\s/),
+  var dx = ("sunday monday tuesday wednesday thursday friday saturday").split(/\s/),
+    mx = ("january february march april may june july august september october november december").split(/\s/),
+    px = ("Millisecond Second Minute Hour Day Week Month Year").split(/\s/),
+    pxf = ("Milliseconds Seconds Minutes Hours Date Week Month FullYear").split(/\s/),
+    nth = ("final first second third fourth fifth").split(/\s/),
     de;
   $P.toObject = function() {
     var o = {};
@@ -736,16 +666,7 @@ Date.CultureInfo = {
         var temp = this.clone().moveToLastDayOfMonth();
         this.moveToNthOccurrence(n, ntemp);
         if (this > temp) {
-          throw new RangeError(
-            $D.getDayName(n) +
-              " does not occur " +
-              ntemp +
-              " times in the month of " +
-              $D.getMonthName(temp.getMonth()) +
-              " " +
-              temp.getFullYear() +
-              "."
-          );
+          throw new RangeError($D.getDayName(n) + " does not occur " + ntemp + " times in the month of " + $D.getMonthName(temp.getMonth()) + " " + temp.getFullYear() + ".");
         }
         return this;
       }
@@ -778,7 +699,10 @@ Date.CultureInfo = {
   };
   var smf = function(n) {
     return function() {
-      return $D.today().set({ month: n, day: 1 });
+      return $D.today().set({
+        month: n,
+        day: 1
+      });
     };
   };
   for (var j = 0; j < mx.length; j++) {
@@ -798,7 +722,7 @@ Date.CultureInfo = {
           o2 = (arguments[0] || new Date()).toObject(),
           v = "",
           k = j.toLowerCase();
-        for (var m = px.length - 1; m > -1; m--) {
+        for (var m = (px.length - 1); m > -1; m--) {
           v = px[m].toLowerCase();
           if (o1[v] != o2[v]) {
             return false;
@@ -844,9 +768,9 @@ Date.CultureInfo = {
     };
   };
   for (var l = 0; l < nth.length; l++) {
-    $P[nth[l]] = l === 0 ? nthfn(-1) : nthfn(l);
+    $P[nth[l]] = (l === 0) ? nthfn(-1) : nthfn(l);
   }
-})();
+}());
 (function() {
   Date.Parsing = {
     Exception: function(s) {
@@ -854,12 +778,12 @@ Date.CultureInfo = {
     }
   };
   var $P = Date.Parsing;
-  var _ = ($P.Operators = {
+  var _ = $P.Operators = {
     rtoken: function(r) {
       return function(s) {
         var mx = s.match(r);
         if (mx) {
-          return [mx[0], s.substring(mx[0].length)];
+          return ([mx[0], s.substring(mx[0].length)]);
         } else {
           throw new $P.Exception(s);
         }
@@ -867,7 +791,7 @@ Date.CultureInfo = {
     },
     token: function(s) {
       return function(s) {
-        return _.rtoken(new RegExp("^s*" + s + "s*"))(s);
+        return _.rtoken(new RegExp("^\s*" + s + "\s*"))(s);
       };
     },
     stoken: function(s) {
@@ -928,13 +852,11 @@ Date.CultureInfo = {
       };
     },
     ignore: function(p) {
-      return p
-        ? function(s) {
-            var r = null;
-            r = p.call(this, s);
-            return [null, r[1]];
-          }
-        : null;
+      return p ? function(s) {
+        var r = null;
+        r = p.call(this, s);
+        return [null, r[1]];
+      } : null;
     },
     product: function() {
       var px = arguments[0],
@@ -950,7 +872,7 @@ Date.CultureInfo = {
         r = null;
       return function(s) {
         try {
-          r = cache[s] = cache[s] || rule.call(this, s);
+          r = cache[s] = (cache[s] || rule.call(this, s));
         } catch (e) {
           r = cache[s] = e;
         }
@@ -970,7 +892,7 @@ Date.CultureInfo = {
             continue;
           }
           try {
-            r = px[i].call(this, s);
+            r = (px[i].call(this, s));
           } catch (e) {
             r = null;
           }
@@ -991,7 +913,7 @@ Date.CultureInfo = {
             continue;
           }
           try {
-            r = px[i].call(this, s);
+            r = (px[i].call(this, s));
           } catch (e) {
             throw new $P.Exception(s);
           }
@@ -1044,7 +966,7 @@ Date.CultureInfo = {
             throw new $P.Exception(r[1]);
           }
         }
-        return [rx, r ? r[1] : s];
+        return [rx, (r ? r[1] : s)];
       };
     },
     between: function(d1, p, d2) {
@@ -1052,19 +974,15 @@ Date.CultureInfo = {
       var _fn = _.each(_.ignore(d1), p, _.ignore(d2));
       return function(s) {
         var rx = _fn.call(this, s);
-        return [[rx[0][0], r[0][2]], rx[1]];
+        return [
+          [rx[0][0], r[0][2]], rx[1]
+        ];
       };
     },
     list: function(p, d, c) {
       d = d || _.rtoken(/^\s*/);
       c = c || null;
-      return p instanceof Array
-        ? _.each(
-            _.product(p.slice(0, -1), _.ignore(d)),
-            p.slice(-1),
-            _.ignore(c)
-          )
-        : _.each(_.many(_.each(p, _.ignore(d))), px, _.ignore(c));
+      return (p instanceof Array ? _.each(_.product(p.slice(0, -1), _.ignore(d)), p.slice(-1), _.ignore(c)) : _.each(_.many(_.each(p, _.ignore(d))), px, _.ignore(c)));
     },
     set: function(px, d, c) {
       d = d || _.rtoken(/^\s*/);
@@ -1074,19 +992,23 @@ Date.CultureInfo = {
           p = null,
           q = null,
           rx = null,
-          best = [[], s],
+          best = [
+            [], s
+          ],
           last = false;
         for (var i = 0; i < px.length; i++) {
           q = null;
           p = null;
           r = null;
-          last = px.length == 1;
+          last = (px.length == 1);
           try {
             r = px[i].call(this, s);
           } catch (e) {
             continue;
           }
-          rx = [[r[0]], r[1]];
+          rx = [
+            [r[0]], r[1]
+          ];
           if (r[1].length > 0 && !last) {
             try {
               q = d.call(this, r[1]);
@@ -1159,7 +1081,7 @@ Date.CultureInfo = {
         return rx;
       };
     }
-  });
+  };
   var _generator = function(op) {
     return function() {
       var args = null,
@@ -1198,7 +1120,7 @@ Date.CultureInfo = {
   for (var j = 0; j < vx.length; j++) {
     _[vx[j]] = _vector(_[vx[j]]);
   }
-})();
+}());
 (function() {
   var $D = Date,
     $P = $D.prototype,
@@ -1256,17 +1178,13 @@ Date.CultureInfo = {
     },
     month: function(s) {
       return function() {
-        this.month =
-          s.length == 3
-            ? "jan feb mar apr may jun jul aug sep oct nov dec".indexOf(s) / 4
-            : Number(s) - 1;
+        this.month = (s.length == 3) ? "jan feb mar apr may jun jul aug sep oct nov dec".indexOf(s) / 4 : Number(s) - 1;
       };
     },
     year: function(s) {
       return function() {
         var n = Number(s);
-        this.year =
-          s.length > 2 ? n : n + (n + 2000 < $C.twoDigitYearMax ? 2000 : 1900);
+        this.year = ((s.length > 2) ? n : (n + (((n + 2000) < $C.twoDigitYearMax) ? 2000 : 1900)));
       };
     },
     rday: function(s) {
@@ -1289,17 +1207,14 @@ Date.CultureInfo = {
       };
     },
     finishExact: function(x) {
-      x = x instanceof Array ? x : [x];
+      x = (x instanceof Array) ? x : [x];
       for (var i = 0; i < x.length; i++) {
         if (x[i]) {
           x[i].call(this);
         }
       }
       var now = new Date();
-      if (
-        (this.hour || this.minute) &&
-        (!this.month && !this.year && !this.day)
-      ) {
+      if ((this.hour || this.minute) && (!this.month && !this.year && !this.day)) {
         this.day = now.getDate();
       }
       if (!this.year) {
@@ -1330,23 +1245,20 @@ Date.CultureInfo = {
       if (this.day > $D.getDaysInMonth(this.year, this.month)) {
         throw new RangeError(this.day + " is not a valid value for days.");
       }
-      var r = new Date(
-        this.year,
-        this.month,
-        this.day,
-        this.hour,
-        this.minute,
-        this.second
-      );
+      var r = new Date(this.year, this.month, this.day, this.hour, this.minute, this.second);
       if (this.timezone) {
-        r.set({ timezone: this.timezone });
+        r.set({
+          timezone: this.timezone
+        });
       } else if (this.timezoneOffset) {
-        r.set({ timezoneOffset: this.timezoneOffset });
+        r.set({
+          timezoneOffset: this.timezoneOffset
+        });
       }
       return r;
     },
     finish: function(x) {
-      x = x instanceof Array ? flattenAndCompact(x) : [x];
+      x = (x instanceof Array) ? flattenAndCompact(x) : [x];
       if (x.length === 0) {
         return null;
       }
@@ -1361,13 +1273,9 @@ Date.CultureInfo = {
       } else if (this.now) {
         today = new Date();
       }
-      var expression = !!(
-        (this.days && this.days !== null) ||
-        this.orient ||
-        this.operator
-      );
+      var expression = !!(this.days && this.days !== null || this.orient || this.operator);
       var gap, mod, orient;
-      orient = this.orient == "past" || this.operator == "subtract" ? -1 : 1;
+      orient = ((this.orient == "past" || this.operator == "subtract") ? -1 : 1);
       if (!this.now && "hour minute second".indexOf(this.unit) != -1) {
         today.setTimeToNow();
       }
@@ -1388,19 +1296,21 @@ Date.CultureInfo = {
       }
       if (expression && this.weekday && this.unit != "month") {
         this.unit = "day";
-        gap = $D.getDayNumberFromName(this.weekday) - today.getDay();
+        gap = ($D.getDayNumberFromName(this.weekday) - today.getDay());
         mod = 7;
-        this.days = gap ? (gap + orient * mod) % mod : orient * mod;
+        this.days = gap ? ((gap + (orient * mod)) % mod) : (orient * mod);
       }
       if (this.month && this.unit == "day" && this.operator) {
-        this.value = this.month + 1;
+        this.value = (this.month + 1);
         this.month = null;
       }
       if (this.value != null && this.month != null && this.year != null) {
         this.day = this.value * 1;
       }
       if (this.month && !this.day && this.value) {
-        today.set({ day: this.value * 1 });
+        today.set({
+          day: this.value * 1
+        });
         if (!expression) {
           this.day = this.value * 1;
         }
@@ -1409,31 +1319,18 @@ Date.CultureInfo = {
         this.month = this.value;
         expression = true;
       }
-      if (
-        expression &&
-        (this.month || this.month === 0) &&
-        this.unit != "year"
-      ) {
+      if (expression && (this.month || this.month === 0) && this.unit != "year") {
         this.unit = "month";
-        gap = this.month - today.getMonth();
+        gap = (this.month - today.getMonth());
         mod = 12;
-        this.months = gap ? (gap + orient * mod) % mod : orient * mod;
+        this.months = gap ? ((gap + (orient * mod)) % mod) : (orient * mod);
         this.month = null;
       }
       if (!this.unit) {
         this.unit = "day";
       }
-      if (
-        !this.value &&
-        this.operator &&
-        this.operator !== null &&
-        this[this.unit + "s"] &&
-        this[this.unit + "s"] !== null
-      ) {
-        this[this.unit + "s"] =
-          this[this.unit + "s"] +
-          (this.operator == "add" ? 1 : -1) +
-          (this.value || 0) * orient;
+      if (!this.value && this.operator && this.operator !== null && this[this.unit + "s"] && this[this.unit + "s"] !== null) {
+        this[this.unit + "s"] = this[this.unit + "s"] + ((this.operator == "add") ? 1 : -1) + (this.value || 0) * orient;
       } else if (this[this.unit + "s"] == null || this.operator != null) {
         if (!this.value) {
           this.value = 1;
@@ -1457,20 +1354,13 @@ Date.CultureInfo = {
       if ((this.month || this.month === 0) && !this.day) {
         this.day = 1;
       }
-      if (
-        !this.orient &&
-        !this.operator &&
-        this.unit == "week" &&
-        this.value &&
-        !this.day &&
-        !this.month
-      ) {
+      if (!this.orient && !this.operator && this.unit == "week" && this.value && !this.day && !this.month) {
         return Date.today().setWeek(this.value);
       }
       if (expression && this.timezone && this.day && this.days) {
         this.day = this.days;
       }
-      return expression ? today.add(this) : today.set(this);
+      return (expression) ? today.add(this) : today.set(this);
     }
   };
   var _ = $D.Parsing.Operators,
@@ -1509,63 +1399,27 @@ Date.CultureInfo = {
   g.hms = _.cache(_.sequence([g.H, g.m, g.s], g.timePartDelimiter));
   g.t = _.cache(_.process(g.ctoken2("shortMeridian"), t.meridian));
   g.tt = _.cache(_.process(g.ctoken2("longMeridian"), t.meridian));
-  g.z = _.cache(
-    _.process(
-      _.rtoken(/^((\+|\-)\s*\d\d\d\d)|((\+|\-)\d\d\:?\d\d)/),
-      t.timezone
-    )
-  );
-  g.zz = _.cache(
-    _.process(
-      _.rtoken(/^((\+|\-)\s*\d\d\d\d)|((\+|\-)\d\d\:?\d\d)/),
-      t.timezone
-    )
-  );
+  g.z = _.cache(_.process(_.rtoken(/^((\+|\-)\s*\d\d\d\d)|((\+|\-)\d\d\:?\d\d)/), t.timezone));
+  g.zz = _.cache(_.process(_.rtoken(/^((\+|\-)\s*\d\d\d\d)|((\+|\-)\d\d\:?\d\d)/), t.timezone));
   g.zzz = _.cache(_.process(g.ctoken2("timezone"), t.timezone));
   g.timeSuffix = _.each(_.ignore(g.whiteSpace), _.set([g.tt, g.zzz]));
   g.time = _.each(_.optional(_.ignore(_.stoken("T"))), g.hms, g.timeSuffix);
-  g.d = _.cache(
-    _.process(
-      _.each(
-        _.rtoken(/^([0-2]\d|3[0-1]|\d)/),
-        _.optional(g.ctoken2("ordinalSuffix"))
-      ),
-      t.day
-    )
-  );
-  g.dd = _.cache(
-    _.process(
-      _.each(
-        _.rtoken(/^([0-2]\d|3[0-1])/),
-        _.optional(g.ctoken2("ordinalSuffix"))
-      ),
-      t.day
-    )
-  );
-  g.ddd = g.dddd = _.cache(
-    _.process(g.ctoken("sun mon tue wed thu fri sat"), function(s) {
-      return function() {
-        this.weekday = s;
-      };
-    })
-  );
+  g.d = _.cache(_.process(_.each(_.rtoken(/^([0-2]\d|3[0-1]|\d)/), _.optional(g.ctoken2("ordinalSuffix"))), t.day));
+  g.dd = _.cache(_.process(_.each(_.rtoken(/^([0-2]\d|3[0-1])/), _.optional(g.ctoken2("ordinalSuffix"))), t.day));
+  g.ddd = g.dddd = _.cache(_.process(g.ctoken("sun mon tue wed thu fri sat"), function(s) {
+    return function() {
+      this.weekday = s;
+    };
+  }));
   g.M = _.cache(_.process(_.rtoken(/^(1[0-2]|0\d|\d)/), t.month));
   g.MM = _.cache(_.process(_.rtoken(/^(1[0-2]|0\d)/), t.month));
-  g.MMM = g.MMMM = _.cache(
-    _.process(
-      g.ctoken("jan feb mar apr may jun jul aug sep oct nov dec"),
-      t.month
-    )
-  );
+  g.MMM = g.MMMM = _.cache(_.process(g.ctoken("jan feb mar apr may jun jul aug sep oct nov dec"), t.month));
   g.y = _.cache(_.process(_.rtoken(/^(\d\d?)/), t.year));
   g.yy = _.cache(_.process(_.rtoken(/^(\d\d)/), t.year));
   g.yyy = _.cache(_.process(_.rtoken(/^(\d\d?\d?\d?)/), t.year));
   g.yyyy = _.cache(_.process(_.rtoken(/^(\d\d\d\d)/), t.year));
   _fn = function() {
-    return _.each(
-      _.any.apply(null, arguments),
-      _.not(g.ctoken2("timeContext"))
-    );
+    return _.each(_.any.apply(null, arguments), _.not(g.ctoken2("timeContext")));
   };
   g.day = _fn(g.d, g.dd);
   g.month = _fn(g.M, g.MMM);
@@ -1581,28 +1435,17 @@ Date.CultureInfo = {
     };
   });
   g.rday = _.process(g.ctoken("yesterday tomorrow today now"), t.rday);
-  g.unit = _.process(
-    g.ctoken("second minute hour day week month year"),
-    function(s) {
-      return function() {
-        this.unit = s;
-      };
-    }
-  );
+  g.unit = _.process(g.ctoken("second minute hour day week month year"), function(s) {
+    return function() {
+      this.unit = s;
+    };
+  });
   g.value = _.process(_.rtoken(/^\d\d?(st|nd|rd|th)?/), function(s) {
     return function() {
       this.value = s.replace(/\D/g, "");
     };
   });
-  g.expression = _.set([
-    g.rday,
-    g.operator,
-    g.value,
-    g.unit,
-    g.orientation,
-    g.ddd,
-    g.MMM
-  ]);
+  g.expression = _.set([g.rday, g.operator, g.value, g.unit, g.orientation, g.ddd, g.MMM]);
   _fn = function() {
     return _.set(arguments, g.datePartDelimiter);
   };
@@ -1610,33 +1453,22 @@ Date.CultureInfo = {
   g.ymd = _fn(g.ddd, g.year, g.month, g.day);
   g.dmy = _fn(g.ddd, g.day, g.month, g.year);
   g.date = function(s) {
-    return (g[$C.dateElementOrder] || g.mdy).call(this, s);
+    return ((g[$C.dateElementOrder] || g.mdy).call(this, s));
   };
-  g.format = _.process(
-    _.many(
-      _.any(
-        _.process(
-          _.rtoken(/^(dd?d?d?|MM?M?M?|yy?y?y?|hh?|HH?|mm?|ss?|tt?|zz?z?)/),
-          function(fmt) {
-            if (g[fmt]) {
-              return g[fmt];
-            } else {
-              throw $D.Parsing.Exception(fmt);
-            }
-          }
-        ),
-        _.process(_.rtoken(/^[^dMyhHmstz]+/), function(s) {
-          return _.ignore(_.stoken(s));
-        })
-      )
-    ),
-    function(rules) {
-      return _.process(_.each.apply(null, rules), t.finishExact);
+  g.format = _.process(_.many(_.any(_.process(_.rtoken(/^(dd?d?d?|MM?M?M?|yy?y?y?|hh?|HH?|mm?|ss?|tt?|zz?z?)/), function(fmt) {
+    if (g[fmt]) {
+      return g[fmt];
+    } else {
+      throw $D.Parsing.Exception(fmt);
     }
-  );
+  }), _.process(_.rtoken(/^[^dMyhHmstz]+/), function(s) {
+    return _.ignore(_.stoken(s));
+  }))), function(rules) {
+    return _.process(_.each.apply(null, rules), t.finishExact);
+  });
   var _F = {};
   var _get = function(f) {
-    return (_F[f] = _F[f] || g.format(f)[0]);
+    return _F[f] = (_F[f] || g.format(f)[0]);
   };
   g.formats = function(fx) {
     if (fx instanceof Array) {
@@ -1649,31 +1481,8 @@ Date.CultureInfo = {
       return _get(fx);
     }
   };
-  g._formats = g.formats([
-    '"yyyy-MM-ddTHH:mm:ssZ"',
-    "yyyy-MM-ddTHH:mm:ssZ",
-    "yyyy-MM-ddTHH:mm:ssz",
-    "yyyy-MM-ddTHH:mm:ss",
-    "yyyy-MM-ddTHH:mmZ",
-    "yyyy-MM-ddTHH:mmz",
-    "yyyy-MM-ddTHH:mm",
-    "ddd, MMM dd, yyyy H:mm:ss tt",
-    "ddd MMM d yyyy HH:mm:ss zzz",
-    "MMddyyyy",
-    "ddMMyyyy",
-    "Mddyyyy",
-    "ddMyyyy",
-    "Mdyyyy",
-    "dMyyyy",
-    "yyyy",
-    "Mdyy",
-    "dMyy",
-    "d"
-  ]);
-  g._start = _.process(
-    _.set([g.date, g.time, g.expression], g.generalDelimiter, g.whiteSpace),
-    t.finish
-  );
+  g._formats = g.formats(["\"yyyy-MM-ddTHH:mm:ssZ\"", "yyyy-MM-ddTHH:mm:ssZ", "yyyy-MM-ddTHH:mm:ssz", "yyyy-MM-ddTHH:mm:ss", "yyyy-MM-ddTHH:mmZ", "yyyy-MM-ddTHH:mmz", "yyyy-MM-ddTHH:mm", "ddd, MMM dd, yyyy H:mm:ss tt", "ddd MMM d yyyy HH:mm:ss zzz", "MMddyyyy", "ddMMyyyy", "Mddyyyy", "ddMyyyy", "Mdyyyy", "dMyyyy", "yyyy", "Mdyy", "dMyy", "d"]);
+  g._start = _.process(_.set([g.date, g.time, g.expression], g.generalDelimiter, g.whiteSpace), t.finish);
   g.start = function(s) {
     try {
       var r = g._formats.call({}, s);
@@ -1697,7 +1506,7 @@ Date.CultureInfo = {
     } catch (e) {
       return null;
     }
-    return r[1].length === 0 ? r[0] : null;
+    return ((r[1].length === 0) ? r[0] : null);
   };
   $D.getParseFunction = function(fx) {
     var fn = $D.Grammar.formats(fx);
@@ -1708,11 +1517,11 @@ Date.CultureInfo = {
       } catch (e) {
         return null;
       }
-      return r[1].length === 0 ? r[0] : null;
+      return ((r[1].length === 0) ? r[0] : null);
     };
   };
   $D.parseExact = function(s, fx) {
     return $D.getParseFunction(fx)(s);
   };
-})();
+}());
 export default Date;

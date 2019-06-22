@@ -1,20 +1,16 @@
 <template>
   <section class="groups_detail row">
     <div class="card add-group">
-      <div v-if="error" class="update-error">
-        <span>此名稱已被使用</span>
-      </div>
-      <div v-if="error_time" class="update-error">
-        <span>請填寫時間</span>
-      </div>
       <div class="input-box">
         <input
           type="text"
+          :class="{ error: error }"
           @focus="error = false"
           v-model.trim="new_groupName"
           @keypress.enter="addGroup"
           placeholder=" "
         />
+        <span v-if="error">名稱重複或為空</span>
         <label for="register__name">團體名稱</label>
       </div>
       <div class="timelimit input-box">
@@ -24,11 +20,10 @@
         </select>
         <label for="timelimit">收單時間限制</label>
       </div>
-      <div class="time">
+      <div class="time" v-if="new_groupTimelimit == '1'">
         <label for="timelimit">收單時間</label>
         <date-picker
           v-model="new_groupTime"
-          :input-class = "date_class"
           type="time"
           value-type="format"
           @focus="error_time = false"
@@ -36,6 +31,7 @@
           format="HH:mm"
           placeholder="Select Time"
         ></date-picker>
+        <span v-if="error_time">請填寫時間</span>
       </div>
       <button class="primary" @click="addGroup">新增</button>
     </div>
@@ -50,13 +46,13 @@
           收單時間限制 ：
           {{ translateTimeLimit(group.time_limit) }}
         </h4>
-        <h4 v-if="group.preset_time">
+        <h4 v-if="group.time_limit">
           收單時間 : {{ parseTime(group.preset_time) }}
         </h4>
         <button
           class="primary"
           @click="
-            modifyGroup( group.name, group.time_limit, group.preset_time,index)
+            modifyGroup(group.name, group.time_limit, group.preset_time, index)
           "
         >
           修改
@@ -64,21 +60,17 @@
         <button class="secondary" @click="deleteGroup(group.id)">刪除</button>
       </div>
       <div class="group-modify" v-else>
-        <div v-if="changeName_error" class="update-error">
-          <span>此名稱已被使用</span>
-        </div>
-        <div v-if="changeTime_error" class="update-error">
-          <span>請填寫時間</span>
-        </div>
-        <div :class="{error:changeName_error}" class="groupName input-box">
+        <div class="groupName input-box">
           <input
             type="text"
             @focus="changeName_error = false"
             v-model="change_group.name"
+            :class="{ error: changeName_error }"
+            class="input-box__name"
             id="change-groupName"
             placeholder=" "
           />
-          <label v-if="changeName_error" >此名稱已被使用</label>
+          <span v-if="changeName_error">名稱重複或為空</span>
           <label for="change-groupName">更改團體名稱</label>
         </div>
         <div class="timelimit input-box">
@@ -88,7 +80,7 @@
           </select>
           <label for="change-timelimit">收單時間限制</label>
         </div>
-        <div class="time input-box">
+        <div v-if="change_group.time_limit == '1'" class="time input-box">
           <date-picker
             v-model="change_group.preset_time"
             type="time"
@@ -98,14 +90,13 @@
             format="HH:mm"
             placeholder="Select Time"
           ></date-picker>
+          <span v-if="changeTime_error">請填寫時間</span>
         </div>
         <button class="primary" @click="updateGroup(group.id, index)">
           送出
         </button>
         <button
-          @click="
-            modifyGroup( group.name, group.time_limit, group.preset_time)
-          "
+          @click="modifyGroup(group.name, group.time_limit, group.preset_time)"
         >
           取消
         </button>
@@ -119,7 +110,6 @@ export default {
   name: "Groups_detail",
   data() {
     return {
-      date_class:"mx-input input-date",
       new_groupName: "",
       new_groupTime: null,
       new_groupTimelimit: 0,
@@ -150,7 +140,7 @@ export default {
   },
   methods: {
     addGroup() {
-      if (!this.new_groupName) return;
+      if (!this.new_groupName) return (this.error = true);
       const isSame = this.isSameGroupName(this.new_groupName);
       if (isSame) {
         this.error = true;
@@ -171,7 +161,7 @@ export default {
         console.error(err);
       });
     },
-    modifyGroup(name, timelimit, preset_time,index = null ) {
+    modifyGroup(name, timelimit, preset_time, index = null) {
       this.modify = index;
       this.changeTime_error = false;
       this.changeName_error = false;
@@ -182,34 +172,43 @@ export default {
     updateGroup(id, index) {
       const change_name = this.change_group.name.replace(/\s/g, "");
       const same_name = this.isSameGroupName(change_name);
-      const filtered_change_group = this.filterSameKey(index, Object.assign(this.change_group,{}));
-      const all_same = JSON.stringify(filtered_change_group) === JSON.stringify(this.change_group);
-      console.log(filtered_change_group);
-      // if (all_same) {
-      //   this.modify = null;
-      //   return;
-      // }
-      if (same_name && same_name.id !== id) {
+      const filtered_change_group = this.filterSameKey(
+        index,
+        Object.assign({}, this.change_group)
+      );
+      const all_same = Object.keys(filtered_change_group).length === 0;
+      // const all_same = JSON.stringify(filtered_change_group) === JSON.stringify(this.change_group);
+      if (all_same) {
+        this.modify = null;
+        return;
+      }
+      if ((same_name && same_name.id !== id) || change_name === "") {
         this.changeName_error = !this.changeName_error;
         return;
       }
-      if (filtered_change_group.time_limit && !filtered_change_group.preset_time) {
+      if (parseInt(this.change_group.time_limit)) {
+        if (!this.change_group.preset_time) {
           this.changeTime_error = !this.changeTime_error;
           return;
+        }
+        filtered_change_group["preset_time"] = this.parseTime(
+          this.change_group.preset_time
+        );
       }
       this.modify = null;
+
       this.$store.commit("updateGroups", {
         index: index,
-        change_group: Object.assign(this.change_group,{})
+        change_group: Object.assign({}, this.change_group)
       });
-      // this.$store
-      //   .dispatch("updateGroups",{
-      //     id: id,
-      //     change_group: this.change_group
-      //   })
-      //   .catch(err => {
-      //     console.error(err.response.data.message);
-      //   });
+      this.$store
+        .dispatch("updateGroups", {
+          id: id,
+          change_group: filtered_change_group
+        })
+        .catch(err => {
+          console.error(err.response.data.message);
+        });
     },
     deleteGroup(group_id) {
       this.$store.dispatch("deleteGroup", group_id).catch(err => {
@@ -221,15 +220,23 @@ export default {
     },
     filterSameKey(index, data, groups = this.groups) {
       const change_group = Object.entries(data);
-      const original_group = groups[index]
-      return Object.fromEntries(change_group.filter(item => {
-        const key = item[0];
-        const value = item[1];
-        if (key === "preset_time") {
-          return original_group[key] === this.date.parse(value);
-        }
-        return original_group[key] !== value;
-      }))
+      const original_group = Object.assign({}, groups[index]);
+      return Object.fromEntries(
+        change_group.filter(item => {
+          let key = item[0];
+          let value = item[1];
+          if (key === "preset_time") {
+            original_group[key] = this.date.parse(original_group[key]);
+            value = this.date.parse(value);
+            if (original_group[key] === null || value === null)
+              return (
+                this.date.parse(original_group[key]) !== this.date.parse(value)
+              );
+            return !this.date.equals(original_group[key], value);
+          }
+          return original_group[key] !== value;
+        })
+      );
     },
     translateTimeLimit(timelimit) {
       if (timelimit) return "是";

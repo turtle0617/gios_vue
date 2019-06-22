@@ -1,6 +1,6 @@
 %labelTransition{
   background-color: #f0f0f0;
-  border: 1px solid black !important;
+  border: 1px solid black ;
   ~ label{
     top: -5px;
     left: 20px;
@@ -48,12 +48,7 @@ section {
   }
 }
 
-.error {
-  > input{
-    background-color: rgba(255, 0, 0, 0.1);
-    border: 1px solid red;
-  }
-}
+
 
 .input-box{
   position: relative;
@@ -80,9 +75,33 @@ section {
   }
 }
 
+
+
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active  {
     -webkit-box-shadow: 0 0 0 30px #f0f0f0 inset !important;
+}
+
+
+.error{
+    border: 1px solid red !important;
+    ~ span{
+      font-size: 0.8rem;
+      position: relative;
+      &::before{
+        position: absolute;
+        content: "";
+        top: -6px;
+        left: 13px;
+        border-color: transparent;
+        border-top: red;
+        border-style: solid;
+        border-width: .5rem;
+      }
+    }
+    ~ label{
+      color: red !important;
+    }
 }

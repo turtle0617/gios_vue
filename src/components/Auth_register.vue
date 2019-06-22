@@ -3,17 +3,16 @@
     <form @submit.prevent="register">
       <fieldset id="register__form">
         <legend>註冊</legend>
-        <div v-if="error" class="row">
-          <span>請填寫完整</span>
-        </div>
         <div class="row">
-          <div :class="{ error: error }" class="col-sm-12 col-md-12 input-box">
+          <div class="col-sm-12 col-md-12 input-box">
             <input
               type="text"
-              v-model="name"
+              :class="{ error: error_empty.name }"
+              v-model.trim="member.name"
               id="register__name"
               placeholder=" "
             />
+            <span v-if="error_empty.name">不得為空</span>
             <label for="register__name">使用者名稱</label>
           </div>
         </div>
@@ -21,10 +20,12 @@
           <div class="col-sm-12 col-md-12 input-box">
             <input
               type="text"
-              v-model="account"
+              :class="{ error: error_empty.account }"
+              v-model.trim="member.account"
               id="register__account"
               placeholder=" "
             />
+            <span v-if="error_empty.account">不得為空</span>
             <label for="register__account">使用者帳戶</label>
           </div>
         </div>
@@ -32,17 +33,19 @@
           <div class="col-sm-12 col-md-12 input-box">
             <input
               type="password"
-              v-model="password"
+              :class="{ error: error_empty.password }"
+              v-model.trim="member.password"
               id="register__code"
               placeholder=" "
             />
+            <span v-if="error_empty.password">不得為空</span>
             <label for="register__code">密碼</label>
           </div>
         </div>
         <div class="row">
           <div class="col-sm-12 col-md-12 input-box">
             <select
-              v-model="group_id"
+              v-model="member.group_id"
               class="group--select"
               name="register__group"
             >
@@ -68,15 +71,24 @@ export default {
   name: "Auth_register",
   data() {
     return {
-      name: "",
-      account: "",
-      password: "",
-      group_id: "1",
-      error: false
+      member: {
+        name: "",
+        account: "",
+        password: "",
+        group_id: null
+      },
+      error_empty: {
+        name: false,
+        account: false,
+        password: false
+      }
     };
   },
   created() {
-    this.$store.dispatch("retrieveGroups");
+    this.$store.dispatch("retrieveGroups").then(res => {
+      if (!res) return;
+      this.member.group_id = res[0].id;
+    });
   },
   computed: {
     groups() {
@@ -85,17 +97,11 @@ export default {
   },
   methods: {
     register() {
-      if (!this.name || !this.account || !this.password) {
-        this.error = true;
-        return;
-      }
+      const is_empty = this.detectEmpty();
+      console.log(is_empty);
+      if (is_empty) return;
       this.$store
-        .dispatch("register", {
-          name: this.name,
-          account: this.account,
-          password: this.password,
-          group_id: this.group_id
-        })
+        .dispatch("register", this.member)
         .then(res => {
           this.$router.push({
             name: "home",
@@ -107,6 +113,17 @@ export default {
         .catch(err => {
           console.error("register ERROR", err);
         });
+    },
+    detectEmpty() {
+      const detected = {
+        name: this.member.name,
+        account: this.member.account,
+        password: this.member.password
+      };
+      if (!detected.name) this.error_empty.name = true;
+      if (!detected.account) this.error_empty.account = true;
+      if (!detected.password) this.error_empty.password = true;
+      return Object.entries(detected).some(item => !item[1]);
     }
   }
 };

@@ -95,6 +95,7 @@ export default new Vuex.Store({
         let { data } = await API.GET("/groups");
         localStorage.setItem("groups", JSON.stringify(data));
         context.commit("retrieveGroups", data);
+        return data;
       } catch (e) {
         throw e;
       }

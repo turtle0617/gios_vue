@@ -75,16 +75,6 @@ section {
   }
 }
 
-
-
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active  {
-    -webkit-box-shadow: 0 0 0 30px #f0f0f0 inset !important;
-}
-
-
 .error{
     border: 1px solid red !important;
     ~ span{
@@ -104,4 +94,12 @@ input:-webkit-autofill:active  {
     ~ label{
       color: red !important;
     }
+}
+
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active  {
+    -webkit-box-shadow: 0 0 0 30px #f0f0f0 inset !important;
 }

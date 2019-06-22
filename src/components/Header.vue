@@ -26,7 +26,7 @@
         <nav class="menuNavbar">
           <router-link :to="{ name: 'bill' }">收錢</router-link>
           <router-link :to="{ name: 'groups' }">管理團體</router-link>
-          <router-link :to="{ name: 'addmenu' }">新增菜單</router-link>
+          <router-link :to="{ name: 'menu' }">新增菜單</router-link>
           <router-link :to="{ name: 'statistic' }">訂單</router-link>
           <router-link :to="{ name: 'history' }">歷史訂單</router-link>
           <router-link :to="{ name: 'logout' }">登出</router-link>

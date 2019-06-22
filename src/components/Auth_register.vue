@@ -7,12 +7,12 @@
           <div class="col-sm-12 col-md-12 input-box">
             <input
               type="text"
-              :class="{ error: error_empty.name }"
+              :class="{ error: empty_error.name }"
               v-model.trim="member.name"
               id="register__name"
               placeholder=" "
             />
-            <span v-if="error_empty.name">不得為空</span>
+            <span v-if="empty_error.name">不得為空</span>
             <label for="register__name">使用者名稱</label>
           </div>
         </div>
@@ -20,12 +20,12 @@
           <div class="col-sm-12 col-md-12 input-box">
             <input
               type="text"
-              :class="{ error: error_empty.account }"
+              :class="{ error: empty_error.account }"
               v-model.trim="member.account"
               id="register__account"
               placeholder=" "
             />
-            <span v-if="error_empty.account">不得為空</span>
+            <span v-if="empty_error.account">不得為空</span>
             <label for="register__account">使用者帳戶</label>
           </div>
         </div>
@@ -33,12 +33,12 @@
           <div class="col-sm-12 col-md-12 input-box">
             <input
               type="password"
-              :class="{ error: error_empty.password }"
+              :class="{ error: empty_error.password }"
               v-model.trim="member.password"
               id="register__code"
               placeholder=" "
             />
-            <span v-if="error_empty.password">不得為空</span>
+            <span v-if="empty_error.password">不得為空</span>
             <label for="register__code">密碼</label>
           </div>
         </div>
@@ -77,7 +77,7 @@ export default {
         password: "",
         group_id: null
       },
-      error_empty: {
+      empty_error: {
         name: false,
         account: false,
         password: false
@@ -120,9 +120,9 @@ export default {
         account: this.member.account,
         password: this.member.password
       };
-      if (!detected.name) this.error_empty.name = true;
-      if (!detected.account) this.error_empty.account = true;
-      if (!detected.password) this.error_empty.password = true;
+      if (!detected.name) this.empty_error.name = true;
+      if (!detected.account) this.empty_error.account = true;
+      if (!detected.password) this.empty_error.password = true;
       return Object.entries(detected).some(item => !item[1]);
     }
   }

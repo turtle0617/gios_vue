@@ -1,20 +1,20 @@
 <template>
-  <div class="addmenu">
+  <div class="menu_list">
     <Header />
     <div class="container">
-      <Menu />
+      <Addmenu />
     </div>
   </div>
 </template>
 
 <script>
 import Header from "@/components/Header.vue";
-import Menu from "@/components/Menu.vue";
+import Addmenu from "@/components/Addmenu.vue";
 export default {
-  name: "addmenu",
+  name: "menu_list",
   components: {
     Header,
-    Menu
+    Addmenu
   }
 };
 </script>

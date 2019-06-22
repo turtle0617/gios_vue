@@ -7,7 +7,7 @@ import Profile from "./views/Profile.vue";
 import Order from "./views/Order.vue";
 import History from "./views/History.vue";
 import Statistic from "./views/Statistic.vue";
-import Addmenu from "./views/Addmenu.vue";
+import Menu_List from "./views/Menu_List.vue";
 import Bill from "./views/Bill.vue";
 import Groups from "./views/Groups.vue";
 import Logout from "./components/Auth_logout.vue";
@@ -40,10 +40,6 @@ const router = new Router({
       component: Profile,
       meta: {
         requiresAuth: true
-      },
-      beforeEnter: (to, from, next) => {
-        console.log("beforeEnter > ", store);
-        next();
       }
     },
     {
@@ -72,9 +68,9 @@ const router = new Router({
       }
     },
     {
-      path: "/addmenu",
-      name: "addmenu",
-      component: Addmenu,
+      path: "/menu",
+      name: "menu",
+      component: Menu_List,
       meta: {
         requiresAuth: true,
         isBoss: true
@@ -112,7 +108,7 @@ const router = new Router({
 const role = {
   guest: ["home", "adminLogin", "register"],
   member: ["order", "profile", "history", "logout"],
-  boss: ["statistic", "addmenu", "bill", "groups", "history", "logout"]
+  boss: ["statistic", "menu", "bill", "groups", "history", "logout"]
 };
 router.beforeEach((to, from, next) => {
   const loggedIn = store.getters.loggedIn;

@@ -2,10 +2,12 @@ import axios from "axios";
 
 const domain = "http://3.130.129.213/api";
 
-function GET(url, token) {
+function GET(url, token, param) {
   if (token) {
     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   }
+
+  if (param) return axios.get(domain + url, { params: param });
   return axios.get(domain + url);
 }
 

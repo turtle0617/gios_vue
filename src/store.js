@@ -9,7 +9,8 @@ export default new Vuex.Store({
     login_role: localStorage.getItem("login_role") || "guest",
     member_profile: JSON.parse(localStorage.getItem("user_profile")) || null,
     user_id: localStorage.getItem("user_id") || null,
-    groups: JSON.parse(localStorage.getItem("groups")) || null
+    groups: JSON.parse(localStorage.getItem("groups")) || null,
+    daily_menu: JSON.parse(localStorage.getItem("daily_menu")) || null
   },
   getters: {
     loggedIn(state) {
@@ -40,6 +41,9 @@ export default new Vuex.Store({
     retrieveGroups(state, groups) {
       state.groups = groups;
     },
+    retrieveDailyMenu(state, menu) {
+      state.daily_menu = menu;
+    },
     updateGroups(state, data) {
       state.groups[data.index] = data.change_group;
     },
@@ -55,7 +59,34 @@ export default new Vuex.Store({
         let res = await API.Register("/member", data);
         return res.data;
       } catch (e) {
-        throw e;
+        throw e.response.data.message;
+      }
+    },
+    async retrieveDailyMenu({ state, commit }, date) {
+      try {
+        let { data } = await API.GET("/dailymenu", state.token, date);
+        localStorage.setItem("daily_menu", JSON.stringify(data));
+        commit("retrieveDailyMenu", data);
+        return data;
+      } catch (e) {
+        throw e.response.data.message;
+      }
+    },
+    async addDailyMenu({ state }, data) {
+      try {
+        let res = await API.POST("/menus", state.token, data);
+        if (typeof res.data === "string") throw res;
+        return res.data.id;
+      } catch (e) {
+        throw e.response.data.message;
+      }
+    },
+    async addMenuFlavor({ state }, data) {
+      try {
+        let res = await API.POST("/flavors", state.token, data);
+        if (typeof res.data === "string") throw res;
+      } catch (e) {
+        throw e.response.data.message;
       }
     },
     async addGroup({ state, dispatch }, data) {

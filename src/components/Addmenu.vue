@@ -3,17 +3,17 @@
     <table class="menu__meal col-md-12">
       <thead>
         <tr>
-          <th>名稱</th>
+          <th class="menutable__name">名稱</th>
           <th class="menutable__price">價格</th>
           <th class="menutable__limited">限量(份數)</th>
           <th class="menutable__group">團體</th>
-          <th>口味(用 / 區隔)</th>
-          <th>備註</th>
+          <th class="menu-list__flavor">口味</th>
+          <th class="menutable__note">備註</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td data-label="名稱">
+          <td data-label="名稱" class="menutable__name">
             <input
               type="text"
               :class="{ error: empty_error.name }"
@@ -48,10 +48,31 @@
               >
             </select>
           </td>
-          <td data-label="口味(用 / 區隔)">
-            <input type="text" v-model.trim="flavors" />
+          <td data-label="口味" class="menutable__flavor">
+            <div class="menutable__flavor--add">
+              <input
+                type="text"
+                v-model.trim="flavor"
+                @keypress.enter="addFlavor"
+              />
+              <button @click="addFlavor">新增</button>
+            </div>
+            <div v-if="flavor_group.length" class="menutable__flavor--show">
+              <div
+                v-for="(flavor, index) in flavor_group"
+                :key="index"
+                class="flavor--item"
+              >
+                <font-awesome-icon
+                  icon="times"
+                  size="lg"
+                  @click="deleteFlavor(index)"
+                ></font-awesome-icon>
+                <label>{{ flavor }}</label>
+              </div>
+            </div>
           </td>
-          <td data-label="備註">
+          <td data-label="備註" class="menutable__note">
             <input type="text" v-model.trim="meal.note" />
           </td>
         </tr>
@@ -83,7 +104,8 @@ export default {
         group_id: "all",
         note: null
       },
-      flavors: null,
+      flavor: null,
+      flavor_group: [],
       empty_error: {
         name: false,
         price: false
@@ -103,9 +125,8 @@ export default {
 
         const isEmpty = this.detectEmpty();
         const isPriceNum = Number.isInteger(this.meal.price);
-        if (isEmpty) return;
-        if (!isPriceNum) {
-          this.empty_error.price = true;
+        if (isEmpty || !isPriceNum) {
+          if (!isPriceNum) this.empty_error.price = true;
           return;
         }
         let meal = Object.assign({}, this.meal);
@@ -115,13 +136,11 @@ export default {
         meal["menu_date"] = formated_date;
 
         if (meal.group_id === "all") meal.group_id = null;
-
         meal = this.removeOptionIsNull(meal);
         const menu_id = await this.$store.dispatch("addDailyMenu", meal);
-        console.log("await addDailyMenu", menu_id);
-        if (this.flavors) {
-          const arr = await this.addMenuFlavor(this.flavors, menu_id);
-          console.log("await flavor", arr);
+
+        if (this.flavor_group) {
+          await this.addMenuFlavor(menu_id);
         }
         this.resetMealForm();
         console.log("dispatch retrieveDailyMenu");
@@ -137,14 +156,25 @@ export default {
         Object.entries(meal).filter(item => item[1] !== "" && item[1] !== null)
       );
     },
-    addMenuFlavor(flavors, menu_id) {
-      flavors = flavors.split("/").map(flavor =>
-        this.$store.dispatch("addMenuFlavor", {
-          menu_id: menu_id,
-          choice: flavor
+    addFlavor() {
+      if (!this.flavor) return;
+      this.flavor_group.push(this.flavor);
+      this.flavor = "";
+    },
+    deleteFlavor(index) {
+      this.flavor_group.splice(index, 1);
+    },
+    addMenuFlavor(menu_id) {
+      const copy_flavor_group = this.flavor_group.slice();
+      this.flavor_group = [];
+      return Promise.all(
+        copy_flavor_group.map(flavor => {
+          return this.$store.dispatch("addMenuFlavor", {
+            menu_id: menu_id,
+            choice: flavor
+          });
         })
       );
-      return Promise.all(flavors);
     },
     resetMealForm() {
       this.meal = {
@@ -185,6 +215,12 @@ export default {
   flex-grow: $grow;
   min-width: $minWidth;
 }
+@mixin inputWidth($width) {
+  input {
+    width: $width;
+    border-radius: 6px;
+  }
+}
 .addmenu {
   table {
     width: 100%;
@@ -193,10 +229,7 @@ export default {
     thead {
       z-index: 1;
     }
-    input {
-      max-width: 100%;
-      border-radius: 6px;
-    }
+
     select {
       height: 44px;
     }
@@ -210,14 +243,48 @@ export default {
     }
   }
 }
+.menutable__name {
+  @include inputWidth(100%);
+}
 .menutable__price {
+  @include inputWidth(100%);
   @include tableColWidth(0, 60px);
 }
 .menutable__limited {
-  @include tableColWidth(0, 120px);
+  @include inputWidth(100%);
+  @include tableColWidth(0, 80px);
 }
 .menutable__group {
-  @include tableColWidth(0, 130px);
+  @include inputWidth(100%);
+  @include tableColWidth(0, 110px);
+}
+.menutable__flavor {
+  display: flex;
+  flex-wrap: wrap;
+  &--add {
+    @include inputWidth(50%);
+    display: flex;
+    flex-wrap: nowrap;
+  }
+  &--show {
+    padding: 0 1rem;
+    text-align: left;
+    label {
+      padding-left: 1rem;
+    }
+  }
+}
+.flavor--item {
+  & > :first-child {
+    color: red;
+    cursor: pointer;
+  }
+  &:hover {
+    background-color: #e2e2e28f;
+  }
+}
+.menutable__note {
+  @include inputWidth(100%);
 }
 
 .error {

@@ -96,6 +96,7 @@ export default new Vuex.Store({
     },
     async addMenuFlavor({ state }, data) {
       try {
+        console.log("action add flavor");
         let res = await API.POST("/flavors", state.token, data);
         if (typeof res.data === "string") throw res;
         return res;
@@ -120,6 +121,7 @@ export default new Vuex.Store({
     },
     async updateMenuFlavor({ state, commit }, data) {
       try {
+        console.log("action updateMenuFlavor");
         let res = await API.PATCH(
           `/flavors/${data.flavor_id}`,
           state.token,
@@ -181,7 +183,9 @@ export default new Vuex.Store({
     },
     async retrieveGroups(context) {
       try {
+        console.log("retrieveGroups");
         let { data } = await API.GET("/groups");
+        console.log("retrieveGroups data");
         localStorage.setItem("groups", JSON.stringify(data));
         context.commit("retrieveGroups", data);
         return data;

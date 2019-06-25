@@ -78,7 +78,7 @@
             </select>
           </td>
           <td data-label="口味(用 / 區隔)" class="menu-list__flavor">
-            <input type="text" v-model.trim="flavor" />
+            <input type="text" v-model.trim="change_flavors" />
           </td>
           <td data-label="備註" class="menu-list__note">
             <input type="text" v-model.trim="change_meal.note" />
@@ -103,7 +103,7 @@ export default {
         group_id: "all",
         note: null
       },
-      flavor: null,
+      change_flavors: null,
       empty_error: {
         name: false,
         price: false
@@ -130,54 +130,46 @@ export default {
     },
     modifyMeal(original_meal, index = null) {
       this.modify = index;
-      const original_flavor = original_meal.flavors[0]
-        ? original_meal.flavors[0].choice
+      const original_flavor = original_meal.flavors.length
+        ? original_meal.flavors.map(flavor => flavor.choice).join("/")
         : null;
       for (let key in this.change_meal) {
         this.change_meal[key] = original_meal[key];
       }
       if (!this.change_meal.group_id) this.change_meal.group_id = "all";
 
-      this.flavor = original_flavor;
+      this.change_flavors = original_flavor;
     },
     async updateMeal(index) {
       try {
         this.hideAllError();
         const isEmpty = this.detectEmpty();
         const isPriceNum = Number.isInteger(this.change_meal.price);
-        if (isEmpty) return;
-        if (!isPriceNum) {
-          this.empty_error.price = true;
+        // const isLimiteNum = Number.isInteger(this.change_meal.quantity_limit);
+        if (isEmpty || !isPriceNum) {
+          if (!isPriceNum) this.empty_error.price = true;
+          // if (!isLimiteNum)
+          //   this.not_number_error = true;
           return;
         }
         let filtered_change_meal = this.filterSameKey(index, this.change_meal);
         const meal_same = Object.keys(filtered_change_meal).length === 0;
         const original_daily_menu = Object.assign({}, this.daily_menu[index]);
         const original_meal_id = original_daily_menu.id;
-        const original_meal_flavor = original_daily_menu.flavors[0]
-          ? original_daily_menu.flavors[0].choice
-          : null;
-        if (filtered_change_meal.group_id === "all")
-          filtered_change_meal.group_id = null;
-
-        if (meal_same && original_meal_flavor === this.flavor) {
-          this.modify = null;
-          console.log("meal_same");
-          return;
-        }
-
+        const original_flavors = original_daily_menu.flavors;
         const formated_date = this.Date.parse(this.choose_date).toString(
           "yyyy/MM/d"
         );
+        console.log("before method updateMenuFlavor");
+        const updateMenuFlavor = this.updateMenuFlavors(original_flavors);
+        console.log("after method updateMenuFlavor", updateMenuFlavor);
+        // if (meal_same) {
+        //   this.modify = null;
+        //   console.log("meal_same");
+        //   return;
+        // }
         filtered_change_meal["menu_date"] = formated_date;
 
-        if (
-          filtered_change_meal.quantity_limit &&
-          !Number.isInteger(filtered_change_meal.quantity_limit)
-        ) {
-          this.not_number_error = true;
-          return;
-        }
         console.log("filtered_change_meal", filtered_change_meal);
         this.modify = null;
         // await this.$store.dispatch("updateDailyMenu", {
@@ -185,27 +177,6 @@ export default {
         //   change_meal:filtered_change_meal
         // });
 
-        if (this.flavor !== original_meal_flavor) {
-          if (original_daily_menu.flavors.length > 0) {
-            console.log(
-              "has flavor,await updateMenuFlavor",
-              original_daily_menu.flavors[0].id
-            );
-            await this.$store.dispatch("updateMenuFlavor", {
-              flavor_id: original_daily_menu.flavors[0].id,
-              change_flavor: this.flavor
-            });
-          } else {
-            console.log(
-              "hasn't flavor,await addMenuFlavor",
-              original_meal_flavor
-            );
-            await this.$store.dispatch("addMenuFlavor", {
-              menu_id: original_meal_id,
-              choice: this.flavor
-            });
-          }
-        }
         console.log("dispatch retrieveDailyMenu");
         this.$store.dispatch("retrieveDailyMenu", {
           menu_date: formated_date
@@ -213,6 +184,57 @@ export default {
       } catch (e) {
         console.error(e);
       }
+    },
+    updateMenuFlavors(original_flavors) {
+      if (original_flavors.length) {
+        const original_flavors_choice = original_flavors.map(
+          flavor => flavor["choice"]
+        );
+
+        const change_flavors = this.change_flavors.split("/");
+        const filtered_change = change_flavors.filter(
+          flavor => original_flavors_choice.indexOf(flavor) === -1
+        );
+
+        if (!filtered_change.length) {
+          console.log("flavor same");
+          return false;
+        }
+        const filtered_original = original_flavors.filter(flavor => {
+          return change_flavors.indexOf(flavor.choice) === -1;
+        });
+
+        const patch_array = filtered_original.map((flavor, index) => {
+          return this.$store.dispatch("updateMenuFlavor", {
+            flavor_id: flavor.id,
+            change_flavor: filtered_change[index]
+          });
+        });
+        Promise.all(patch_array).then(res => console.log("res", res));
+      } else {
+        if (this.change_flavors === original_flavors) return;
+      }
+      // if (this.flavor !== original_meal_flavors) {
+      //   if (original_daily_menu.flavors.length > 0) {
+      //     console.log(
+      //       "has flavor,await updateMenuFlavor",
+      //       original_daily_menu.flavors[0].id
+      //     );
+      //     await this.$store.dispatch("updateMenuFlavor", {
+      //       flavor_id: original_daily_menu.flavors[0].id,
+      //       change_flavor: this.flavor
+      //     });
+      //   } else {
+      //     console.log(
+      //       "hasn't flavor,await addMenuFlavor",
+      //       original_meal_flavors
+      //     );
+      //     await this.$store.dispatch("addMenuFlavor", {
+      //       menu_id: original_meal_id,
+      //       choice: this.flavor
+      //     });
+      //   }
+      // }
     },
     async deleteMeal(meal_index) {
       try {

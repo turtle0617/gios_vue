@@ -18,6 +18,9 @@ export default new Vuex.Store({
     },
     groups(state) {
       return state.groups;
+    },
+    daily_menu(state) {
+      return state.daily_menu;
     }
   },
   mutations: {
@@ -43,6 +46,16 @@ export default new Vuex.Store({
     },
     retrieveDailyMenu(state, menu) {
       state.daily_menu = menu;
+    },
+    updateDailyMenu(state, meal) {
+      const index = state.daily_menu.findIndex(item => {
+        return (item["id"] = meal["id"]);
+      });
+      if (!meal["flavors"]) meal["flavors"] = [];
+
+      console.log("commit updateDailyMenu", meal, state.daily_menu[index]);
+      state.daily_menu[index] = meal;
+      console.log("commit success", state.daily_menu[index]);
     },
     updateGroups(state, data) {
       state.groups[data.index] = data.change_group;
@@ -85,8 +98,53 @@ export default new Vuex.Store({
       try {
         let res = await API.POST("/flavors", state.token, data);
         if (typeof res.data === "string") throw res;
+        return res;
       } catch (e) {
         throw e.response.data.message;
+      }
+    },
+    async updateDailyMenu({ state, commit }, data) {
+      try {
+        let res = await API.PATCH(
+          `/menus/${data.meal_id}`,
+          state.token,
+          data.change_meal
+        );
+        if (typeof res.data === "string") throw res;
+        console.log("res", res.data);
+        commit("updateDailyMenu", res.data);
+        return res;
+      } catch (e) {
+        throw e.response.data.message;
+      }
+    },
+    async updateMenuFlavor({ state, commit }, data) {
+      try {
+        let res = await API.PATCH(
+          `/flavors/${data.flavor_id}`,
+          state.token,
+          data.change_flavor
+        );
+        if (typeof res.data === "string") throw res;
+        commit("updateDailyMenu", res.data);
+      } catch (e) {
+        throw e.response.data.message;
+      }
+    },
+    async deleteDailyMeal({ state }, meal_id) {
+      try {
+        let res = await API.DELETE("/menus", meal_id, state.token);
+        return res;
+      } catch (e) {
+        throw e;
+      }
+    },
+    async deleteFlavor({ state }, flavor_id) {
+      try {
+        let res = await API.DELETE("/flavors", flavor_id, state.token);
+        return res;
+      } catch (e) {
+        throw e;
       }
     },
     async addGroup({ state, dispatch }, data) {

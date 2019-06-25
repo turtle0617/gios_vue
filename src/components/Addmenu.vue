@@ -1,25 +1,12 @@
 <template>
   <section class="addmenu row">
     <table class="menu__meal col-md-12">
-      <caption class="menutable__title ">
-        <div class="menutable__date">
-          <label for="orderDate">日期</label>
-          <select class="group--select" name="orderDate" v-model="choose_date">
-            <option
-              v-for="(day, index) in date_range"
-              :key="index"
-              :value="day"
-              >{{ day }}</option
-            >
-          </select>
-        </div>
-      </caption>
       <thead>
         <tr>
           <th>名稱</th>
           <th class="menutable__price">價格</th>
           <th class="menutable__limited">限量(份數)</th>
-          <th class="menutable__group">團體(需先填限量)</th>
+          <th class="menutable__group">團體</th>
           <th>口味(用 / 區隔)</th>
           <th>備註</th>
         </tr>
@@ -62,7 +49,7 @@
             </select>
           </td>
           <td data-label="口味(用 / 區隔)">
-            <input type="text" v-model.trim="flavor" />
+            <input type="text" v-model.trim="flavors" />
           </td>
           <td data-label="備註">
             <input type="text" v-model.trim="meal.note" />
@@ -86,11 +73,9 @@
 <script>
 export default {
   name: "addmenu",
+  props: ["choose_date"],
   data() {
     return {
-      date_range: null,
-      choose_date: null,
-      groups: null,
       meal: {
         name: null,
         price: null,
@@ -98,7 +83,7 @@ export default {
         group_id: "all",
         note: null
       },
-      flavor: null,
+      flavors: null,
       empty_error: {
         name: false,
         price: false
@@ -106,62 +91,40 @@ export default {
       not_number_error: false
     };
   },
-  created() {
-    this.date_range = this.generateDateRange(7);
-    this.choose_date = this.date_range[0];
-    this.$store.dispatch("retrieveGroups").then(res => {
-      this.groups = res;
-    });
-  },
-  watch: {
-    choose_date: function(val, oldval) {
-      console.log("hi", val, oldval);
-      this.$store
-        .dispatch("retrieveDailyMenu", {
-          menu_date: this.date.parse(val).toString("yyyy/MM/d")
-        })
-        .catch(err => {
-          console.error(err);
-        });
+  computed: {
+    groups() {
+      return this.$store.getters.groups;
     }
   },
   methods: {
     async addMeal() {
-      this.hideAllError();
-
-      const isEmpty = this.detectEmpty();
-      const isPriceNum = Number.isInteger(this.meal.price);
-      if (isEmpty) return;
-      if (!isPriceNum) {
-        this.empty_error.price = true;
-        return;
-      }
-      let meal = Object.assign({}, this.meal);
-      const formated_date = this.date
-        .parse(this.choose_date)
-        .toString("yyyy/MM/d");
-      meal["menu_date"] = formated_date;
-      if (meal.group_id === "all") meal.group_id = null;
-
-      if (meal.quantity_limit && !Number.isInteger(meal.quantity_limit)) {
-        this.not_number_error = true;
-        console.log("hi");
-        return;
-      }
-
-      meal = this.removeOptionIsNull(meal);
       try {
-        const menu_id = await this.$store.dispatch("addDailyMenu", meal);
-        // console.log("await addDailyMenu",menu_id);
-        this.resetMealForm();
-        if (this.flavor) {
-          await this.$store.dispatch("addMenuFlavor", {
-            menu_id: menu_id,
-            choice: this.flavor
-          });
-          // console.log("await flavor");
+        this.hideAllError();
+
+        const isEmpty = this.detectEmpty();
+        const isPriceNum = Number.isInteger(this.meal.price);
+        if (isEmpty) return;
+        if (!isPriceNum) {
+          this.empty_error.price = true;
+          return;
         }
-        // console.log("dispatch retrieveDailyMenu");
+        let meal = Object.assign({}, this.meal);
+        const formated_date = this.Date.parse(this.choose_date).toString(
+          "yyyy/MM/d"
+        );
+        meal["menu_date"] = formated_date;
+
+        if (meal.group_id === "all") meal.group_id = null;
+
+        meal = this.removeOptionIsNull(meal);
+        const menu_id = await this.$store.dispatch("addDailyMenu", meal);
+        console.log("await addDailyMenu", menu_id);
+        if (this.flavors) {
+          const arr = await this.addMenuFlavor(this.flavors, menu_id);
+          console.log("await flavor", arr);
+        }
+        this.resetMealForm();
+        console.log("dispatch retrieveDailyMenu");
         this.$store.dispatch("retrieveDailyMenu", {
           menu_date: formated_date
         });
@@ -169,19 +132,19 @@ export default {
         console.error(e);
       }
     },
-    generateDateRange(num) {
-      let range = new Array(num).fill(0);
-      return range.map((item, index) => {
-        const date = Date.today()
-          .add(index + 1)
-          .day();
-        return date.toString("M/d");
-      });
-    },
     removeOptionIsNull(meal) {
       return Object.fromEntries(
         Object.entries(meal).filter(item => item[1] !== "" && item[1] !== null)
       );
+    },
+    addMenuFlavor(flavors, menu_id) {
+      flavors = flavors.split("/").map(flavor =>
+        this.$store.dispatch("addMenuFlavor", {
+          menu_id: menu_id,
+          choice: flavor
+        })
+      );
+      return Promise.all(flavors);
     },
     resetMealForm() {
       this.meal = {
@@ -191,7 +154,7 @@ export default {
         group_id: "all",
         note: null
       };
-      this.flavor = null;
+      this.flavors = null;
     },
     hideAllError() {
       this.not_number_error = false;
@@ -229,9 +192,6 @@ export default {
     max-height: none;
     thead {
       z-index: 1;
-    }
-    caption {
-      text-align: left;
     }
     input {
       max-width: 100%;

@@ -226,13 +226,13 @@ export default {
           let key = item[0];
           let value = item[1];
           if (key === "preset_time") {
-            original_group[key] = this.date.parse(original_group[key]);
-            value = this.date.parse(value);
+            original_group[key] = this.Date.parse(original_group[key]);
+            value = this.Date.parse(value);
             if (original_group[key] === null || value === null)
               return (
-                this.date.parse(original_group[key]) !== this.date.parse(value)
+                this.Date.parse(original_group[key]) !== this.Date.parse(value)
               );
-            return !this.date.equals(original_group[key], value);
+            return !this.Date.equals(original_group[key], value);
           }
           return original_group[key] !== value;
         })
@@ -243,7 +243,7 @@ export default {
       return "否";
     },
     parseTime(time) {
-      return this.date.parse(time).toString("HH:mm");
+      return this.Date.parse(time).toString("HH:mm");
     }
   }
 };

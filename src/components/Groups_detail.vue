@@ -1,10 +1,9 @@
 <template>
   <section class="groups_detail row">
     <div class="card add-group">
-      <div class="input-box">
+      <div class="input-box" :class="{ error: error }">
         <input
           type="text"
-          :class="{ error: error }"
           @focus="error = false"
           v-model.trim="new_groupName"
           @keypress.enter="addGroup"
@@ -60,12 +59,11 @@
         <button class="secondary" @click="deleteGroup(group.id)">刪除</button>
       </div>
       <div class="group-modify" v-else>
-        <div class="groupName input-box">
+        <div class="groupName input-box" :class="{ error: changeName_error }">
           <input
             type="text"
             @focus="changeName_error = false"
             v-model="change_group.name"
-            :class="{ error: changeName_error }"
             class="input-box__name"
             id="change-groupName"
             placeholder=" "

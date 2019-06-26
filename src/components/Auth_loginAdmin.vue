@@ -50,6 +50,7 @@ export default {
   },
   methods: {
     login() {
+      if (!this.account || !this.password) return;
       this.$store
         .dispatch("retrieveBossToken", {
           account: this.account,

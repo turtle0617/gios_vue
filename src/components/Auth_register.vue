@@ -4,11 +4,14 @@
       <fieldset id="register__form">
         <legend>註冊</legend>
         <div class="row">
-          <div class="col-sm-12 col-md-12 input-box">
+          <div
+            class="col-sm-12 col-md-12 input-box"
+            :class="{ error: empty_error.name }"
+          >
             <input
               type="text"
-              :class="{ error: empty_error.name }"
               v-model.trim="member.name"
+              @focus="empty_error.name = false"
               id="register__name"
               placeholder=" "
             />
@@ -17,11 +20,14 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-sm-12 col-md-12 input-box">
+          <div
+            class="col-sm-12 col-md-12 input-box"
+            :class="{ error: empty_error.account }"
+          >
             <input
               type="text"
-              :class="{ error: empty_error.account }"
               v-model.trim="member.account"
+              @focus="empty_error.account = false"
               id="register__account"
               placeholder=" "
             />
@@ -30,11 +36,14 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-sm-12 col-md-12 input-box">
+          <div
+            class="col-sm-12 col-md-12 input-box"
+            :class="{ error: empty_error.password }"
+          >
             <input
               type="password"
-              :class="{ error: empty_error.password }"
               v-model.trim="member.password"
+              @focus="empty_error.password = false"
               id="register__code"
               placeholder=" "
             />

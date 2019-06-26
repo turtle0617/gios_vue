@@ -11,26 +11,34 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-sm-12 col-md-12 input-box">
+          <div
+            class="col-sm-12 col-md-12 input-box"
+            :class="{ error: empty_error.account }"
+          >
             <input
               type="text"
               id="login__account"
               placeholder=" "
-              @focus="error = false"
+              @focus="empty_error.account = false"
               v-model="account"
             />
+            <span v-if="empty_error.account">不得為空</span>
             <label for="login__account">使用者帳戶</label>
           </div>
         </div>
         <div class="row">
-          <div class="col-sm-12 col-md-12 input-box">
+          <div
+            class="col-sm-12 col-md-12 input-box"
+            :class="{ error: empty_error.password }"
+          >
             <input
               type="password"
               id="login__userCode"
               placeholder=" "
-              @focus="error = false"
+              @focus="empty_error.password = false"
               v-model="password"
             />
+            <span v-if="empty_error.password">不得為空</span>
             <label for="login__userCode">密碼</label>
           </div>
         </div>
@@ -50,11 +58,17 @@ export default {
     return {
       account: this.$route.params.account || "",
       password: "",
+      empty_error: {
+        account: false,
+        password: false
+      },
       error: false
     };
   },
   methods: {
     login() {
+      const is_empty = this.detectEmpty();
+      if (is_empty) return;
       this.$store
         .dispatch("retrieveMemberToken", {
           account: this.account,
@@ -69,6 +83,15 @@ export default {
           this.error = !this.error;
           console.error("login ERROR", err);
         });
+    },
+    detectEmpty() {
+      const detected = {
+        account: this.account,
+        password: this.password
+      };
+      if (!detected.account) this.empty_error.account = true;
+      if (!detected.password) this.empty_error.password = true;
+      return Object.entries(detected).some(item => !item[1]);
     }
   }
 };

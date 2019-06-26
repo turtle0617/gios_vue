@@ -76,7 +76,18 @@ section {
 }
 
 .error{
-    border: 1px solid red !important;
+    input:not(:placeholder-shown){
+      border: 1px solid red ;
+      ~ label{
+        color: red ;
+      }
+    }
+    input{
+      border: 1px solid red ;
+      ~ label{
+        color: red ;
+      }
+    }
     ~ span{
       font-size: 0.8rem;
       position: relative;
@@ -91,9 +102,7 @@ section {
         border-width: .5rem;
       }
     }
-    ~ label{
-      color: red !important;
-    }
+
 }
 
 

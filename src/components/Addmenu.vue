@@ -130,6 +130,7 @@ export default {
           return;
         }
         let meal = Object.assign({}, this.meal);
+        let copy_flavor_group = this.flavor_group.slice();
         const formated_date = this.Date.parse(this.choose_date).toString(
           "yyyy/MM/d"
         );
@@ -139,11 +140,10 @@ export default {
         meal = this.removeOptionIsNull(meal);
         const menu_id = await this.$store.dispatch("addDailyMenu", meal);
 
-        if (this.flavor_group) {
-          await this.addMenuFlavor(menu_id);
-        }
         this.resetMealForm();
-        console.log("dispatch retrieveDailyMenu");
+        if (copy_flavor_group) {
+          await this.addMenuFlavor(copy_flavor_group, menu_id);
+        }
         this.$store.dispatch("retrieveDailyMenu", {
           menu_date: formated_date
         });
@@ -164,11 +164,9 @@ export default {
     deleteFlavor(index) {
       this.flavor_group.splice(index, 1);
     },
-    addMenuFlavor(menu_id) {
-      const copy_flavor_group = this.flavor_group.slice();
-      this.flavor_group = [];
+    addMenuFlavor(flavor_group, menu_id) {
       return Promise.all(
-        copy_flavor_group.map(flavor => {
+        flavor_group.map(flavor => {
           return this.$store.dispatch("addMenuFlavor", {
             menu_id: menu_id,
             choice: flavor
@@ -185,6 +183,7 @@ export default {
         note: null
       };
       this.flavors = null;
+      this.flavor_group = [];
     },
     hideAllError() {
       this.not_number_error = false;
@@ -228,6 +227,7 @@ export default {
     max-height: none;
     thead {
       z-index: 1;
+      position: static;
     }
 
     select {
@@ -261,6 +261,7 @@ export default {
 .menutable__flavor {
   display: flex;
   flex-wrap: wrap;
+  @include tableColWidth(0, 180px);
   &--add {
     @include inputWidth(50%);
     display: flex;

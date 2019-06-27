@@ -29,7 +29,15 @@
             {{ convertGroupName(meal.group_id) }}
           </td>
           <td data-label="口味(用 / 區隔)" class="menu-list__flavor">
-            {{ convertFlavor(meal.flavors, index) }}
+            <div v-if="meal.flavors" class="flavor--item">
+              <span
+                v-for="(flavor, index) in meal.flavors"
+                :key="index"
+                class="flavor--item"
+              >
+                {{ flavor.choice }}
+              </span>
+            </div>
           </td>
           <td data-label="備註" class="menu-list__note">{{ meal.note }}</td>
         </tr>
@@ -78,7 +86,24 @@
             </select>
           </td>
           <td data-label="口味(用 / 區隔)" class="menu-list__flavor">
-            <input type="text" v-model.trim="change_flavors" />
+            <div class="change-flavor--add">
+              <input type="text" />
+              <button>新增</button>
+            </div>
+            <div v-if="change_flavors" class="change-flavor--list">
+              <div
+                v-for="(flavor, index) in change_flavors"
+                :key="index"
+                class="change-flavor--item"
+              >
+                <font-awesome-icon
+                  icon="times"
+                  size="lg"
+                  @click="deleteChangeFlavor(index)"
+                ></font-awesome-icon>
+                <span> {{ flavor.choice }} </span>
+              </div>
+            </div>
           </td>
           <td data-label="備註" class="menu-list__note">
             <input type="text" v-model.trim="change_meal.note" />
@@ -113,6 +138,7 @@ export default {
   },
   computed: {
     daily_menu() {
+      console.log("computed dailymenu");
       return this.$store.getters.daily_menu;
     },
     groups() {
@@ -121,7 +147,6 @@ export default {
   },
   methods: {
     convertFlavor(flavor, index) {
-      // console.log("convertFlavor",index);
       if (flavor.length > 0) {
         const flavor_name = flavor.map(item => item["choice"]).join("/");
         return flavor_name;
@@ -130,15 +155,12 @@ export default {
     },
     modifyMeal(original_meal, index = null) {
       this.modify = index;
-      const original_flavor = original_meal.flavors.length
-        ? original_meal.flavors.map(flavor => flavor.choice).join("/")
-        : null;
       for (let key in this.change_meal) {
         this.change_meal[key] = original_meal[key];
       }
       if (!this.change_meal.group_id) this.change_meal.group_id = "all";
 
-      this.change_flavors = original_flavor;
+      this.change_flavors = JSON.parse(JSON.stringify(original_meal.flavors));
     },
     async updateMeal(index) {
       try {
@@ -184,6 +206,9 @@ export default {
       } catch (e) {
         console.error(e);
       }
+    },
+    deleteChangeFlavor(index) {
+      this.change_flavors.splice(index, 1);
     },
     updateMenuFlavors(original_flavors) {
       if (original_flavors.length) {
@@ -237,32 +262,32 @@ export default {
       // }
     },
     async deleteMeal(meal_index) {
+      const formated_date = this.Date.parse(this.choose_date).toString(
+        "yyyy/MM/d"
+      );
       try {
-        const flavors = this.daily_menu[meal_index].flavors;
-        const formated_date = this.Date.parse(this.choose_date).toString(
-          "yyyy/MM/d"
-        );
-        console.log("await deleteDailyMeal", meal_index);
-        await this.$store.dispatch(
-          "deleteDailyMeal",
-          this.daily_menu[meal_index].id
-        );
+        const flavors = this.daily_menu[meal_index].flavors.slice();
+        await this.$store.dispatch("deleteDailyMeal", {
+          id: this.daily_menu[meal_index].id,
+          index: meal_index
+        });
         if (flavors.length > 0) {
-          console.log("await deleteflavor");
           await this.deleteFlavor(flavors);
         }
         this.$store.dispatch("retrieveDailyMenu", {
           menu_date: formated_date
         });
       } catch (e) {
+        this.$store.dispatch("retrieveDailyMenu", {
+          menu_date: formated_date
+        });
         console.error(e);
       }
     },
     deleteFlavor(flavors) {
-      flavors = flavors.map(flavor =>
-        this.$store.dispatch("deleteFlavor", flavor.id)
+      return Promise.all(
+        flavors.map(flavor => this.$store.dispatch("deleteFlavor", flavor.id))
       );
-      return Promise.all(flavors);
     },
     filterSameKey(index, data) {
       const change_meal = Object.entries(data);
@@ -314,6 +339,15 @@ export default {
   flex-grow: $grow;
   min-width: $minWidth;
 }
+%flexItem {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  border: 1px solid black;
+  &:before {
+    margin-right: 1rem;
+  }
+}
 .menu-list {
   width: 100%;
   overflow: visible;
@@ -325,29 +359,56 @@ export default {
   select {
     height: 44px;
   }
-  td {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    border: 1px solid black;
-    &:before {
-      margin-right: 1rem;
-    }
-  }
   &__button {
+    @extend %flexItem;
     @include tableColWidth(0, 75px);
   }
+  &__name {
+    @extend %flexItem;
+  }
   &__price {
+    @extend %flexItem;
     @include tableColWidth(0, 60px);
   }
   &__limited {
+    @extend %flexItem;
     @include tableColWidth(0, 60px);
   }
   &__group {
+    @extend %flexItem;
     @include tableColWidth(0, 100px);
   }
+  &__flavor {
+    @extend %flexItem;
+    @include tableColWidth(0, 100px);
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  &__note {
+    @extend %flexItem;
+  }
 }
-
+.change-flavor {
+  &--add {
+    input {
+      width: 100%;
+    }
+  }
+  &--list {
+    width: 100%;
+  }
+  &--item {
+    width: 100%;
+    & > :first-child {
+      color: red;
+      margin-right: 0.5rem;
+      cursor: pointer;
+    }
+    &:hover {
+      background-color: #e2e2e28f;
+    }
+  }
+}
 .error {
   border: 1px solid red;
   ~ span {

@@ -143,8 +143,11 @@ export default {
     };
   },
   created() {
-    this.member_profile = Object.assign({}, this.$store.state.member_profile);
-    this.original_profile = Object.assign({}, this.$store.state.member_profile);
+    this.member_profile = Object.assign({}, this.$store.getters.member_profile);
+    this.original_profile = Object.assign(
+      {},
+      this.$store.getters.member_profile
+    );
   },
   computed: {
     groups() {

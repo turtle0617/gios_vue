@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import API from "./axios.js";
+import Date from "./assets/js/date.js";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -10,7 +11,15 @@ export default new Vuex.Store({
     member_profile: JSON.parse(localStorage.getItem("user_profile")) || null,
     user_id: localStorage.getItem("user_id") || null,
     groups: JSON.parse(localStorage.getItem("groups")) || null,
-    daily_menu: JSON.parse(localStorage.getItem("daily_menu")) || null
+    daily_menu: JSON.parse(localStorage.getItem("daily_menu")) || null,
+    member_daily_menu:
+      JSON.parse(localStorage.getItem("member_daily_menu")) || null,
+    order_amountStatistic:
+      JSON.parse(localStorage.getItem("order_amountStatistic")) || [],
+    order_detailStatistic:
+      JSON.parse(localStorage.getItem("order_detailStatistic")) || {},
+    date_range: 7,
+    week_range: 4
   },
   getters: {
     loggedIn(state) {
@@ -21,6 +30,52 @@ export default new Vuex.Store({
     },
     daily_menu(state) {
       return state.daily_menu;
+    },
+    member_order_menu(state) {
+      const order_amountStatistic = state.order_amountStatistic;
+      if (!state.member_daily_menu) return [];
+      return state.member_daily_menu.map((meal, index) => {
+        const new_meal = {};
+        const id = meal["id"];
+        new_meal["id"] = meal["id"];
+        new_meal["name"] = meal["name"];
+        new_meal["meal_note"] = meal["note"];
+        new_meal["price"] = meal["price"];
+        new_meal["quantity_limit"] = meal["quantity_limit"];
+        new_meal["orders"] = state.order_detailStatistic[id];
+        // new_meal["default_rice"] = profile["rice"];
+        // new_meal["default_vegetable"] = profile["vegetable"];
+
+        new_meal["amount"] = order_amountStatistic[index]["amount"];
+        return new_meal;
+      });
+    },
+    member_profile(state) {
+      return state.member_profile;
+    },
+    date_range(state) {
+      const range = new Array(state.date_range).fill(0);
+      return range.map((item, index) => {
+        const date = Date.today()
+          .add(index)
+          .day();
+        return date.toString("M/dd");
+      });
+    },
+    week_range(state) {
+      const range = new Array(state.week_range).fill(0);
+      return range.map((item, index) => {
+        const first_day_of_week = Date.mon().add({
+          weeks: index
+        });
+        const last_day_of_week = Date.mon().add({
+          weeks: index,
+          days: 6
+        });
+        return `${first_day_of_week.toString(
+          "M/dd"
+        )}~${last_day_of_week.toString("M/dd")}`;
+      });
     }
   },
   mutations: {
@@ -44,21 +99,59 @@ export default new Vuex.Store({
     retrieveGroups(state, groups) {
       state.groups = groups;
     },
+    retrieveMemberDailyMenu(state, menu) {
+      const menu_id_entries = menu.map(item => [item["id"], []]);
+      state.member_daily_menu = menu;
+      state.order_amountStatistic = menu.map(item => {
+        return {
+          meal_id: item.id,
+          amount: 0
+        };
+      });
+      state.order_detailStatistic = Object.fromEntries(menu_id_entries);
+      localStorage.setItem("member_daily_menu", JSON.stringify(menu));
+      localStorage.setItem(
+        "order_amountStatistic",
+        JSON.stringify(state.order_amountStatistic)
+      );
+    },
     retrieveDailyMenu(state, menu) {
+      localStorage.setItem("daily_menu", JSON.stringify(menu));
       state.daily_menu = menu;
+    },
+    updateMemberOrderAmountStatistic(state, detail) {
+      const index = detail.index;
+      state.order_amountStatistic[index].amount += detail.amount;
+    },
+    updateMemberOrderDetailStatistic(state, detail) {
+      const status = detail.status;
+      if (status === "increase") {
+        const profile = state.member_profile;
+        const new_meal = {
+          id: detail.meal_id,
+          flavor_id: detail.flavor_id || null,
+          quantity: 1,
+          note: profile.note,
+          user_rice: profile.rice,
+          user_vegetable: profile.vegetable
+        };
+        state.order_detailStatistic[detail.meal_id].push(new_meal);
+      } else {
+        state.order_detailStatistic[detail.meal_id].splice(-1, 1);
+      }
     },
     updateDailyMenu(state, meal) {
       const index = state.daily_menu.findIndex(item => {
         return (item["id"] = meal["id"]);
       });
       if (!meal["flavors"]) meal["flavors"] = [];
-
-      console.log("commit updateDailyMenu", meal, state.daily_menu[index]);
       state.daily_menu[index] = meal;
-      console.log("commit success", state.daily_menu[index]);
     },
     updateGroups(state, data) {
       state.groups[data.index] = data.change_group;
+    },
+    deleteDailyMeal(state, index) {
+      state.daily_menu.splice(index, 1);
     },
     destroyAuthDetail(state) {
       state.token = null;
@@ -75,10 +168,18 @@ export default new Vuex.Store({
         throw e.response.data.message;
       }
     },
+    async retrieveMemberDailyMenu({ state, commit }, date) {
+      try {
+        let { data } = await API.GET("/viewmenus", state.token, date);
+        commit("retrieveMemberDailyMenu", data);
+        return data;
+      } catch (e) {
+        throw e.response.data.message;
+      }
+    },
     async retrieveDailyMenu({ state, commit }, date) {
       try {
         let { data } = await API.GET("/dailymenu", state.token, date);
-        localStorage.setItem("daily_menu", JSON.stringify(data));
         commit("retrieveDailyMenu", data);
         return data;
       } catch (e) {
@@ -96,7 +197,6 @@ export default new Vuex.Store({
     },
     async addMenuFlavor({ state }, data) {
       try {
-        console.log("action add flavor");
         let res = await API.POST("/flavors", state.token, data);
         if (typeof res.data === "string") throw res;
         return res;
@@ -112,7 +212,6 @@ export default new Vuex.Store({
           data.change_meal
         );
         if (typeof res.data === "string") throw res;
-        console.log("res", res.data);
         commit("updateDailyMenu", res.data);
         return res;
       } catch (e) {
@@ -121,7 +220,6 @@ export default new Vuex.Store({
     },
     async updateMenuFlavor({ state, commit }, data) {
       try {
-        console.log("action updateMenuFlavor");
         let res = await API.PATCH(
           `/flavors/${data.flavor_id}`,
           state.token,
@@ -133,9 +231,10 @@ export default new Vuex.Store({
         throw e.response.data.message;
       }
     },
-    async deleteDailyMeal({ state }, meal_id) {
+    async deleteDailyMeal({ state, commit }, data) {
       try {
-        let res = await API.DELETE("/menus", meal_id, state.token);
+        commit("deleteDailyMeal", data.index);
+        let res = await API.DELETE("/menus", data.id, state.token);
         return res;
       } catch (e) {
         throw e;

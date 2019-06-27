@@ -52,7 +52,7 @@ export default {
       console.log("hi", val, oldval);
       this.$store
         .dispatch("retrieveDailyMenu", {
-          menu_date: this.Date.parse(val).toString("yyyy/MM/d")
+          menu_date: this.Date.parse(val).toString("yyyy/MM/dd")
         })
         .catch(err => {
           console.error(err);

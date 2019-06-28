@@ -129,6 +129,7 @@ export default new Vuex.Store({
         const profile = state.member_profile;
         const new_meal = {
           id: detail.meal_id,
+          name: detail.meal_name,
           flavor_id: detail.flavor_id || null,
           quantity: 1,
           note: profile.note,

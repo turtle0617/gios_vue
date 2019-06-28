@@ -1,21 +1,18 @@
 <template>
-  <div class="order">
+  <div class="order-container ">
     <Header />
-    <div class="container">
-      <Order_table />
-    </div>
+    <Order_menu />
   </div>
 </template>
 
 <script>
 import Header from "@/components/Header.vue";
-import Order_table from "@/components/Order_table.vue";
+import Order_menu from "@/components/Order_menu.vue";
 export default {
   name: "order",
   components: {
     Header,
-    Order_table
+    Order_menu
   }
 };
 </script>
-<style scoped lang="scss"></style>

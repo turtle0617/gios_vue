@@ -1,6 +1,6 @@
 <template>
-  <header class="header">
-    <div class="header__container">
+  <header class="header hero">
+    <div class="header__notification notification">
       <template v-if="loggedIn === 'member'">
         <router-link :to="{ name: 'home' }" class="logo"
           >田阿姨便當</router-link
@@ -31,6 +31,11 @@
           <router-link :to="{ name: 'history' }">歷史訂單</router-link>
           <router-link :to="{ name: 'logout' }">登出</router-link>
         </nav>
+      </template>
+      <template v-else>
+        <router-link :to="{ name: 'home' }" class="logo"
+          >田阿姨便當</router-link
+        >
       </template>
     </div>
   </header>
@@ -67,17 +72,16 @@ export default {
 };
 </script>
 <style scoped lang="scss">
-.header {
-  overflow: visible;
-  height: auto;
-  &__container {
-    width: 90%;
-    margin: 0 auto;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
+.header__notification {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  a:not(.button):not(.dropdown-item) {
+    text-decoration: none;
   }
+}
+.logo {
+  font-size: 2rem;
 }
 .dropdown {
   position: relative;

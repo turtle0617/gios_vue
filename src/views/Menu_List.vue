@@ -36,38 +36,29 @@ export default {
   },
   data() {
     return {
-      date_range: null,
       choose_date: null
     };
   },
   created() {
-    this.date_range = this.generateDateRange(7);
     this.choose_date = this.date_range[0];
     this.$store.dispatch("retrieveGroups").then(res => {
       this.groups = res;
     });
   },
+  computed:{
+    date_range() {
+      return this.$store.getters.date_range;
+    }
+  },
   watch: {
-    choose_date: function(val, oldval) {
-      console.log("hi", val, oldval);
+    choose_date: function(date) {
       this.$store
         .dispatch("retrieveDailyMenu", {
-          menu_date: this.Date.parse(val).toString("yyyy/MM/dd")
+          menu_date: this.Date.parse(date).toString("yyyy/MM/dd")
         })
         .catch(err => {
           console.error(err);
         });
-    }
-  },
-  methods: {
-    generateDateRange(num) {
-      let range = new Array(num).fill(0);
-      return range.map((item, index) => {
-        const date = Date.today()
-          .add(index)
-          .day();
-        return date.toString("M/d");
-      });
     }
   }
 };

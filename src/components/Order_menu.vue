@@ -4,7 +4,7 @@
       <div class="menu-title__date column is-two-fifths">
         <label for="menuDate">日期</label>
         <div class="select ">
-          <select class="group--select" name="menuDate">
+          <select class="group--select" name="menuDate" v-model="choose_date">
             <option
               v-for="(date, index) in date_range"
               :value="date"
@@ -137,11 +137,14 @@
 export default {
   name: "order_table",
   data() {
-    return {};
+    return {
+      choose_date: ""
+    };
   },
   created() {
-    const first_date = this.$store.getters.date_range[0];
+    const first_date = this.date_range[0];
     const formated_date = this.Date.parse(first_date).toString("yyyy/MM/dd");
+    this.choose_date = this.date_range[0];
     this.$store.dispatch("retrieveMemberDailyMenu", {
       menu_date: formated_date
     });
@@ -152,6 +155,14 @@ export default {
     },
     member_order_menu() {
       return this.$store.getters.member_order_menu;
+    }
+  },
+  watch:{
+    choose_date:function(date){
+      const formated_date = this.Date.parse(date).toString("yyyy/MM/dd");
+      this.$store.dispatch("retrieveMemberDailyMenu", {
+        menu_date: formated_date
+      });
     }
   },
   methods: {

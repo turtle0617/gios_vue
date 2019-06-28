@@ -59,7 +59,7 @@ export default new Vuex.Store({
         const date = Date.today()
           .add(index)
           .day();
-        return date.toString("M/dd");
+        return date.toString("MM/dd");
       });
     },
     week_range(state) {

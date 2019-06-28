@@ -2,9 +2,7 @@
   <div class="home">
     <Header />
     <div class="container">
-      <div class="row ">
-        <Auth_login />
-      </div>
+      <Auth_login />
     </div>
   </div>
 </template>

@@ -45,7 +45,7 @@ export default {
       this.groups = res;
     });
   },
-  computed:{
+  computed: {
     date_range() {
       return this.$store.getters.date_range;
     }

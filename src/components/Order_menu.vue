@@ -157,8 +157,8 @@ export default {
       return this.$store.getters.member_order_menu;
     }
   },
-  watch:{
-    choose_date:function(date){
+  watch: {
+    choose_date: function(date) {
       const formated_date = this.Date.parse(date).toString("yyyy/MM/dd");
       this.$store.dispatch("retrieveMemberDailyMenu", {
         menu_date: formated_date

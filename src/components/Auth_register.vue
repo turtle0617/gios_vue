@@ -1,76 +1,67 @@
 <template>
   <section class="register-detail col-sm-12 col-md-6 col-lg-4 ">
     <form @submit.prevent="register">
-      <fieldset id="register__form">
-        <legend>註冊</legend>
-        <div class="row">
-          <div
-            class="col-sm-12 col-md-12 input-box"
-            :class="{ error: empty_error.name }"
+      <h1>註冊</h1>
+      <div class="field">
+        <div class="input-box control" :class="{ error: empty_error.name }">
+          <input
+            type="text"
+            v-model.trim="member.name"
+            @focus="empty_error.name = false"
+            id="register__name"
+            class="input"
+            placeholder=" "
+          />
+          <span v-if="empty_error.name">不得為空</span>
+          <label for="register__name">使用者名稱</label>
+        </div>
+      </div>
+      <div class="field">
+        <div class="input-box control" :class="{ error: empty_error.account }">
+          <input
+            type="text"
+            v-model.trim="member.account"
+            @focus="empty_error.account = false"
+            id="register__account"
+            class="input"
+            placeholder=" "
+          />
+          <span v-if="empty_error.account">不得為空</span>
+          <label for="register__account">使用者帳戶</label>
+        </div>
+      </div>
+      <div class="field">
+        <div class="input-box" :class="{ error: empty_error.password }">
+          <input
+            type="password"
+            v-model.trim="member.password"
+            @focus="empty_error.password = false"
+            id="register__code"
+            class="input"
+            placeholder=" "
+          />
+          <span v-if="empty_error.password">不得為空</span>
+          <label for="register__code">密碼</label>
+        </div>
+      </div>
+      <div class="field">
+        <div class="input-box control select">
+          <select
+            v-model="member.group_id"
+            class="group--select"
+            name="register__group"
           >
-            <input
-              type="text"
-              v-model.trim="member.name"
-              @focus="empty_error.name = false"
-              id="register__name"
-              placeholder=" "
-            />
-            <span v-if="empty_error.name">不得為空</span>
-            <label for="register__name">使用者名稱</label>
-          </div>
+            <option v-for="group in groups" :value="group.id" :key="group.id">{{
+              group.name
+            }}</option>
+          </select>
+          <label for="register__group">團體</label>
         </div>
-        <div class="row">
-          <div
-            class="col-sm-12 col-md-12 input-box"
-            :class="{ error: empty_error.account }"
-          >
-            <input
-              type="text"
-              v-model.trim="member.account"
-              @focus="empty_error.account = false"
-              id="register__account"
-              placeholder=" "
-            />
-            <span v-if="empty_error.account">不得為空</span>
-            <label for="register__account">使用者帳戶</label>
-          </div>
-        </div>
-        <div class="row">
-          <div
-            class="col-sm-12 col-md-12 input-box"
-            :class="{ error: empty_error.password }"
-          >
-            <input
-              type="password"
-              v-model.trim="member.password"
-              @focus="empty_error.password = false"
-              id="register__code"
-              placeholder=" "
-            />
-            <span v-if="empty_error.password">不得為空</span>
-            <label for="register__code">密碼</label>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-sm-12 col-md-12 input-box">
-            <select
-              v-model="member.group_id"
-              class="group--select"
-              name="register__group"
-            >
-              <option
-                v-for="group in groups"
-                :value="group.id"
-                :key="group.id"
-                >{{ group.name }}</option
-              >
-            </select>
-            <label for="register__group">團體</label>
-          </div>
-        </div>
-        <button class="primary large" type="submit">註冊</button>
-        <a href="/">登入</a>
-      </fieldset>
+      </div>
+      <button class="button is-info" type="submit">註冊</button>
+      <router-link :to="{ name: 'home' }">
+        登入
+      </router-link>
     </form>
   </section>
 </template>
@@ -107,7 +98,6 @@ export default {
   methods: {
     register() {
       const is_empty = this.detectEmpty();
-      console.log(is_empty);
       if (is_empty) return;
       this.$store
         .dispatch("register", this.member)

@@ -1,6 +1,6 @@
 <template>
-  <section class="addmenu row">
-    <table class="menu__meal col-md-12">
+  <section class="addmenu section">
+    <table class="menu__meal table is-bordered">
       <thead>
         <tr>
           <th class="menutable__name">名稱</th>
@@ -15,6 +15,7 @@
         <tr>
           <td data-label="名稱" class="menutable__name">
             <input
+              class="input"
               type="text"
               :class="{ error: empty_error.name }"
               v-model.trim="meal.name"
@@ -23,6 +24,7 @@
           </td>
           <td data-label="價格" class="menutable__price">
             <input
+              class="input"
               type="tel"
               :class="{ error: empty_error.price }"
               v-model.number="meal.price"
@@ -31,6 +33,7 @@
           </td>
           <td data-label="限量(份數)" class="menutable__limited">
             <input
+              class="input"
               type="tel"
               v-model.number="meal.quantity_limit"
               :class="{ error: not_number_error }"
@@ -38,24 +41,31 @@
             <span v-if="not_number_error">請填數字</span>
           </td>
           <td data-label="團體" class="menutable__group">
-            <select v-if="groups" class="group--select" v-model="meal.group_id">
-              <option value="all">全體</option>
-              <option
-                v-for="group in groups"
-                :value="group.id"
-                :key="group.id"
-                >{{ group.name }}</option
+            <div class="select">
+              <select
+                v-if="groups"
+                class="group--select"
+                v-model="meal.group_id"
               >
-            </select>
+                <option value="all">全體</option>
+                <option
+                  v-for="group in groups"
+                  :value="group.id"
+                  :key="group.id"
+                  >{{ group.name }}</option
+                >
+              </select>
+            </div>
           </td>
           <td data-label="口味" class="menutable__flavor">
             <div class="menutable__flavor--add">
               <input
+                class="input"
                 type="text"
                 v-model.trim="flavor"
                 @keypress.enter="addFlavor"
               />
-              <button @click="addFlavor">新增</button>
+              <button @click="addFlavor" class="button is-light">新增</button>
             </div>
             <div v-if="flavor_group.length" class="menutable__flavor--show">
               <div
@@ -73,7 +83,7 @@
             </div>
           </td>
           <td data-label="備註" class="menutable__note">
-            <input type="text" v-model.trim="meal.note" />
+            <input class="input" type="text" v-model.trim="meal.note" />
           </td>
         </tr>
       </tbody>
@@ -81,10 +91,10 @@
         <button
           type="button"
           name="button"
-          class="primary"
+          class="button is-info"
           @click.prevent="addMeal"
         >
-          送出
+          新增餐點
         </button>
       </tfoot>
     </table>
@@ -210,62 +220,15 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@mixin tableColWidth($grow, $minWidth) {
-  flex-grow: $grow;
-  min-width: $minWidth;
-}
-@mixin inputWidth($width) {
-  input {
-    width: $width;
-    border-radius: 6px;
-  }
-}
-.addmenu {
-  table {
-    width: 100%;
-    overflow: visible;
-    max-height: none;
-    thead {
-      z-index: 1;
-      position: static;
-    }
-
-    select {
-      height: 44px;
-    }
-    tfoot {
-      width: 100%;
-      text-align: right;
-      button {
-        border-radius: 6px;
-        padding: 20px 40px;
-      }
-    }
-  }
-}
-.menutable__name {
-  @include inputWidth(100%);
-}
-.menutable__price {
-  @include inputWidth(100%);
-  @include tableColWidth(0, 60px);
-}
-.menutable__limited {
-  @include inputWidth(100%);
-  @include tableColWidth(0, 80px);
-}
-.menutable__group {
-  @include inputWidth(100%);
-  @include tableColWidth(0, 110px);
-}
 .menutable__flavor {
   display: flex;
   flex-wrap: wrap;
-  @include tableColWidth(0, 180px);
   &--add {
-    @include inputWidth(50%);
     display: flex;
     flex-wrap: nowrap;
+    button {
+      margin-left: 1rem;
+    }
   }
   &--show {
     padding: 0 1rem;
@@ -283,9 +246,6 @@ export default {
   &:hover {
     background-color: #e2e2e28f;
   }
-}
-.menutable__note {
-  @include inputWidth(100%);
 }
 
 .error {

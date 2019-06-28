@@ -1,38 +1,46 @@
 <template>
   <section class="groups_detail row">
     <div class="card add-group">
-      <div class="input-box" :class="{ error: error }">
-        <input
-          type="text"
-          @focus="error = false"
-          v-model.trim="new_groupName"
-          @keypress.enter="addGroup"
-          placeholder=" "
-        />
-        <span v-if="error">名稱重複或為空</span>
-        <label for="register__name">團體名稱</label>
+      <div class="card-header">
+        <h1 class="card-header-title">
+          新增團體
+        </h1>
       </div>
-      <div class="timelimit input-box">
-        <select v-model.number="new_groupTimelimit" id="timelimit">
-          <option value="0">否</option>
-          <option value="1">是</option>
-        </select>
-        <label for="timelimit">收單時間限制</label>
+      <div class="card-content">
+        <div class="input-box " :class="{ error: error }">
+          <input
+            type="text"
+            @focus="error = false"
+            v-model.trim="new_groupName"
+            @keypress.enter="addGroup"
+            placeholder=" "
+            class="input"
+          />
+          <span v-if="error">名稱重複或為空</span>
+          <label for="register__name">團體名稱</label>
+        </div>
+        <div class="timelimit input-box select">
+          <select v-model.number="new_groupTimelimit" id="timelimit">
+            <option value="0">否</option>
+            <option value="1">是</option>
+          </select>
+          <label for="timelimit">收單時間限制</label>
+        </div>
+        <div class="time" v-if="new_groupTimelimit == '1'">
+          <label for="timelimit">收單時間</label>
+          <date-picker
+            v-model="new_groupTime"
+            type="time"
+            value-type="format"
+            @focus="error_time = false"
+            :time-picker-options="time_range"
+            format="HH:mm"
+            placeholder="Select Time"
+          ></date-picker>
+          <span v-if="error_time">請填寫時間</span>
+        </div>
+        <button class="button is-info" @click="addGroup">新增</button>
       </div>
-      <div class="time" v-if="new_groupTimelimit == '1'">
-        <label for="timelimit">收單時間</label>
-        <date-picker
-          v-model="new_groupTime"
-          type="time"
-          value-type="format"
-          @focus="error_time = false"
-          :time-picker-options="time_range"
-          format="HH:mm"
-          placeholder="Select Time"
-        ></date-picker>
-        <span v-if="error_time">請填寫時間</span>
-      </div>
-      <button class="primary" @click="addGroup">新增</button>
     </div>
     <div
       v-for="(group, index) in groups"
@@ -40,23 +48,30 @@
       class="card group-info"
     >
       <div class="group-show" v-if="modify !== index">
-        <h3>{{ group.name }}</h3>
-        <h4>
-          收單時間限制 ：
-          {{ translateTimeLimit(group.time_limit) }}
-        </h4>
+        <div class="content is-medium group-show__name">
+          <h3>{{ group.name }}</h3>
+        </div>
+        <div class="group-show__timeLimite">
+          <h4>
+            收單時間限制 ：
+            {{ translateTimeLimit(group.time_limit) }}
+          </h4>
+        </div>
+
         <h4 v-if="group.time_limit">
           收單時間 : {{ parseTime(group.preset_time) }}
         </h4>
         <button
-          class="primary"
+          class="button is-info"
           @click="
             modifyGroup(group.name, group.time_limit, group.preset_time, index)
           "
         >
           修改
         </button>
-        <button class="secondary" @click="deleteGroup(group.id)">刪除</button>
+        <button class="button is-danger" @click="deleteGroup(group.id)">
+          刪除
+        </button>
       </div>
       <div class="group-modify" v-else>
         <div class="groupName input-box" :class="{ error: changeName_error }">
@@ -64,14 +79,14 @@
             type="text"
             @focus="changeName_error = false"
             v-model="change_group.name"
-            class="input-box__name"
+            class="input-box__name input"
             id="change-groupName"
             placeholder=" "
           />
           <span v-if="changeName_error">名稱重複或為空</span>
           <label for="change-groupName">更改團體名稱</label>
         </div>
-        <div class="timelimit input-box">
+        <div class="timelimit select input-box">
           <select v-model="change_group.time_limit" id="change-timelimit">
             <option value="0">否</option>
             <option value="1">是</option>
@@ -90,10 +105,11 @@
           ></date-picker>
           <span v-if="changeTime_error">請填寫時間</span>
         </div>
-        <button class="primary" @click="updateGroup(group.id, index)">
+        <button class="button is-info" @click="updateGroup(group.id, index)">
           送出
         </button>
         <button
+          class="button "
           @click="modifyGroup(group.name, group.time_limit, group.preset_time)"
         >
           取消
@@ -254,13 +270,22 @@ export default {
 .group-info {
   text-align: center;
 }
+.group-show__timeLimite {
+  margin-bottom: 1rem;
+}
 .card {
   padding: 20px;
   overflow: visible;
+  button {
+    margin-right: 1rem;
+  }
 }
 .time {
   label {
     display: block;
   }
+}
+.timelimit {
+  width: 100%;
 }
 </style>

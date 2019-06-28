@@ -2,8 +2,8 @@
   <div class="menu">
     <Header />
     <div class="menu-date container">
-      <div class="menutable__date">
-        <label for="orderDate">日期</label>
+      <label for="orderDate">日期</label>
+      <div class="select">
         <select class="group--select" name="orderDate" v-model="choose_date">
           <option
             v-for="(day, index) in date_range"
@@ -14,12 +14,8 @@
         </select>
       </div>
     </div>
-    <div class="container">
-      <Addmenu :choose_date="choose_date" />
-    </div>
-    <div class="container">
-      <Menu_ListTable :choose_date="choose_date" />
-    </div>
+    <Addmenu :choose_date="choose_date" />
+    <Menu_ListTable :choose_date="choose_date" />
   </div>
 </template>
 
@@ -67,5 +63,10 @@ export default {
 .menu-date {
   margin-top: 50px;
   margin-bottom: 1rem;
+  display: flex;
+  align-items: flex-end;
+  label {
+    font-size: 1.5rem;
+  }
 }
 </style>

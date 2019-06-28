@@ -20,17 +20,60 @@
         </div>
       </template>
       <template v-else-if="loggedIn === 'boss'">
-        <router-link :to="{ name: 'statistic' }" class="logo"
-          >田阿姨便當</router-link
-        >
-        <nav class="menuNavbar">
-          <router-link :to="{ name: 'bill' }">收錢</router-link>
-          <router-link :to="{ name: 'groups' }">管理團體</router-link>
-          <router-link :to="{ name: 'menu' }">新增菜單</router-link>
-          <router-link :to="{ name: 'statistic' }">訂單</router-link>
-          <router-link :to="{ name: 'history' }">歷史訂單</router-link>
-          <router-link :to="{ name: 'logout' }">登出</router-link>
+        <div class="navbar">
+          <router-link :to="{ name: 'statistic' }" class="logo navbar-brand"
+            >田阿姨便當</router-link
+          >
+        </div>
+
+        <nav class="menuNavbar navbar">
+          <div class="navbar-menu">
+            <router-link class="navbar-item" :to="{ name: 'bill' }"
+              >收錢</router-link
+            >
+            <router-link class="navbar-item" :to="{ name: 'groups' }"
+              >管理團體</router-link
+            >
+            <router-link class="navbar-item" :to="{ name: 'menu' }"
+              >新增菜單</router-link
+            >
+            <router-link class="navbar-item" :to="{ name: 'statistic' }"
+              >訂單</router-link
+            >
+            <router-link class="navbar-item" :to="{ name: 'history' }"
+              >歷史訂單</router-link
+            >
+            <router-link class="navbar-item" :to="{ name: 'logout' }"
+              >登出</router-link
+            >
+          </div>
         </nav>
+
+        <div class="link-select navbar-burger burger " @click="showDropDown">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <div v-if="is_show" class="navbar mobile-nav">
+            <router-link class="navbar-item" :to="{ name: 'bill' }"
+              >收錢</router-link
+            >
+            <router-link class="navbar-item" :to="{ name: 'groups' }"
+              >管理團體</router-link
+            >
+            <router-link class="navbar-item" :to="{ name: 'menu' }"
+              >新增菜單</router-link
+            >
+            <router-link class="navbar-item" :to="{ name: 'statistic' }"
+              >訂單</router-link
+            >
+            <router-link class="navbar-item" :to="{ name: 'history' }"
+              >歷史訂單</router-link
+            >
+            <router-link class="navbar-item" :to="{ name: 'logout' }"
+              >登出</router-link
+            >
+          </div>
+        </div>
       </template>
       <template v-else>
         <router-link :to="{ name: 'home' }" class="logo"
@@ -46,7 +89,8 @@ export default {
   name: "Header",
   data() {
     return {
-      visible: false
+      visible: false,
+      is_show: false
     };
   },
   destroyed() {
@@ -67,6 +111,9 @@ export default {
       if (el !== target && !el.contains(target)) {
         this.visible = false;
       }
+    },
+    showDropDown() {
+      this.is_show = !this.is_show;
     }
   }
 };
@@ -104,6 +151,14 @@ export default {
       background-color: rgba(0, 0, 0, 0.2);
     }
   }
+}
+.burger .mobile-nav {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
 .menuNavbar {
   border: none;

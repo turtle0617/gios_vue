@@ -33,7 +33,7 @@
           />
         </div>
       </div>
-      <button class="primary large" type="submit">登入</button>
+      <button class="button is-info" type="submit">登入</button>
     </form>
   </section>
 </template>

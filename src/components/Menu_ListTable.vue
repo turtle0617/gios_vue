@@ -1,117 +1,138 @@
 <template>
-  <table class="menu-list">
-    <thead>
-      <tr>
-        <th class="menu-list__button"></th>
-        <th class="menu-list__name">名稱</th>
-        <th class="menu-list__price">價格</th>
-        <th class="menu-list__limited">限量</th>
-        <th class="menu-list__group">團體</th>
-        <th class="menu-list__flavor">口味</th>
-        <th class="menu-list__note">備註</th>
-      </tr>
-    </thead>
-    <tbody>
-      <template v-for="(meal, index) in daily_menu">
-        <tr v-if="modify !== index" class="meal-show" :key="meal.id">
-          <td data-label="" class="menu-list__button">
-            <button class="secondary" @click="deleteMeal(index)">刪除</button>
-            <button class="primary" @click="modifyMeal(meal, index)">
-              修改
-            </button>
-          </td>
-          <td data-label="名稱" class="menu-list__name">{{ meal.name }}</td>
-          <td data-label="價格" class="menu-list__price">{{ meal.price }}</td>
-          <td data-label="限量(份數)" class="menu-list__limited">
-            {{ meal.quantity_limit }}
-          </td>
-          <td data-label="團體" class="menu-list__group">
-            {{ convertGroupName(meal.group_id) }}
-          </td>
-          <td data-label="口味(用 / 區隔)" class="menu-list__flavor">
-            <div v-if="meal.flavors" class="flavor--item">
-              <span
-                v-for="(flavor, index) in meal.flavors"
-                :key="index"
-                class="flavor--item"
-              >
-                {{ flavor.choice }}
-              </span>
-            </div>
-          </td>
-          <td data-label="備註" class="menu-list__note">{{ meal.note }}</td>
+  <section class="section">
+    <table class="menu-list table is-fullwidth">
+      <thead>
+        <tr>
+          <th class="menu-list__button"></th>
+          <th class="menu-list__name">名稱</th>
+          <th class="menu-list__price">價格</th>
+          <th class="menu-list__limited">限量</th>
+          <th class="menu-list__group">團體</th>
+          <th class="menu-list__flavor">口味</th>
+          <th class="menu-list__note">備註</th>
         </tr>
-        <tr v-else class="meal-modify" :key="meal.id">
-          <td data-label="" class="menu-list__button">
-            <button class="primary" @click="updateMeal(index)">送出</button>
-            <button @click="modifyMeal(meal)">取消</button>
-          </td>
-          <td data-label="名稱" class="menu-list__name">
-            <input
-              type="text"
-              :class="{ error: empty_error.name }"
-              v-model.trim="change_meal.name"
-            />
-            <span v-if="empty_error.name">不得為空</span>
-          </td>
-          <td data-label="價格" class="menu-list__price">
-            <input
-              type="tel"
-              :class="{ error: empty_error.price }"
-              v-model.number="change_meal.price"
-            />
-            <span v-if="empty_error.price">請填數字</span>
-          </td>
-          <td data-label="限量(份數)" class="menu-list__limited">
-            <input
-              type="tel"
-              v-model.number="change_meal.quantity_limit"
-              :class="{ error: not_number_error }"
-            />
-            <span v-if="not_number_error">請填數字</span>
-          </td>
-          <td data-label="團體" class="menu-list__group">
-            <select
-              v-if="groups"
-              class="group--select"
-              v-model="change_meal.group_id"
-            >
-              <option value="all">全體</option>
-              <option
-                v-for="group in groups"
-                :value="group.id"
-                :key="group.id"
-                >{{ group.name }}</option
-              >
-            </select>
-          </td>
-          <td data-label="口味(用 / 區隔)" class="menu-list__flavor">
-            <div class="change-flavor--add">
-              <input type="text" />
-              <button>新增</button>
-            </div>
-            <div v-if="change_flavors" class="change-flavor--list">
-              <div
-                v-for="(flavor, index) in change_flavors"
-                :key="index"
-                class="change-flavor--item"
-              >
-                <font-awesome-icon
-                  icon="times"
-                  size="lg"
-                  @click="deleteChangeFlavor(index)"
-                ></font-awesome-icon>
-                <span> {{ flavor.choice }} </span>
+      </thead>
+      <tbody>
+        <template v-for="(meal, index) in daily_menu">
+          <tr v-if="modify !== index" class="meal-show" :key="meal.id">
+            <td class="menu-list__button">
+              <div class="list-button">
+                <button class="button is-danger" @click="deleteMeal(index)">
+                  刪除
+                </button>
+                <button class="button is-info" @click="modifyMeal(meal, index)">
+                  修改
+                </button>
               </div>
-            </div>
-          </td>
-          <td data-label="備註" class="menu-list__note">
-            <input type="text" v-model.trim="change_meal.note" />
-          </td>
-        </tr>
-      </template>
-    </tbody>
-  </table>
+            </td>
+            <td class="menu-list__name">{{ meal.name }}</td>
+            <td class="menu-list__price">{{ meal.price }}</td>
+            <td class="menu-list__limited">
+              {{ meal.quantity_limit }}
+            </td>
+            <td class="menu-list__group">
+              {{ convertGroupName(meal.group_id) }}
+            </td>
+            <td data-label="口味(用 / 區隔)" class="menu-list__flavor">
+              <div v-if="meal.flavors" class="flavor--item">
+                <span
+                  v-for="(flavor, index) in meal.flavors"
+                  :key="index"
+                  class="flavor--item"
+                >
+                  {{ flavor.choice }}
+                </span>
+              </div>
+            </td>
+            <td class="menu-list__note">{{ meal.note }}</td>
+          </tr>
+          <tr v-else class="meal-modify" :key="meal.id">
+            <td class="menu-list__button">
+              <div class="list-button">
+                <button class="button is-info" @click="updateMeal(index)">
+                  送出
+                </button>
+                <button class="button is-light" @click="modifyMeal(meal)">
+                  取消
+                </button>
+              </div>
+            </td>
+            <td class="menu-list__name">
+              <input
+                class="input"
+                type="text"
+                :class="{ error: empty_error.name }"
+                v-model.trim="change_meal.name"
+              />
+              <span v-if="empty_error.name">不得為空</span>
+            </td>
+            <td class="menu-list__price">
+              <input
+                class="input"
+                type="tel"
+                :class="{ error: empty_error.price }"
+                v-model.number="change_meal.price"
+              />
+              <span v-if="empty_error.price">請填數字</span>
+            </td>
+            <td class="menu-list__limited">
+              <input
+                class="input"
+                type="tel"
+                v-model.number="change_meal.quantity_limit"
+                :class="{ error: not_number_error }"
+              />
+              <span v-if="not_number_error">請填數字</span>
+            </td>
+            <td class="menu-list__group">
+              <div class="select">
+                <select
+                  v-if="groups"
+                  class="group--select"
+                  v-model="change_meal.group_id"
+                >
+                  <option value="all">全體</option>
+                  <option
+                    v-for="group in groups"
+                    :value="group.id"
+                    :key="group.id"
+                    >{{ group.name }}</option
+                  >
+                </select>
+              </div>
+            </td>
+            <td class="menu-list__flavor">
+              <div class="change-flavor--add">
+                <input class="input" type="text" />
+                <button class="button is-light">新增</button>
+              </div>
+              <div v-if="change_flavors" class="change-flavor--list">
+                <div
+                  v-for="(flavor, index) in change_flavors"
+                  :key="index"
+                  class="change-flavor--item"
+                >
+                  <font-awesome-icon
+                    icon="times"
+                    size="lg"
+                    @click="deleteChangeFlavor(index)"
+                  ></font-awesome-icon>
+                  <span> {{ flavor.choice }} </span>
+                </div>
+              </div>
+            </td>
+            <td class="menu-list__note">
+              <input
+                class="input"
+                type="text"
+                v-model.trim="change_meal.note"
+              />
+            </td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </section>
 </template>
 
 <script>
@@ -335,67 +356,20 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@mixin tableColWidth($grow, $minWidth) {
-  flex-grow: $grow;
-  min-width: $minWidth;
-}
-%flexItem {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  border: 1px solid black;
-  &:before {
-    margin-right: 1rem;
-  }
-}
 .menu-list {
-  width: 100%;
-  overflow: visible;
-  max-height: none;
-  input {
-    max-width: 100%;
-    border-radius: 6px;
+  td {
+    vertical-align: middle;
   }
-  select {
-    height: 44px;
-  }
-  &__button {
-    @extend %flexItem;
-    @include tableColWidth(0, 75px);
-  }
-  &__name {
-    @extend %flexItem;
-  }
-  &__price {
-    @extend %flexItem;
-    @include tableColWidth(0, 60px);
-  }
-  &__limited {
-    @extend %flexItem;
-    @include tableColWidth(0, 60px);
-  }
-  &__group {
-    @extend %flexItem;
-    @include tableColWidth(0, 100px);
-  }
-  &__flavor {
-    @extend %flexItem;
-    @include tableColWidth(0, 100px);
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  &__note {
-    @extend %flexItem;
+}
+.list-button {
+  display: flex;
+  button {
+    margin-right: 0.5rem;
   }
 }
 .change-flavor {
   &--add {
-    input {
-      width: 100%;
-    }
-  }
-  &--list {
-    width: 100%;
+    display: flex;
   }
   &--item {
     width: 100%;

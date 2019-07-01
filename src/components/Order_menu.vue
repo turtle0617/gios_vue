@@ -121,7 +121,7 @@ export default {
         index: index,
         amount: 1
       };
-      this.$store.commit("updateMemberOrderAmount", meal_amount);
+      this.$store.dispatch("updateMemberOrderAmount", meal_amount);
     },
     minusMeal(index, id) {
       if (this.member_order_menu[index].amount <= 0) return;
@@ -130,7 +130,7 @@ export default {
         index: index,
         amount: -1
       };
-      this.$store.commit("updateMemberOrderAmount", meal_amount);
+      this.$store.dispatch("updateMemberOrderAmount", meal_amount);
     },
     checkDetail() {
       const not_choose = this.member_order_menu.every(item=> item.amount===0)

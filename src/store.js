@@ -165,6 +165,9 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    updateMemberOrderAmount({ commit }, detail) {
+      commit("updateMemberOrderAmount", detail);
+    },
     async register(context, data) {
       try {
         let res = await API.Register("/member", data);

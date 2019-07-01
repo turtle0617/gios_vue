@@ -101,9 +101,6 @@ export default {
     },
     member_order_menu() {
       return this.$store.getters.member_order_menu;
-    },
-    member_order_check() {
-      return this.$store.getters.member_order_check;
     }
   },
   watch: {
@@ -138,6 +135,7 @@ export default {
         alert("請新增餐點");
         return;
       }
+      this.$store.dispatch("generateOrderkDetailStatistic");
       this.$router.push({
         name: "order_check"
       });

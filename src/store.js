@@ -131,10 +131,14 @@ export default new Vuex.Store({
       const status = detail.status;
       if (status === "increase") {
         const profile = state.member_profile;
+        const preset_flavor_id = detail.flavors[0]
+          ? detail.flavors[0].id
+          : null;
         const new_meal = {
           id: detail.meal_id,
           name: detail.meal_name,
-          flavor_id: detail.flavor_id || null,
+          flavors: detail.flavors,
+          flavor_id: preset_flavor_id,
           quantity: 1,
           note: profile.note,
           user_rice: profile.rice,

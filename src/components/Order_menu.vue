@@ -124,6 +124,7 @@ export default {
       const meal_detail = {
         meal_id: id,
         meal_name: member_order_menu.name,
+        flavors: member_order_menu.flavors,
         status: "increase"
       };
       this.$store.commit("updateMemberOrderAmountStatistic", meal_amount);

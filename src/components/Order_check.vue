@@ -29,10 +29,10 @@
             <label>菜量</label>
           </div>
         </div>
-        <div v-if="meal.flavor_id" class="meal-flavors column">
+        <div v-if="meal.flavors.length" class="meal-flavors column">
           <div class="select input-box">
-            <select v-if="meal.flavor_id" >
-              <option v-for="(flavor, index) in meal.flavor_id" :value="flavor.choice" :key="index">{{ flavor.choice }}</option>
+            <select :bind="meal.flavor_id">
+              <option v-for="(flavor, index) in meal.flavors" :value="flavor.id" :key="index">{{ flavor.choice }}</option>
             </select>
             <label>口味</label>
           </div>

@@ -34,6 +34,7 @@ export default new Vuex.Store({
     member_order_menu(state) {
       const order_amountStatistic = state.order_amountStatistic;
       if (!state.member_daily_menu) return [];
+
       return state.member_daily_menu.map((meal, index) => {
         const new_meal = {};
         const id = meal["id"];
@@ -42,8 +43,8 @@ export default new Vuex.Store({
         new_meal["meal_note"] = meal["note"];
         new_meal["price"] = meal["price"];
         new_meal["quantity_limit"] = meal["quantity_limit"];
+        new_meal["flavors"] = meal["flavors"];
         new_meal["orders"] = state.order_detailStatistic[id];
-
         new_meal["amount"] = order_amountStatistic[index]["amount"];
         return new_meal;
       });

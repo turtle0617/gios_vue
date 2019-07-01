@@ -6,7 +6,7 @@
       <div class="columns meal-option">
         <div v-if="meal.user_rice" class="meal-rice column">
           <div class="select input-box">
-            <select v-model.number="meal.user_rice">
+            <select :value="meal.user_rice" @change="updateDetail($event,index,'user_rice')">
               <option value="7">多飯</option>
               <option value="1">正常</option>
               <option value="2">1/2飯</option>
@@ -20,7 +20,7 @@
         </div>
         <div v-if="meal.user_vegetable" class="meal-vegetable  column">
           <div class="select input-box">
-            <select v-model.number="meal.user_vegetable">
+            <select :value="meal.user_vegetable" @change="updateDetail($event,index,'user_vegetable')">
               <option value="2">多菜</option>
               <option value="1">正常</option>
               <option value="3">少菜</option>
@@ -31,7 +31,7 @@
         </div>
         <div v-if="meal.flavors.length" class="meal-flavors column">
           <div class="select input-box">
-            <select :bind="meal.flavor_id">
+            <select :value="meal.flavor_id" @change="updateDetail($event,index,'flavor_id')">
               <option v-for="(flavor, index) in meal.flavors" :value="flavor.id" :key="index">{{ flavor.choice }}</option>
             </select>
             <label>口味</label>
@@ -39,7 +39,7 @@
         </div>
         <div class="meal-note column ">
           <div class="input-box">
-            <input type="text" class="input" :value="meal.note">
+            <input type="text" class="input" :value="meal.note" @input="updateDetail($event,index,'note')">
             <label>備註</label>
           </div>
         </div>
@@ -55,6 +55,16 @@ export default {
   computed: {
     member_order_check() {
       return this.$store.getters.member_order_check;
+    }
+  },
+  methods:{
+    updateDetail(e,index,key_name){
+      const value = e.target.value;
+      this.$store.dispatch("updateOrderDetailStatistic",{
+        index:index,
+        name:key_name,
+        value:value
+      })
     }
   }
 };

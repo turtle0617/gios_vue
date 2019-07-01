@@ -49,7 +49,9 @@ export default new Vuex.Store({
       });
     },
     member_order_check(state) {
-      return Object.values(state.order_detailStatistic).flat();
+      return Object.values(state.order_detailStatistic)
+        .flat()
+        .sort((a, b) => a.id - b.id);
     },
     member_profile(state) {
       return state.member_profile;

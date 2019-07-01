@@ -123,7 +123,7 @@ export default {
       };
       const meal_detail = {
         meal_id: id,
-        mean_name: member_order_menu.name,
+        meal_name: member_order_menu.name,
         status: "increase"
       };
       this.$store.commit("updateMemberOrderAmountStatistic", meal_amount);
@@ -138,7 +138,7 @@ export default {
       };
       const meal_detail = {
         meal_id: id,
-        mean_name: member_order_menu.name,
+        meal_name: member_order_menu.name,
         status: "decrease"
       };
       this.$store.commit("updateMemberOrderAmountStatistic", meal_amount);

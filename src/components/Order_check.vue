@@ -1,7 +1,52 @@
 <template>
-  <section class="check section">
-    {{ member_order_check }}
-  </section>
+<section class="check section">
+  <div class="meal__container columns " v-for="(meal,index) in member_order_check" :key="index">
+    <div class="meal-title column is-full">
+      <h1 class="subtitle">{{meal.name}}</h1>
+      <div class="columns meal-option">
+        <div v-if="meal.user_rice" class="meal-rice column">
+          <div class="select input-box">
+            <select v-model.number="meal.user_rice">
+              <option value="7">多飯</option>
+              <option value="1">正常</option>
+              <option value="2">1/2飯</option>
+              <option value="3">1/3飯</option>
+              <option value="4">2/3飯</option>
+              <option value="5">1/4飯</option>
+              <option value="6">不飯</option>
+            </select>
+            <label>飯量</label>
+          </div>
+        </div>
+        <div v-if="meal.user_vegetable" class="meal-vegetable  column">
+          <div class="select input-box">
+            <select v-model.number="meal.user_vegetable">
+              <option value="2">多菜</option>
+              <option value="1">正常</option>
+              <option value="3">少菜</option>
+              <option value="4">不菜</option>
+            </select>
+            <label>菜量</label>
+          </div>
+        </div>
+        <div v-if="meal.flavor_id" class="meal-flavors column">
+          <div class="select input-box">
+            <select v-if="meal.flavor_id" >
+              <option v-for="(flavor, index) in meal.flavor_id" :value="flavor.choice" :key="index">{{ flavor.choice }}</option>
+            </select>
+            <label>口味</label>
+          </div>
+        </div>
+        <div class="meal-note column ">
+          <div class="input-box">
+            <input type="text" class="input" :value="meal.note">
+            <label>備註</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 </template>
 
 <script>
@@ -18,4 +63,9 @@ export default {
 };
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+@import "@/assets/scss/form.scss";
+.meal__container{
+  border: 1px solid;
+}
+</style>

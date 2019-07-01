@@ -127,27 +127,23 @@ export default new Vuex.Store({
       const index = detail.index;
       state.order_amountStatistic[index].amount += detail.amount;
     },
-    updateMemberOrderDetailStatistic(state, detail) {
-      const status = detail.status;
-      if (status === "increase") {
-        const profile = state.member_profile;
-        const preset_flavor_id = detail.flavors[0]
-          ? detail.flavors[0].id
-          : null;
-        const new_meal = {
-          id: detail.meal_id,
-          name: detail.meal_name,
-          flavors: detail.flavors,
-          flavor_id: preset_flavor_id,
-          quantity: 1,
-          note: profile.note,
-          user_rice: profile.rice,
-          user_vegetable: profile.vegetable
-        };
-        state.order_detailStatistic[detail.meal_id].push(new_meal);
-      } else {
-        state.order_detailStatistic[detail.meal_id].splice(-1, 1);
-      }
+    addMemberOrderDetailStatistic(state, detail) {
+      const profile = state.member_profile;
+      const preset_flavor_id = detail.flavors[0] ? detail.flavors[0].id : null;
+      const new_meal = {
+        id: detail.meal_id,
+        name: detail.meal_name,
+        flavors: detail.flavors,
+        flavor_id: preset_flavor_id,
+        quantity: 1,
+        note: profile.note,
+        user_rice: profile.rice,
+        user_vegetable: profile.vegetable
+      };
+      state.order_detailStatistic[detail.meal_id].push(new_meal);
+    },
+    removeMemberOrderDetailStatistic(state, meal_id) {
+      state.order_detailStatistic[meal_id].splice(-1, 1);
     },
     updateDailyMenu(state, meal) {
       const index = state.daily_menu.findIndex(item => {

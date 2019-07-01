@@ -125,10 +125,9 @@ export default {
         meal_id: id,
         meal_name: member_order_menu.name,
         flavors: member_order_menu.flavors,
-        status: "increase"
       };
       this.$store.commit("updateMemberOrderAmountStatistic", meal_amount);
-      this.$store.commit("updateMemberOrderDetailStatistic", meal_detail);
+      this.$store.commit("addMemberOrderDetailStatistic", meal_detail);
     },
     minusMeal(index, id) {
       if (this.member_order_menu[index].amount <= 0) return;
@@ -137,13 +136,8 @@ export default {
         index: index,
         amount: -1
       };
-      const meal_detail = {
-        meal_id: id,
-        meal_name: member_order_menu.name,
-        status: "decrease"
-      };
       this.$store.commit("updateMemberOrderAmountStatistic", meal_amount);
-      this.$store.commit("updateMemberOrderDetailStatistic", meal_detail);
+      this.$store.commit("removeMemberOrderDetailStatistic", id);
     },
     checkDetail() {
       if (!this.member_order_check.length) {

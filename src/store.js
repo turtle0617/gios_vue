@@ -14,8 +14,6 @@ export default new Vuex.Store({
     daily_menu: JSON.parse(localStorage.getItem("daily_menu")) || null,
     member_daily_menu:
       JSON.parse(localStorage.getItem("member_daily_menu")) || null,
-    order_amountStatistic:
-      JSON.parse(localStorage.getItem("order_amountStatistic")) || [],
     order_detailStatistic:
       JSON.parse(localStorage.getItem("order_detailStatistic")) || {},
     date_range: 7,
@@ -32,24 +30,35 @@ export default new Vuex.Store({
       return state.daily_menu;
     },
     member_order_menu(state) {
-      const order_amountStatistic = state.order_amountStatistic;
       if (!state.member_daily_menu) return [];
-
-      return state.member_daily_menu.map((meal, index) => {
+      return state.member_daily_menu.map(meal => {
         const new_meal = {};
-        const id = meal["id"];
         new_meal["id"] = meal["id"];
         new_meal["name"] = meal["name"];
         new_meal["meal_note"] = meal["note"];
         new_meal["price"] = meal["price"];
         new_meal["quantity_limit"] = meal["quantity_limit"];
         new_meal["flavors"] = meal["flavors"];
-        new_meal["orders"] = state.order_detailStatistic[id];
-        new_meal["amount"] = order_amountStatistic[index]["amount"];
+        new_meal["amount"] = meal["amount"];
         return new_meal;
       });
     },
     member_order_check(state) {
+      return Object.values(state.order_detailStatistic)
+        .flat()
+        .map(meal => {
+          return {
+            menu_id: meal.id,
+            flavor_id: meal.flavor_id,
+            quantity: meal.quantity,
+            note: meal.note,
+            user_rice: meal.user_rice,
+            user_vegetable: meal.user_vegetable
+          };
+        })
+        .sort((a, b) => a.id - b.id);
+    },
+    member_order_check_menu(state) {
       return Object.values(state.order_detailStatistic)
         .flat()
         .sort((a, b) => a.id - b.id);
@@ -104,28 +113,19 @@ export default new Vuex.Store({
       state.groups = groups;
     },
     retrieveMemberDailyMenu(state, menu) {
-      const menu_id_entries = menu.map(item => [item["id"], []]);
-      state.member_daily_menu = menu;
-      state.order_amountStatistic = menu.map(item => {
-        return {
-          meal_id: item.id,
-          amount: 0
-        };
+      state.member_daily_menu = menu.map(item => {
+        item["amount"] = 0;
+        return item;
       });
-      state.order_detailStatistic = Object.fromEntries(menu_id_entries);
       localStorage.setItem("member_daily_menu", JSON.stringify(menu));
-      localStorage.setItem(
-        "order_amountStatistic",
-        JSON.stringify(state.order_amountStatistic)
-      );
     },
     retrieveDailyMenu(state, menu) {
       localStorage.setItem("daily_menu", JSON.stringify(menu));
       state.daily_menu = menu;
     },
-    updateMemberOrderAmountStatistic(state, detail) {
+    updateMemberOrderAmount(state, detail) {
       const index = detail.index;
-      state.order_amountStatistic[index].amount += detail.amount;
+      state.member_daily_menu[index].amount += detail.amount;
     },
     addMemberOrderDetailStatistic(state, detail) {
       const profile = state.member_profile;
@@ -302,7 +302,6 @@ export default new Vuex.Store({
           state.token,
           profile
         );
-        console.log("res", data);
         if (typeof data === "string") throw data;
         commit("initialMemberProfile", data);
       } catch (e) {

@@ -1,6 +1,6 @@
 <template>
 <section class="check section">
-  <div class="meal__container columns " v-for="(meal,index) in member_order_check" :key="index">
+  <div class="meal__container columns " v-for="(meal,index) in member_order_check_menu" :key="index">
     <div class="meal-title column is-full">
       <h1 class="subtitle">{{meal.name}}</h1>
       <div class="columns meal-option">
@@ -53,12 +53,15 @@
 export default {
   name: "order_check",
   computed: {
-    member_order_menu() {
-      return this.$store.getters.member_order_menu;
+    member_order_check_menu() {
+      return this.$store.getters.member_order_check_menu;
     },
     member_order_check() {
       return this.$store.getters.member_order_check;
     }
+  },
+  methods(){
+    
   }
 };
 </script>

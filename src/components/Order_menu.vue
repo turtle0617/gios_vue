@@ -121,13 +121,7 @@ export default {
         index: index,
         amount: 1
       };
-      const meal_detail = {
-        meal_id: id,
-        meal_name: member_order_menu.name,
-        flavors: member_order_menu.flavors,
-      };
-      this.$store.commit("updateMemberOrderAmountStatistic", meal_amount);
-      this.$store.commit("addMemberOrderDetailStatistic", meal_detail);
+      this.$store.commit("updateMemberOrderAmount", meal_amount);
     },
     minusMeal(index, id) {
       if (this.member_order_menu[index].amount <= 0) return;
@@ -136,11 +130,11 @@ export default {
         index: index,
         amount: -1
       };
-      this.$store.commit("updateMemberOrderAmountStatistic", meal_amount);
-      this.$store.commit("removeMemberOrderDetailStatistic", id);
+      this.$store.commit("updateMemberOrderAmount", meal_amount);
     },
     checkDetail() {
-      if (!this.member_order_check.length) {
+      const not_choose = this.member_order_menu.every(item=> item.amount===0)
+      if (not_choose) {
         alert("請新增餐點");
         return;
       }

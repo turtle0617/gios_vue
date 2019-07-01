@@ -53,7 +53,7 @@ export default new Vuex.Store({
       const range = new Array(state.date_range).fill(0);
       return range.map((item, index) => {
         const date = Date.today()
-          .add(index)
+          .add(index + 1)
           .day();
         return date.toString("MM/dd");
       });
@@ -128,7 +128,7 @@ export default new Vuex.Store({
               : null;
             return new Array(item.amount).fill().map(() => {
               return {
-                id: item.id,
+                menu_id: item.id,
                 name: item.name,
                 flavors: item.flavors,
                 flavor_id: preset_flavor_id,
@@ -174,6 +174,15 @@ export default new Vuex.Store({
     },
     generateOrderkDetailStatistic({ commit }) {
       commit("generateOrderkDetailStatistic");
+    },
+    async addMemberOrder({ state }, data) {
+      try {
+        let res = await API.POST("/order", state.token, data);
+        if (typeof res.data === "string") throw res;
+        return res.data;
+      } catch (e) {
+        throw e.response.data.message || e.response.data.error;
+      }
     },
     async register(context, data) {
       try {

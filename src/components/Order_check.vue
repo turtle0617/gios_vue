@@ -46,6 +46,12 @@
       </div>
     </div>
   </div>
+  <div class="button__container columns">
+    <button type="button" class="button is-light is-medium">
+      <router-link :to="{ name: 'order_menu'}">上一頁</router-link>
+    </button>
+    <button type="button" class="button is-info is-medium" @click="addMemberOrder">送出</button>
+  </div>
 </section>
 </template>
 
@@ -65,6 +71,28 @@ export default {
         name:key_name,
         value:value
       })
+    },
+    filterNotToNeedPostValue() {
+      return this.member_order_check.map(item => {
+        return {
+          menu_id: item.menu_id,
+          flavor_id: item.flavor_id,
+          quantity: item.quantity,
+          note: item.note,
+          user_rice: item.user_rice,
+          user_vegetable: item.user_vegetable
+        };
+      });
+    },
+    async addMemberOrder(){
+      try{
+        const filtered_orders = this.filterNotToNeedPostValue();
+        const addMemberOrder = filtered_orders.map(order=>this.$store.dispatch("addMemberOrder",order));
+        await Promise.all(addMemberOrder);
+        this.$router.push({name:"order_menu"})
+      }catch(e){
+        console.error(e);
+      }
     }
   }
 };
@@ -74,5 +102,12 @@ export default {
 @import "@/assets/scss/form.scss";
 .meal__container{
   border: 1px solid;
+}
+.button__container{
+  justify-content: flex-end;
+  margin-top: 1rem;
+  :first-child{
+    margin-right: 1rem;
+  }
 }
 </style>

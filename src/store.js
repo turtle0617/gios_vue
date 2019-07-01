@@ -43,12 +43,13 @@ export default new Vuex.Store({
         new_meal["price"] = meal["price"];
         new_meal["quantity_limit"] = meal["quantity_limit"];
         new_meal["orders"] = state.order_detailStatistic[id];
-        // new_meal["default_rice"] = profile["rice"];
-        // new_meal["default_vegetable"] = profile["vegetable"];
 
         new_meal["amount"] = order_amountStatistic[index]["amount"];
         return new_meal;
       });
+    },
+    member_order_check(state) {
+      return Object.values(state.order_detailStatistic).flat();
     },
     member_profile(state) {
       return state.member_profile;
@@ -283,9 +284,7 @@ export default new Vuex.Store({
     },
     async retrieveGroups(context) {
       try {
-        console.log("retrieveGroups");
         let { data } = await API.GET("/groups");
-        console.log("retrieveGroups data");
         localStorage.setItem("groups", JSON.stringify(data));
         context.commit("retrieveGroups", data);
         return data;
@@ -295,11 +294,12 @@ export default new Vuex.Store({
     },
     async updateMemberProfile({ commit, state }, profile) {
       try {
-        let { data } = API.PATCH(
+        let { data } = await API.PATCH(
           `/member/${state.user_id}`,
           state.token,
           profile
         );
+        console.log("res", data);
         if (typeof data === "string") throw data;
         commit("initialMemberProfile", data);
       } catch (e) {

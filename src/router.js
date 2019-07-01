@@ -5,6 +5,9 @@ import Adminlogin from "./views/Home_admin.vue";
 import Register from "./views/Register.vue";
 import Profile from "./views/Profile.vue";
 import Order from "./views/Order.vue";
+import order_menu from "./components/Order_menu.vue";
+import order_check from "./components/Order_check.vue";
+import Purchase from "./views/Purchase.vue";
 import History from "./views/History.vue";
 import Statistic from "./views/Statistic.vue";
 import Menu_List from "./views/Menu_List.vue";
@@ -46,6 +49,33 @@ const router = new Router({
       path: "/order",
       name: "order",
       component: Order,
+      meta: {
+        requiresAuth: true
+      },
+      children: [
+        {
+          path: "menu",
+          name: "order_menu",
+          component: order_menu
+        },
+        {
+          path: "check",
+          name: "order_check",
+          component: order_check,
+          beforeEnter(to, from, next) {
+            if (!store.getters.member_order_check.length) {
+              next({ name: "order_menu" });
+              return;
+            }
+            next();
+          }
+        }
+      ]
+    },
+    {
+      path: "/purchase",
+      name: "purchase",
+      component: Purchase,
       meta: {
         requiresAuth: true
       }
@@ -107,7 +137,14 @@ const router = new Router({
 
 const role = {
   guest: ["home", "adminLogin", "register"],
-  member: ["order", "profile", "history", "logout"],
+  member: [
+    "order_menu",
+    "order_check",
+    "profile",
+    "history",
+    "logout",
+    "purchase"
+  ],
   boss: ["statistic", "menu", "bill", "groups", "history", "logout"]
 };
 router.beforeEach((to, from, next) => {

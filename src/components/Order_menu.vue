@@ -54,9 +54,9 @@
             </div>
             <div class="list-item list-item__amount column">
               <font-awesome-icon
+                @click="addMeal(index, meal.id)"
                 icon="plus-circle"
                 size="lg"
-                @click="addMeal(index, meal.id)"
               ></font-awesome-icon>
               <label for="quantity">{{ meal.amount }}</label>
               <font-awesome-icon
@@ -66,71 +66,17 @@
               ></font-awesome-icon>
             </div>
           </div>
-          <router-link
-            :to="{ name: 'order_check' }"
+          <button
+            type="button"
+            @click="checkDetail"
             class="button is-link member-menu__next"
-            >下一頁</router-link
           >
+            下一頁
+          </button>
         </div>
       </div>
     </div>
   </section>
-  <!-- <tr
-            v-if="meal.orders.length"
-            v-for="(order, index) in meal.orders"
-            class="order-table__option"
-          >
-            <td data-label="飯量" class="order-table__rice">
-              <select
-                class="rice--select"
-                name="rice__group"
-                v-model.number="order.user_rice"
-              >
-                <option value="7">多飯</option>
-                <option value="1">正常</option>
-                <option value="2">1/2飯</option>
-                <option value="3">1/3飯</option>
-                <option value="4">2/3飯</option>
-                <option value="5">1/4飯</option>
-                <option value="6">不飯</option>
-              </select>
-            </td>
-            <td data-label="菜量" class="order-table__vegetable">
-              <select
-                class="vegetable--select"
-                name="vegetable__group"
-                v-model.number="order.user_vegetable"
-              >
-                <option value="2">多菜</option>
-                <option value="1">正常</option>
-                <option value="3">少菜</option>
-                <option value="4">不菜</option>
-              </select>
-            </td>
-            <td data-label="口味" class="order-table__flavor">
-              <select
-                v-if="order.flavors"
-                class="flavor--select"
-                name="flavor__group"
-              >
-                <option
-                  v-for="(flavor, index) in order.flavors"
-                  :value="flavor.choice"
-                  :key="index"
-                  >{{ flavor.choice }}</option
-                >
-              </select>
-            </td>
-            <td data-label="備註" class="order-table__note">
-              <input
-                type="text"
-                id="noteText"
-                placeholder=""
-                v-model="order.note"
-              />
-            </td>
-          </tr>
-        </template> -->
 </template>
 
 <script>
@@ -155,6 +101,9 @@ export default {
     },
     member_order_menu() {
       return this.$store.getters.member_order_menu;
+    },
+    member_order_check() {
+      return this.$store.getters.member_order_check;
     }
   },
   watch: {
@@ -194,6 +143,15 @@ export default {
       };
       this.$store.commit("updateMemberOrderAmountStatistic", meal_amount);
       this.$store.commit("updateMemberOrderDetailStatistic", meal_detail);
+    },
+    checkDetail() {
+      if (!this.member_order_check.length) {
+        alert("請新增餐點");
+        return;
+      }
+      this.$router.push({
+        name: "order_check"
+      });
     }
   }
 };

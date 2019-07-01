@@ -13,7 +13,7 @@
           <font-awesome-icon icon="user-circle" size="2x"></font-awesome-icon>
           <div v-if="visible" class="dropdown-content">
             <router-link :to="{ name: 'profile' }">個人檔案</router-link>
-            <router-link :to="{ name: 'order' }">訂餐</router-link>
+            <router-link :to="{ name: 'order_menu' }">訂餐</router-link>
             <router-link :to="{ name: 'history' }">歷史訂單</router-link>
             <router-link :to="{ name: 'logout' }">登出</router-link>
           </div>

@@ -3,11 +3,11 @@
     <form>
       <fieldset id="account__form">
         <legend>常用口味</legend>
-        <div class="row">
-          <div class="col-sm-12 col-md-12">
+        <div class="field">
+          <div class="control">
             <label for="account__name">飯量</label>
           </div>
-          <div class="col-sm-12 col-md-12">
+          <div class="control select">
             <select class=" group--select" name="account__group">
               <option value="多飯">多飯</option>
               <option value="正常">正常</option>
@@ -19,11 +19,11 @@
             </select>
           </div>
         </div>
-        <div class="row">
-          <div class="col-sm-12 col-md-12">
+        <div class="field">
+          <div class="control">
             <label for="account__mail">菜量</label>
           </div>
-          <div class="col-sm-12 col-md-12">
+          <div class="control">
             <select class="group--select" name="account__group">
               <option value="多菜">多菜</option>
               <option value="正常">正常</option>
@@ -32,11 +32,11 @@
             </select>
           </div>
         </div>
-        <div class="row">
-          <div class="col-sm-12 col-md-12">
+        <div class="field">
+          <div class="control">
             <label for="account__Remark">備註</label>
           </div>
-          <div class="col-sm-12 col-md-12">
+          <div class="control">
             <input type="text" id="account__Remark" placeholder="請輸入備註" />
           </div>
         </div>

@@ -1,129 +1,162 @@
 <template>
-<section class="purchase section">
-  <div class="purchase__title columns content ">
-    <div class="purchase-title__date column ">
-      <label for="purchaseDate">日期</label>
-      <div class="select ">
-        <select class="group--select" name="purchaseDate" v-model="choose_date">
-          <option v-for="(date, index) in date_range" :value="date" :key="index">{{ date }}</option>
-        </select>
+  <section class="purchase section">
+    <div class="purchase__title columns content ">
+      <div class="purchase-title__date column ">
+        <label for="purchaseDate">日期</label>
+        <div class="select ">
+          <select
+            class="group--select"
+            name="purchaseDate"
+            v-model="choose_date"
+          >
+            <option
+              v-for="(date, index) in date_range"
+              :value="date"
+              :key="index"
+              >{{ date }}</option
+            >
+          </select>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="columns purchase__detailContainer">
-    <div class="member-purchase column">
-      <div class="member-purchase__header columns">
-        <div class="column purchase-header purchase-header__status">
-        </div>
-        <div class="column purchase-header purchase-header__name">
-          名稱
-        </div>
-        <div class="column purchase-header purchase-header__amount">
-          數量
-        </div>
-        <div class="column purchase-header purchase-header__rice">
-          飯量
-        </div>
-        <div class="column purchase-header purchase-header__vegetable">
-          菜量
-        </div>
-        <div class="column purchase-header purchase-header__flavor">
-          口味
-        </div>
-        <div class="column purchase-header purchase-header__note">
-          備註
-        </div>
-      </div>
-      <div v-if="purchase_list.length" class="member-purchase__list ">
-        <template v-for="(meal, index) in purchase_list">
-          <div :key="index" v-if="modify !== index" class="purchase-list__item purchase-list__show columns ">
-            <div class="list-item list-item__status column">
-              <button class="button is-danger">
-                刪除
-              </button>
-              <button class="button is-info" @click="modifyPurchaseMeal(meal,index)">
-                修改
-              </button>
-            </div>
-            <div class="list-item list-item__name column ">
-              <span>
-                {{ meal.menu_name }}
-              </span>
-            </div>
-            <div class="list-item list-item__amount column">
-              {{ meal.quantity }}
-            </div>
-            <div class="list-item list-item__rice column">
-              {{converRice(meal.user_rice)}}
-            </div>
-            <div class="list-item list-item__vegetable column">
-              {{converVegetable(meal.user_vegetable)}}
-            </div>
-            <div class="column list-item list-item__flavor">
-              {{meal.flavor_choice}}
-            </div>
-            <div class="column list-item list-item__note">
-              {{meal.note}}
-            </div>
+    <div class="columns purchase__detailContainer">
+      <div class="member-purchase column">
+        <div class="member-purchase__header columns">
+          <div class="column purchase-header purchase-header__status"></div>
+          <div class="column purchase-header purchase-header__name">
+            名稱
           </div>
-
-          <div v-else class="purchase-list__item purchase-list__modify columns ">
-            <div class="list-item list-item__status column">
-              <button class="button is-info" @click="updatePurchaseMeal(meal)">
-                送出
-              </button>
-              <button class="button is-light" @click="modifyPurchaseMeal(meal)">
-                取消
-              </button>
-            </div>
-            <div class="list-item list-item__name column ">
-              <span>
-                {{ meal.menu_name }}
-              </span>
-            </div>
-            <div class="list-item list-item__amount column">
-              {{ meal.quantity }}
-            </div>
-            <div class="list-item list-item__rice column">
-              <div v-if="change_meal.user_rice" class="select">
-                <select v-model.number="change_meal.user_rice">
-                  <option value="7">多飯</option>
-                  <option value="1">正常</option>
-                  <option value="2">1/2飯</option>
-                  <option value="3">1/3飯</option>
-                  <option value="4">2/3飯</option>
-                  <option value="5">1/4飯</option>
-                  <option value="6">不飯</option>
-                </select>
-              </div>
-            </div>
-            <div class="list-item list-item__vegetable column">
-              <div v-if="change_meal.user_vegetable" class="select">
-                <select v-model.number="change_meal.user_vegetable">
-                  <option value="2">多菜</option>
-                  <option value="1">正常</option>
-                  <option value="3">少菜</option>
-                  <option value="4">不菜</option>
-                </select>
-              </div>
-            </div>
-            <div class="column list-item list-item__flavor">
-              <div v-if="change_meal.flavor_id" class="select">
-                <select v-model.number="change_meal.flavor_id">
-                  <option v-for="(flavor, index) in menu_flavors" :value="flavor.id" :key="index">{{ flavor.choice }}</option>
-                </select>
-              </div>
-            </div>
-            <div class="column list-item list-item__note ">
-              <input type="text" class="input" v-model.trim="change_meal.note">
-            </div>
+          <div class="column purchase-header purchase-header__amount">
+            數量
           </div>
+          <div class="column purchase-header purchase-header__rice">
+            飯量
+          </div>
+          <div class="column purchase-header purchase-header__vegetable">
+            菜量
+          </div>
+          <div class="column purchase-header purchase-header__flavor">
+            口味
+          </div>
+          <div class="column purchase-header purchase-header__note">
+            備註
+          </div>
+        </div>
+        <div v-if="purchase_list.length" class="member-purchase__list ">
+          <template v-for="(meal, index) in purchase_list">
+            <div
+              :key="index"
+              v-if="modify !== index"
+              class="purchase-list__item purchase-list__show columns "
+            >
+              <div class="list-item list-item__status column">
+                <button class="button is-danger">
+                  刪除
+                </button>
+                <button
+                  class="button is-info"
+                  @click="modifyPurchaseMeal(meal, index)"
+                >
+                  修改
+                </button>
+              </div>
+              <div class="list-item list-item__name column ">
+                <span>
+                  {{ meal.menu_name }}
+                </span>
+              </div>
+              <div class="list-item list-item__amount column">
+                {{ meal.quantity }}
+              </div>
+              <div class="list-item list-item__rice column">
+                {{ converRice(meal.user_rice) }}
+              </div>
+              <div class="list-item list-item__vegetable column">
+                {{ converVegetable(meal.user_vegetable) }}
+              </div>
+              <div class="column list-item list-item__flavor">
+                {{ meal.flavor_choice }}
+              </div>
+              <div class="column list-item list-item__note">
+                {{ meal.note }}
+              </div>
+            </div>
 
-        </template>
+            <div
+              :key="index"
+              v-else
+              class="purchase-list__item purchase-list__modify columns "
+            >
+              <div class="list-item list-item__status column">
+                <button
+                  class="button is-info"
+                  @click="updatePurchaseMeal(meal)"
+                >
+                  送出
+                </button>
+                <button
+                  class="button is-light"
+                  @click="modifyPurchaseMeal(meal)"
+                >
+                  取消
+                </button>
+              </div>
+              <div class="list-item list-item__name column ">
+                <span>
+                  {{ meal.menu_name }}
+                </span>
+              </div>
+              <div class="list-item list-item__amount column">
+                {{ meal.quantity }}
+              </div>
+              <div class="list-item list-item__rice column">
+                <div v-if="change_meal.user_rice" class="select">
+                  <select v-model.number="change_meal.user_rice">
+                    <option value="7">多飯</option>
+                    <option value="1">正常</option>
+                    <option value="2">1/2飯</option>
+                    <option value="3">1/3飯</option>
+                    <option value="4">2/3飯</option>
+                    <option value="5">1/4飯</option>
+                    <option value="6">不飯</option>
+                  </select>
+                </div>
+              </div>
+              <div class="list-item list-item__vegetable column">
+                <div v-if="change_meal.user_vegetable" class="select">
+                  <select v-model.number="change_meal.user_vegetable">
+                    <option value="2">多菜</option>
+                    <option value="1">正常</option>
+                    <option value="3">少菜</option>
+                    <option value="4">不菜</option>
+                  </select>
+                </div>
+              </div>
+              <div class="column list-item list-item__flavor">
+                <div v-if="change_meal.flavor_id" class="select">
+                  <select v-model.number="change_meal.flavor_id">
+                    <option
+                      v-for="(flavor, index) in menu_flavors"
+                      :value="flavor.id"
+                      :key="index"
+                      >{{ flavor.choice }}</option
+                    >
+                  </select>
+                </div>
+              </div>
+              <div class="column list-item list-item__note ">
+                <input
+                  type="text"
+                  class="input"
+                  v-model.trim="change_meal.note"
+                />
+              </div>
+            </div>
+          </template>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 </template>
 
 <script>
@@ -228,14 +261,19 @@ export default {
       this.change_meal.note = meal.note;
       if (meal.flavor_choice) {
         const choice = meal.flavor_choice;
-        const choice_id = menu.flavors.filter(flavor=>flavor.choice === choice)[0].id;
+        const choice_id = menu.flavors.filter(
+          flavor => flavor.choice === choice
+        )[0].id;
         this.menu_flavors = menu.flavors;
         this.change_meal.flavor_id = choice_id;
       }
     },
     async updatePurchaseMeal(original_meal) {
-      const filtered_change = this.filterBeModifiedProperty(this.change_meal, original_meal);
-      const all_same = Object.keys(filtered_change).length === 0 ? true : false
+      const filtered_change = this.filterBeModifiedProperty(
+        this.change_meal,
+        original_meal
+      );
+      const all_same = Object.keys(filtered_change).length === 0 ? true : false;
       if (all_same) {
         this.modifyPurchaseMeal();
         return;
@@ -243,11 +281,11 @@ export default {
       await this.$store.dispatch("updateMemberOrder", {
         order_id: original_meal.id,
         change_meal: filtered_change
-      })
+      });
       this.modifyPurchaseMeal();
       this.getPurchaseList(this.choose_date);
     },
-    getPurchaseList(date){
+    getPurchaseList(date) {
       const formated_date = this.Date.parse(date).toString("yyyy/MM/dd");
       this.$store.dispatch("retrievePurchaseList", {
         start_date: formated_date,
@@ -275,92 +313,90 @@ export default {
 
 <style scoped lang="scss">
 .purchase-title {
-    &__date {
-        label {
-            margin-right: 1rem;
-            font-size: 1.5rem;
-        }
+  &__date {
+    label {
+      margin-right: 1rem;
+      font-size: 1.5rem;
     }
-    &__deadline {
-        font-size: 2rem;
-    }
+  }
+  &__deadline {
+    font-size: 2rem;
+  }
 }
 .member-purchase {
-    &__header {
-        border: 1px solid;
-    }
-    &__list {
-        position: relative;
-
-    }
-    &__next {
-        position: fixed;
-        bottom: 1rem;
-        right: 1rem;
-        box-shadow: 6px 5px 10px 0 rgba(0, 0, 0, 0.3);
-    }
+  &__header {
+    border: 1px solid;
+  }
+  &__list {
+    position: relative;
+  }
+  &__next {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    box-shadow: 6px 5px 10px 0 rgba(0, 0, 0, 0.3);
+  }
 }
 .purchase-header {
-    border-right: 1px solid;
-    &:first-child {
-        border: none;
-    }
-    &:last-child {
-        border: none;
-    }
+  border-right: 1px solid;
+  &:first-child {
+    border: none;
+  }
+  &:last-child {
+    border: none;
+  }
 }
 .purchase-list__item {
-    border: 1px solid;
-    border-top: none;
+  border: 1px solid;
+  border-top: none;
 }
 .list-item {
-    display: flex;
-    align-items: center;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    &__status {
-        button {
-            margin-right: 1rem;
-        }
+  display: flex;
+  align-items: center;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  &__status {
+    button {
+      margin-right: 1rem;
     }
-
+  }
 }
 @media screen and (max-width: 768px) {
-    @mixin mealTitle($name) {
-        &::before {
-            content: $name;
-            display: block;
-            margin-right: 2rem;
-        }
+  @mixin mealTitle($name) {
+    &::before {
+      content: $name;
+      display: block;
+      margin-right: 2rem;
     }
-    .member-purchase__header {
-        display: none;
-    }
+  }
+  .member-purchase__header {
+    display: none;
+  }
 
-    .purchase-list__item {
-        border: 1px solid;
-        margin-top: 1rem;
-    }
+  .purchase-list__item {
+    border: 1px solid;
+    margin-top: 1rem;
+  }
 
-    .list-item {
-        &__name {
-            @include mealTitle("名稱")
-        }
-        &__amount {
-            @include mealTitle("數量")
-        }
-        &__rice {
-            @include mealTitle("飯量")
-        }
-        &__vegetable {
-            @include mealTitle("菜量")
-        }
-        &__flavor {
-            @include mealTitle("口味")
-        }
-        &__note {
-            @include mealTitle("備註")
-        }
+  .list-item {
+    &__name {
+      @include mealTitle("名稱");
     }
+    &__amount {
+      @include mealTitle("數量");
+    }
+    &__rice {
+      @include mealTitle("飯量");
+    }
+    &__vegetable {
+      @include mealTitle("菜量");
+    }
+    &__flavor {
+      @include mealTitle("口味");
+    }
+    &__note {
+      @include mealTitle("備註");
+    }
+  }
 }
 </style>

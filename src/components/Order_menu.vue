@@ -130,7 +130,9 @@ export default {
       this.$store.dispatch("updateMemberOrderAmount", meal_amount);
     },
     checkDetail() {
-      const not_choose = this.member_order_menu.every(item=> item.amount===0)
+      const not_choose = this.member_order_menu.every(
+        item => item.amount === 0
+      );
       if (not_choose) {
         alert("請新增餐點");
         return;

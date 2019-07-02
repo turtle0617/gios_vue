@@ -47,9 +47,9 @@
     </div>
   </div>
   <div class="button__container columns">
-    <button type="button" class="button is-light is-medium">
-      <router-link :to="{ name: 'order_menu'}">上一頁</router-link>
-    </button>
+    <router-link class="button is-light is-medium" :to="{ name: 'order_menu'}">
+      上一頁
+    </router-link>
     <button type="button" class="button is-info is-medium" @click="addMemberOrder">送出</button>
   </div>
 </section>
@@ -74,14 +74,18 @@ export default {
     },
     filterNotToNeedPostValue() {
       return this.member_order_check.map(item => {
-        return {
+        const filtered =  {
           menu_id: item.menu_id,
-          flavor_id: item.flavor_id,
           quantity: item.quantity,
           note: item.note,
-          user_rice: item.user_rice,
-          user_vegetable: item.user_vegetable
         };
+        if(item.flavor_id)
+          filtered["flavor_id"] = item.flavor_id;
+        if(item.user_rice)
+          filtered["user_rice"] = item.user_rice;
+        if(item.user_vegetable)
+          filtered["user_vegetable"] = item.user_vegetable;
+        return filtered;
       });
     },
     async addMemberOrder(){

@@ -24,31 +24,17 @@
       <tbody>
         <tr v-for="(meal, index) in main_meals" :key="index">
           <td data-label="名稱" class="main-meals__name">
-            <input
-              class="input"
-              type="text"
-              :class="{ error: empty_error.name }"
-              v-model.trim="meal.name"
-            />
-            <span v-if="empty_error.name">不得為空</span>
+            <input class="input" type="text" v-model.trim="meal.name" />
           </td>
           <td data-label="價格" class="main-meals__price">
-            <input
-              class="input"
-              type="tel"
-              :class="{ error: empty_error.price }"
-              v-model.number="meal.price"
-            />
-            <span v-if="empty_error.price">請填數字</span>
+            <input class="input" type="tel" v-model.number="meal.price" />
           </td>
           <td data-label="限量(份數)" class="main-meals__limited">
             <input
               class="input"
               type="tel"
               v-model.number="meal.quantity_limit"
-              :class="{ error: not_number_error }"
             />
-            <span v-if="not_number_error">請填數字</span>
           </td>
           <td data-label="團體" class="main-meals__group">
             <div class="select">
@@ -57,7 +43,7 @@
                 class="group--select"
                 v-model="meal.group_id"
               >
-                <option value="all">全體</option>
+                <option value="null">全體</option>
                 <option
                   v-for="group in groups"
                   :value="group.id"
@@ -136,31 +122,17 @@
       <tbody>
         <tr v-for="(snack, index) in snacks" :key="index">
           <td data-label="名稱" class="snack__name">
-            <input
-              class="input"
-              type="text"
-              :class="{ error: empty_error.name }"
-              v-model.trim="snack.name"
-            />
-            <span v-if="empty_error.name">不得為空</span>
+            <input class="input" type="text" v-model.trim="snack.name" />
           </td>
           <td data-label="價格" class="snack__price">
-            <input
-              class="input"
-              type="tel"
-              :class="{ error: empty_error.price }"
-              v-model.number="snack.price"
-            />
-            <span v-if="empty_error.price">請填數字</span>
+            <input class="input" type="tel" v-model.number="snack.price" />
           </td>
           <td data-label="限量(份數)" class="snack__limited">
             <input
               class="input"
               type="tel"
               v-model.number="snack.quantity_limit"
-              :class="{ error: not_number_error }"
             />
-            <span v-if="not_number_error">請填數字</span>
           </td>
           <td data-label="團體" class="snack__group">
             <div class="select">
@@ -169,7 +141,7 @@
                 class="group--select"
                 v-model="snack.group_id"
               >
-                <option value="all">全體</option>
+                <option value="null">全體</option>
                 <option
                   v-for="group in groups"
                   :value="group.id"
@@ -246,7 +218,7 @@ export default {
           name: null,
           price: null,
           quantity_limit: null,
-          group_id: "all",
+          group_id: null,
           flavor: null,
           flavor_group: [],
           note: null
@@ -258,18 +230,12 @@ export default {
           name: null,
           price: null,
           quantity_limit: null,
-          group_id: "all",
+          group_id: null,
           flavor: null,
           flavor_group: [],
           note: null
         }
-      ],
-
-      empty_error: {
-        name: false,
-        price: false
-      },
-      not_number_error: false
+      ]
     };
   },
   computed: {
@@ -283,7 +249,7 @@ export default {
         name: null,
         price: null,
         quantity_limit: null,
-        group_id: "all",
+        group_id: null,
         flavor: null,
         flavor_group: [],
         note: null
@@ -307,29 +273,34 @@ export default {
     },
     async addMeal() {
       try {
-        this.hideAllError();
-
-        const isEmpty = this.detectEmpty();
-        const isPriceNum = Number.isInteger(this.meal.price);
-        if (isEmpty || !isPriceNum) {
-          if (!isPriceNum) this.empty_error.price = true;
+        let menu = [...this.main_meals, ...this.snacks];
+        menu = this.removeEmptyRow(menu);
+        menu = this.removeValueIsNull(menu);
+        if (menu.length === 0) {
+          alert("至少輸入一筆");
           return;
         }
-        let meal = Object.assign({}, this.meal);
-        let copy_flavor_group = this.flavor_group.slice();
+        const all_price_Interger = menu.every(meal =>
+          Number.isInteger(meal.price)
+        );
         const formated_date = this.Date.parse(this.choose_date).toString(
           "yyyy/MM/d"
         );
-        meal["menu_date"] = formated_date;
-
-        if (meal.group_id === "all") meal.group_id = null;
-        meal = this.removeOptionIsNull(meal);
-        const menu_id = await this.$store.dispatch("addDailyMenu", meal);
-
-        this.resetMealForm();
-        if (copy_flavor_group) {
-          await this.addMenuFlavor(copy_flavor_group, menu_id);
+        if (!all_price_Interger) {
+          alert("請檢查格式");
+          return;
         }
+        menu = this.mealAddDate(menu);
+        console.log(menu);
+        await Promise.all(
+          menu.map(async meal => {
+            const meal_id = await this.$store.dispatch("addDailyMenu", meal);
+            if (!meal.flavor_group.length) return meal_id;
+            return this.addMenuFlavor(meal.flavor_group, meal_id);
+          })
+        );
+        console.log("await Promise.all");
+        this.resetMealForm();
         this.$store.dispatch("retrieveDailyMenu", {
           menu_date: formated_date
         });
@@ -337,10 +308,20 @@ export default {
         console.error(e);
       }
     },
-    removeOptionIsNull(meal) {
-      return Object.fromEntries(
-        Object.entries(meal).filter(item => item[1] !== "" && item[1] !== null)
-      );
+    removeEmptyRow(menu) {
+      return menu.filter(meal => {
+        return !!meal.name && !!meal.price;
+      });
+    },
+    removeValueIsNull(menu) {
+      return menu.map(meal => {
+        const filtered_meal = Object.fromEntries(
+          Object.entries(meal).filter(
+            item => item[1] !== "" && item[1] !== null
+          )
+        );
+        return filtered_meal;
+      });
     },
     addFlavor(meal) {
       console.log("meal", meal);
@@ -362,35 +343,39 @@ export default {
       );
     },
     resetMealForm() {
-      this.meal = {
-        name: null,
-        price: null,
-        quantity_limit: null,
-        group_id: "all",
-        note: null
-      };
-      this.flavors = null;
-      this.flavor_group = [];
+      this.main_meals = [
+        {
+          type: 0,
+          name: null,
+          price: null,
+          quantity_limit: null,
+          group_id: null,
+          flavor: null,
+          flavor_group: [],
+          note: null
+        }
+      ];
+      this.snacks = [
+        {
+          type: 1,
+          name: null,
+          price: null,
+          quantity_limit: null,
+          group_id: null,
+          flavor: null,
+          flavor_group: [],
+          note: null
+        }
+      ];
     },
-    hideAllError() {
-      this.not_number_error = false;
-      this.empty_error.name = false;
-      this.empty_error.price = false;
-    },
-    detectEmpty() {
-      const detected = {
-        name: this.meal.name,
-        price: this.meal.price
-      };
-      this.empty_error = Object.fromEntries(
-        Object.entries(this.empty_error).map(item => {
-          item[1] = false;
-          return item;
-        })
+    mealAddDate(menu) {
+      const formated_date = this.Date.parse(this.choose_date).toString(
+        "yyyy/MM/d"
       );
-      if (!detected.name) this.empty_error.name = true;
-      if (!detected.price) this.empty_error.price = true;
-      return Object.entries(detected).some(item => !item[1]);
+      return menu.map(meal => {
+        meal["menu_date"] = formated_date;
+        return meal;
+      });
     }
   }
 };

@@ -8,12 +8,13 @@ import {
   faUserCircle,
   faPlusCircle,
   faMinusCircle,
-  faTimes
+  faTimes,
+  faTrashAlt
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import DatePicker from "vue2-datepicker";
 import Date from "./assets/js/date.js";
-library.add(faUserCircle, faPlusCircle, faMinusCircle, faTimes);
+library.add(faUserCircle, faPlusCircle, faMinusCircle, faTimes, faTrashAlt);
 Vue.prototype.Date = Date;
 
 Vue.component("font-awesome-icon", FontAwesomeIcon);

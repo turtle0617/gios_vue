@@ -134,16 +134,19 @@ export default new Vuex.Store({
               ? item.flavors[0].id
               : null;
             return new Array(item.amount).fill().map(() => {
-              return {
+              const detail = {
                 menu_id: item.id,
                 name: item.name,
                 flavors: item.flavors,
                 flavor_id: preset_flavor_id,
                 quantity: 1,
-                note: profile.note,
-                user_rice: 1,
-                user_vegetable: profile.vegetable
+                note: profile.note
               };
+              if (item.type === 0) {
+                detail["user_rice"] = profile.rice;
+                detail["user_vegetable"] = profile.vegetable;
+              }
+              return detail;
             });
           }
         })

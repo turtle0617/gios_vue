@@ -1,19 +1,29 @@
 <template>
   <section class="addmenu section">
-    <table class="menu__meal table is-bordered">
+    <h1 class="title">
+      主餐
+      <font-awesome-icon
+        icon="plus-circle"
+        size="xs"
+        class="addrow"
+        @click="addRow('main_meals')"
+      ></font-awesome-icon>
+    </h1>
+    <table class="main-meals table is-bordered">
       <thead>
         <tr>
-          <th class="menutable__name">名稱</th>
-          <th class="menutable__price">價格</th>
-          <th class="menutable__limited">限量(份數)</th>
-          <th class="menutable__group">團體</th>
-          <th class="menu-list__flavor">口味</th>
-          <th class="menutable__note">備註</th>
+          <th class="menu-header__name main-meals__name">名稱</th>
+          <th class="menu-header__price main-meals__price">價格</th>
+          <th class="menu-header__limited main-meals__limited">限量(份數)</th>
+          <th class="menu-header__group main-meals__group">團體</th>
+          <th class="menu-header__flavor main-meals__flavor">口味</th>
+          <th class="menu-header__note main-meals__note">備註</th>
+          <th class="menu-header__delete main-meals__delete"></th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td data-label="名稱" class="menutable__name">
+        <tr v-for="(meal, index) in main_meals" :key="index">
+          <td data-label="名稱" class="main-meals__name">
             <input
               class="input"
               type="text"
@@ -22,7 +32,7 @@
             />
             <span v-if="empty_error.name">不得為空</span>
           </td>
-          <td data-label="價格" class="menutable__price">
+          <td data-label="價格" class="main-meals__price">
             <input
               class="input"
               type="tel"
@@ -31,7 +41,7 @@
             />
             <span v-if="empty_error.price">請填數字</span>
           </td>
-          <td data-label="限量(份數)" class="menutable__limited">
+          <td data-label="限量(份數)" class="main-meals__limited">
             <input
               class="input"
               type="tel"
@@ -40,7 +50,7 @@
             />
             <span v-if="not_number_error">請填數字</span>
           </td>
-          <td data-label="團體" class="menutable__group">
+          <td data-label="團體" class="main-meals__group">
             <div class="select">
               <select
                 v-if="groups"
@@ -57,8 +67,8 @@
               </select>
             </div>
           </td>
-          <td data-label="口味" class="menutable__flavor">
-            <div class="menutable__flavor--add">
+          <td data-label="口味" class="main-meals__flavor flavors-list">
+            <div class="main-meals__flavor--add flavors-list--add">
               <input
                 class="input"
                 type="text"
@@ -67,7 +77,10 @@
               />
               <button @click="addFlavor" class="button is-light">新增</button>
             </div>
-            <div v-if="flavor_group.length" class="menutable__flavor--show">
+            <div
+              v-if="flavor_group.length"
+              class="main-meals__flavor--show flavors-list--show"
+            >
               <div
                 v-for="(flavor, index) in flavor_group"
                 :key="index"
@@ -82,22 +95,138 @@
               </div>
             </div>
           </td>
-          <td data-label="備註" class="menutable__note">
+          <td data-label="備註" class="main-meals__note">
             <input class="input" type="text" v-model.trim="meal.note" />
+          </td>
+          <td class="main-meals__delete">
+            <font-awesome-icon
+              icon="trash-alt"
+              size="lg"
+              class="minusrow"
+              @click="minusRow('main_meals', index)"
+            ></font-awesome-icon>
           </td>
         </tr>
       </tbody>
-      <tfoot>
-        <button
-          type="button"
-          name="button"
-          class="button is-info"
-          @click.prevent="addMeal"
-        >
-          新增餐點
-        </button>
-      </tfoot>
     </table>
+    <h1 class="title">
+      加點
+      <span class="subtitle">(不可選飯菜)</span>
+      <font-awesome-icon
+        icon="plus-circle"
+        size="xs"
+        class="addrow"
+        @click="addRow('snacks')"
+      ></font-awesome-icon>
+    </h1>
+    <table class="snacks table is-bordered">
+      <thead>
+        <tr>
+          <th class="menu-header__name snack__name">名稱</th>
+          <th class="menu-header__price snack__price">價格</th>
+          <th class="menu-header__limited snack__limited">限量(份數)</th>
+          <th class="menu-header__group snack__group">團體</th>
+          <th class="menu-header__flavor snack__flavor">口味</th>
+          <th class="menu-header__note snack__note">備註</th>
+          <th class="menu-header__delete snack__delete"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(snack, index) in snacks" :key="index">
+          <td data-label="名稱" class="snack__name">
+            <input
+              class="input"
+              type="text"
+              :class="{ error: empty_error.name }"
+              v-model.trim="snack.name"
+            />
+            <span v-if="empty_error.name">不得為空</span>
+          </td>
+          <td data-label="價格" class="snack__price">
+            <input
+              class="input"
+              type="tel"
+              :class="{ error: empty_error.price }"
+              v-model.number="snack.price"
+            />
+            <span v-if="empty_error.price">請填數字</span>
+          </td>
+          <td data-label="限量(份數)" class="snack__limited">
+            <input
+              class="input"
+              type="tel"
+              v-model.number="snack.quantity_limit"
+              :class="{ error: not_number_error }"
+            />
+            <span v-if="not_number_error">請填數字</span>
+          </td>
+          <td data-label="團體" class="snack__group">
+            <div class="select">
+              <select
+                v-if="groups"
+                class="group--select"
+                v-model="snack.group_id"
+              >
+                <option value="all">全體</option>
+                <option
+                  v-for="group in groups"
+                  :value="group.id"
+                  :key="group.id"
+                  >{{ group.name }}</option
+                >
+              </select>
+            </div>
+          </td>
+          <td data-label="口味" class="flavors-list snack__flavor">
+            <div class="snack__flavor--add flavors-list--add">
+              <input
+                class="input"
+                type="text"
+                v-model.trim="flavor"
+                @keypress.enter="addFlavor"
+              />
+              <button @click="addFlavor" class="button is-light">新增</button>
+            </div>
+            <div
+              v-if="flavor_group.length"
+              class="snack__flavor--show flavors-list--show"
+            >
+              <div
+                v-for="(flavor, index) in flavor_group"
+                :key="index"
+                class="flavor--item"
+              >
+                <font-awesome-icon
+                  icon="times"
+                  size="lg"
+                  @click="deleteFlavor(index)"
+                ></font-awesome-icon>
+                <label>{{ flavor }}</label>
+              </div>
+            </div>
+          </td>
+          <td data-label="備註" class="snack__note">
+            <input class="input" type="text" v-model.trim="snack.note" />
+          </td>
+          <td class="snack__delete">
+            <font-awesome-icon
+              icon="trash-alt"
+              size="lg"
+              class="minusrow"
+              @click="minusRow('snacks', index)"
+            ></font-awesome-icon>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <button
+      type="button"
+      name="button"
+      class="button is-info"
+      @click.prevent="addMeal"
+    >
+      新增餐點
+    </button>
   </section>
 </template>
 
@@ -107,13 +236,26 @@ export default {
   props: ["choose_date"],
   data() {
     return {
-      meal: {
-        name: null,
-        price: null,
-        quantity_limit: null,
-        group_id: "all",
-        note: null
-      },
+      main_meals: [
+        {
+          type: 0,
+          name: null,
+          price: null,
+          quantity_limit: null,
+          group_id: "all",
+          note: null
+        }
+      ],
+      snacks: [
+        {
+          type: 1,
+          name: null,
+          price: null,
+          quantity_limit: null,
+          group_id: "all",
+          note: null
+        }
+      ],
       flavor: null,
       flavor_group: [],
       empty_error: {
@@ -129,6 +271,31 @@ export default {
     }
   },
   methods: {
+    addRow(name) {
+      const meal = {
+        name: null,
+        price: null,
+        quantity_limit: null,
+        group_id: "all",
+        note: null
+      };
+      if (name === "main_meals") {
+        meal["type"] = 0;
+        this.main_meals.push(meal);
+      } else {
+        meal["type"] = 1;
+        this.snacks.push(meal);
+      }
+    },
+    minusRow(name, index) {
+      if (name === "main_meals") {
+        if (this.main_meals.length === 1) return;
+        this.main_meals.splice(index, 1);
+      } else {
+        if (this.snacks.length === 1) return;
+        this.snacks.splice(index, 1);
+      }
+    },
     async addMeal() {
       try {
         this.hideAllError();
@@ -220,7 +387,14 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.menutable__flavor {
+.addrow {
+  cursor: pointer;
+  margin-left: 1rem;
+  &:hover {
+    opacity: 0.5;
+  }
+}
+.flavors-list {
   display: flex;
   flex-wrap: wrap;
   &--add {

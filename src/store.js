@@ -16,6 +16,7 @@ export default new Vuex.Store({
       JSON.parse(localStorage.getItem("member_daily_menu")) || null,
     order_detail_statistic:
       JSON.parse(localStorage.getItem("order_detail_statistic")) || [],
+    purchase_list: [],
     date_range: 7,
     week_range: 4
   },
@@ -28,6 +29,9 @@ export default new Vuex.Store({
     },
     daily_menu(state) {
       return state.daily_menu;
+    },
+    purchase_list(state) {
+      return state.purchase_list.sort((a, b) => a.menu_id - b.menu_id);
     },
     member_order_menu(state) {
       if (!state.member_daily_menu) return [];
@@ -146,6 +150,9 @@ export default new Vuex.Store({
       //   JSON.stringify(state.order_detail_statistic)
       // );
     },
+    retrievePurchaseList(state, data) {
+      state.purchase_list = data;
+    },
     updateDailyMenu(state, meal) {
       const index = state.daily_menu.findIndex(item => {
         return (item["id"] = meal["id"]);
@@ -208,6 +215,14 @@ export default new Vuex.Store({
         return data;
       } catch (e) {
         throw e.response.data.message;
+      }
+    },
+    async retrievePurchaseList({ state, commit }, date_range) {
+      try {
+        let { data } = await API.GET("/order", state.token, date_range);
+        commit("retrievePurchaseList", data);
+      } catch (e) {
+        throw e.response.data.message || e.response.data.error;
       }
     },
     async addDailyMenu({ state }, data) {

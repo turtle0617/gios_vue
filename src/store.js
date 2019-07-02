@@ -47,6 +47,9 @@ export default new Vuex.Store({
         return new_meal;
       });
     },
+    member_menu(state) {
+      return state.member_daily_menu;
+    },
     member_order_check(state) {
       return state.order_detail_statistic;
     },

@@ -194,6 +194,18 @@ export default new Vuex.Store({
         throw e.response.data.message || e.response.data.error;
       }
     },
+    async updateMemberOrder({ state, commit }, { order_id, change_meal }) {
+      try {
+        let { data } = await API.PATCH(
+          `/order/${order_id}`,
+          state.token,
+          change_meal
+        );
+        return data;
+      } catch (e) {
+        throw e.response.data.message || e.response.data.error;
+      }
+    },
     async register(context, data) {
       try {
         let res = await API.Register("/member", data);

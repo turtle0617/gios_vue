@@ -69,7 +69,7 @@
 
           <div v-else class="purchase-list__item purchase-list__modify columns ">
             <div class="list-item list-item__status column">
-              <button class="button is-info">
+              <button class="button is-info" @click="updatePurchaseMeal(meal)">
                 送出
               </button>
               <button class="button is-light" @click="modifyPurchaseMeal(meal)">
@@ -85,8 +85,8 @@
               {{ meal.quantity }}
             </div>
             <div class="list-item list-item__rice column">
-              <div v-if="change_meal.rice" class="select">
-                <select v-model.number="change_meal.rice">
+              <div v-if="change_meal.user_rice" class="select">
+                <select v-model.number="change_meal.user_rice">
                   <option value="7">多飯</option>
                   <option value="1">正常</option>
                   <option value="2">1/2飯</option>
@@ -98,8 +98,8 @@
               </div>
             </div>
             <div class="list-item list-item__vegetable column">
-              <div v-if="change_meal.vegetable" class="select">
-                <select v-model.number="change_meal.vegetable">
+              <div v-if="change_meal.user_vegetable" class="select">
+                <select v-model.number="change_meal.user_vegetable">
                   <option value="2">多菜</option>
                   <option value="1">正常</option>
                   <option value="3">少菜</option>
@@ -110,12 +110,12 @@
             <div class="column list-item list-item__flavor">
               <div v-if="change_meal.flavor_id" class="select">
                 <select v-model.number="change_meal.flavor_id">
-                  <option v-for="(flavor, index) in change_meal.flavors" :value="flavor.id" :key="index">{{ flavor.choice }}</option>
+                  <option v-for="(flavor, index) in menu_flavors" :value="flavor.id" :key="index">{{ flavor.choice }}</option>
                 </select>
               </div>
             </div>
             <div class="column list-item list-item__note ">
-              <input type="text" class="input" v-model="change_meal.note">
+              <input type="text" class="input" v-model.trim="change_meal.note">
             </div>
           </div>
 
@@ -133,11 +133,11 @@ export default {
     return {
       choose_date: "",
       modify: null,
+      menu_flavors: null,
       change_meal: {
-        rice: null,
-        vegetable: null,
-        flavor_id:null,
-        flavors: null,
+        user_rice: null,
+        user_vegetable: null,
+        flavor_id: null,
         note: null
       }
     };
@@ -161,10 +161,7 @@ export default {
   watch: {
     choose_date: function(date) {
       const formated_date = this.Date.parse(date).toString("yyyy/MM/dd");
-      this.$store.dispatch("retrievePurchaseList", {
-        start_date: formated_date,
-        end_date: formated_date
-      });
+      this.getPurchaseList(date);
       this.$store.dispatch("retrieveMemberDailyMenu", {
         menu_date: formated_date
       });
@@ -220,23 +217,55 @@ export default {
       }
       return conver_vegetable;
     },
-    modifyPurchaseMeal(meal,index = null) {
+    modifyPurchaseMeal(meal, index = null) {
       this.modify = index;
-      this.clearObjectValue(this.change_meal)
-      if(index === null) return;
-      const menu = this.member_menu.filter(item=>item.id===meal.menu_id)[0];
-      this.change_meal.rice = meal.user_rice;
-      this.change_meal.vegetable = meal.user_vegetable;
+      this.clearObjectValue(this.change_meal);
+      this.menu_flavors = null;
+      if (index === null) return;
+      const menu = this.member_menu.filter(item => item.id === meal.menu_id)[0];
+      this.change_meal.user_rice = meal.user_rice;
+      this.change_meal.user_vegetable = meal.user_vegetable;
       this.change_meal.note = meal.note;
-      if(meal.flavor_choice){
+      if (meal.flavor_choice) {
         const choice = meal.flavor_choice;
-        const choice_id = menu.flavors.filter(flavor=>choice===choice)[0].id
-        this.change_meal.flavors = menu.flavors;
+        const choice_id = menu.flavors.filter(flavor=>flavor.choice === choice)[0].id;
+        this.menu_flavors = menu.flavors;
         this.change_meal.flavor_id = choice_id;
       }
     },
-    clearObjectValue(object){
-      for(let key in object){
+    async updatePurchaseMeal(original_meal) {
+      const filtered_change = this.filterBeModifiedProperty(this.change_meal, original_meal);
+      const all_same = Object.keys(filtered_change).length === 0 ? true : false
+      if (all_same) {
+        this.modifyPurchaseMeal();
+        return;
+      }
+      await this.$store.dispatch("updateMemberOrder", {
+        order_id: original_meal.id,
+        change_meal: filtered_change
+      })
+      this.modifyPurchaseMeal();
+      this.getPurchaseList(this.choose_date);
+    },
+    getPurchaseList(date){
+      const formated_date = this.Date.parse(date).toString("yyyy/MM/dd");
+      this.$store.dispatch("retrievePurchaseList", {
+        start_date: formated_date,
+        end_date: formated_date
+      });
+    },
+    filterBeModifiedProperty(change, original) {
+      let filtered = {};
+      for (let key in change) {
+        if (change[key] !== original[key]) {
+          console.log(change[key], original[key]);
+          filtered[key] = change[key];
+        }
+      }
+      return filtered;
+    },
+    clearObjectValue(object) {
+      for (let key in object) {
         object[key] = null;
       }
     }

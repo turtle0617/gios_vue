@@ -72,24 +72,26 @@
               <input
                 class="input"
                 type="text"
-                v-model.trim="flavor"
-                @keypress.enter="addFlavor"
+                v-model.trim="meal.flavor"
+                @keypress.enter="addFlavor(meal)"
               />
-              <button @click="addFlavor" class="button is-light">新增</button>
+              <button @click="addFlavor(meal)" class="button is-light">
+                新增
+              </button>
             </div>
             <div
-              v-if="flavor_group.length"
+              v-if="meal.flavor_group.length"
               class="main-meals__flavor--show flavors-list--show"
             >
               <div
-                v-for="(flavor, index) in flavor_group"
+                v-for="(flavor, index) in meal.flavor_group"
                 :key="index"
                 class="flavor--item"
               >
                 <font-awesome-icon
                   icon="times"
                   size="lg"
-                  @click="deleteFlavor(index)"
+                  @click="deleteFlavor(meal, index)"
                 ></font-awesome-icon>
                 <label>{{ flavor }}</label>
               </div>
@@ -182,24 +184,26 @@
               <input
                 class="input"
                 type="text"
-                v-model.trim="flavor"
-                @keypress.enter="addFlavor"
+                v-model.trim="snack.flavor"
+                @keypress.enter="addFlavor(snack)"
               />
-              <button @click="addFlavor" class="button is-light">新增</button>
+              <button @click="addFlavor(snack)" class="button is-light">
+                新增
+              </button>
             </div>
             <div
-              v-if="flavor_group.length"
+              v-if="snack.flavor_group.length"
               class="snack__flavor--show flavors-list--show"
             >
               <div
-                v-for="(flavor, index) in flavor_group"
+                v-for="(flavor, index) in snack.flavor_group"
                 :key="index"
                 class="flavor--item"
               >
                 <font-awesome-icon
                   icon="times"
                   size="lg"
-                  @click="deleteFlavor(index)"
+                  @click="deleteFlavor(snack, index)"
                 ></font-awesome-icon>
                 <label>{{ flavor }}</label>
               </div>
@@ -243,6 +247,8 @@ export default {
           price: null,
           quantity_limit: null,
           group_id: "all",
+          flavor: null,
+          flavor_group: [],
           note: null
         }
       ],
@@ -253,11 +259,12 @@ export default {
           price: null,
           quantity_limit: null,
           group_id: "all",
+          flavor: null,
+          flavor_group: [],
           note: null
         }
       ],
-      flavor: null,
-      flavor_group: [],
+
       empty_error: {
         name: false,
         price: false
@@ -277,6 +284,8 @@ export default {
         price: null,
         quantity_limit: null,
         group_id: "all",
+        flavor: null,
+        flavor_group: [],
         note: null
       };
       if (name === "main_meals") {
@@ -333,13 +342,14 @@ export default {
         Object.entries(meal).filter(item => item[1] !== "" && item[1] !== null)
       );
     },
-    addFlavor() {
-      if (!this.flavor) return;
-      this.flavor_group.push(this.flavor);
-      this.flavor = "";
+    addFlavor(meal) {
+      console.log("meal", meal);
+      if (!meal.flavor) return;
+      meal.flavor_group.push(meal.flavor);
+      meal.flavor = "";
     },
-    deleteFlavor(index) {
-      this.flavor_group.splice(index, 1);
+    deleteFlavor(meal, index) {
+      meal.flavor_group.splice(index, 1);
     },
     addMenuFlavor(flavor_group, menu_id) {
       return Promise.all(

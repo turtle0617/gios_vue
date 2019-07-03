@@ -79,7 +79,7 @@
                   size="lg"
                   @click="deleteFlavor(meal, index)"
                 ></font-awesome-icon>
-                <label>{{ flavor }}</label>
+                <label>{{ flavor.choice }}</label>
               </div>
             </div>
           </td>
@@ -177,7 +177,7 @@
                   size="lg"
                   @click="deleteFlavor(snack, index)"
                 ></font-awesome-icon>
-                <label>{{ flavor }}</label>
+                <label>{{ flavor.choice }}</label>
               </div>
             </div>
           </td>
@@ -291,7 +291,6 @@ export default {
           return;
         }
         menu = this.mealAddDate(menu);
-        console.log(menu);
         await Promise.all(
           menu.map(async meal => {
             const meal_id = await this.$store.dispatch("addDailyMenu", meal);
@@ -299,7 +298,6 @@ export default {
             return this.addMenuFlavor(meal.flavor_group, meal_id);
           })
         );
-        console.log("await Promise.all");
         this.resetMealForm();
         this.$store.dispatch("retrieveDailyMenu", {
           menu_date: formated_date
@@ -324,23 +322,23 @@ export default {
       });
     },
     addFlavor(meal) {
-      console.log("meal", meal);
       if (!meal.flavor) return;
-      meal.flavor_group.push(meal.flavor);
+      meal.flavor_group.push({
+        choice: meal.flavor
+      });
       meal.flavor = "";
     },
     deleteFlavor(meal, index) {
       meal.flavor_group.splice(index, 1);
     },
     addMenuFlavor(flavor_group, menu_id) {
-      return Promise.all(
-        flavor_group.map(flavor => {
-          return this.$store.dispatch("addMenuFlavor", {
-            menu_id: menu_id,
-            choice: flavor
-          });
-        })
-      );
+      flavor_group = flavor_group.map(flavor => {
+        flavor["menu_id"] = menu_id;
+        return flavor;
+      });
+      return this.$store.dispatch("addMenuFlavor", {
+        flavorArray: flavor_group
+      });
     },
     resetMealForm() {
       this.main_meals = [

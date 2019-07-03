@@ -128,7 +128,7 @@ export default {
         await this.$store.dispatch("addMemberOrder", {
           menuArray: filtered_orders
         });
-        this.$router.push({ name: "order_menu" });
+        this.$router.push({ name: "purchase" });
       } catch (e) {
         console.error(e);
       }

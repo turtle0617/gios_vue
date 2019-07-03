@@ -121,10 +121,13 @@ export default {
     async addMemberOrder() {
       try {
         const filtered_orders = this.filterNotToNeedPostValue();
-        const addMemberOrder = filtered_orders.map(order =>
-          this.$store.dispatch("addMemberOrder", order)
-        );
-        await Promise.all(addMemberOrder);
+        // const addMemberOrder = filtered_orders.map(order =>
+        //   this.$store.dispatch("addMemberOrder", order)
+        // );
+        // await Promise.all(addMemberOrder);
+        await this.$store.dispatch("addMemberOrder", {
+          menuArray: filtered_orders
+        });
         this.$router.push({ name: "order_menu" });
       } catch (e) {
         console.error(e);

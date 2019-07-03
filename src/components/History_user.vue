@@ -19,13 +19,14 @@
           </select>
         </div>
       </div>
-      <div class="column is-half status status__totalPrice">
+      <div
+        :class="{
+          'status__totalPrice--Paid': member_history_list.payment_status
+        }"
+        class="column is-half status status__totalPrice"
+      >
         <h1 class="title is-3">總金額</h1>
-        <span
-          :class="{ notPay: member_history_list.payment_status }"
-          class="title is-3"
-          >{{ member_history_list.total_price }}</span
-        >
+        <span class="title is-3">{{ member_history_list.total_price }}</span>
       </div>
     </div>
     <div class="member-history__header columns">
@@ -164,6 +165,11 @@ export default {
   }
   span {
     color: red;
+  }
+  &__totalPrice--Paid {
+    span {
+      color: green;
+    }
   }
 }
 .member-history__header {

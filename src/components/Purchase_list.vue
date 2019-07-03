@@ -50,7 +50,10 @@
               class="purchase-list__item purchase-list__show columns "
             >
               <div class="list-item list-item__status column">
-                <button class="button is-danger">
+                <button
+                  class="button is-danger"
+                  @click="deletePurchaseMeal(meal)"
+                >
                   刪除
                 </button>
                 <button
@@ -269,21 +272,34 @@ export default {
       }
     },
     async updatePurchaseMeal(original_meal) {
-      const filtered_change = this.filterBeModifiedProperty(
-        this.change_meal,
-        original_meal
-      );
-      const all_same = Object.keys(filtered_change).length === 0 ? true : false;
-      if (all_same) {
+      try {
+        const filtered_change = this.filterBeModifiedProperty(
+          this.change_meal,
+          original_meal
+        );
+        const all_same =
+          Object.keys(filtered_change).length === 0 ? true : false;
+        if (all_same) {
+          this.modifyPurchaseMeal();
+          return;
+        }
+        await this.$store.dispatch("updateMemberOrder", {
+          order_id: original_meal.id,
+          change_meal: filtered_change
+        });
         this.modifyPurchaseMeal();
-        return;
+        this.getPurchaseList(this.choose_date);
+      } catch (e) {
+        console.log(e);
       }
-      await this.$store.dispatch("updateMemberOrder", {
-        order_id: original_meal.id,
-        change_meal: filtered_change
-      });
-      this.modifyPurchaseMeal();
-      this.getPurchaseList(this.choose_date);
+    },
+    async deletePurchaseMeal({ id }) {
+      try {
+        await this.$store.dispatch("deletePurchaseMeal", id);
+        this.getPurchaseList(this.choose_date);
+      } catch (e) {
+        console.log(e);
+      }
     },
     getPurchaseList(date) {
       const formated_date = this.Date.parse(date).toString("yyyy/MM/dd");

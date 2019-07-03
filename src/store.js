@@ -243,6 +243,14 @@ export default new Vuex.Store({
         throw e.response.data.message || e.response.data.error;
       }
     },
+    async deletePurchaseMeal({ state, commit }, meal_id) {
+      try {
+        let res = await API.DELETE("/order", meal_id, state.token);
+        return res;
+      } catch (e) {
+        throw e.response.data.message || e.response.data.error;
+      }
+    },
     async addDailyMenu({ state }, data) {
       try {
         let res = await API.POST("/menus", state.token, data);

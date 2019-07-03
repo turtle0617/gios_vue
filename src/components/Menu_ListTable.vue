@@ -103,8 +103,18 @@
             </td>
             <td class="menu-list__flavor">
               <div class="change-flavor--add">
-                <input class="input" type="text" />
-                <button class="button is-light">新增</button>
+                <input
+                  class="input"
+                  type="text"
+                  @keypress.enter="addChangeFlavor(meal.id)"
+                  v-model="change_flavor_name"
+                />
+                <button
+                  class="button is-light"
+                  @click="addChangeFlavor(meal.id)"
+                >
+                  新增
+                </button>
               </div>
               <div v-if="change_flavors" class="change-flavor--list">
                 <div
@@ -149,6 +159,7 @@ export default {
         group_id: "all",
         note: null
       },
+      change_flavor_name: "",
       change_flavors: null,
       empty_error: {
         name: false,
@@ -159,7 +170,6 @@ export default {
   },
   computed: {
     daily_menu() {
-      console.log("computed dailymenu");
       return this.$store.getters.daily_menu;
     },
     groups() {
@@ -167,20 +177,14 @@ export default {
     }
   },
   methods: {
-    convertFlavor(flavor, index) {
-      if (flavor.length > 0) {
-        const flavor_name = flavor.map(item => item["choice"]).join("/");
-        return flavor_name;
-      }
-      return null;
-    },
     modifyMeal(original_meal, index = null) {
       this.modify = index;
+      this.hideAllError();
       for (let key in this.change_meal) {
         this.change_meal[key] = original_meal[key];
       }
       if (!this.change_meal.group_id) this.change_meal.group_id = "all";
-
+      this.change_flavor_name = "";
       this.change_flavors = JSON.parse(JSON.stringify(original_meal.flavors));
     },
     async updateMeal(index) {
@@ -190,37 +194,40 @@ export default {
         const isPriceNum = Number.isInteger(this.change_meal.price);
         // const isLimiteNum = Number.isInteger(this.change_meal.quantity_limit);
         if (isEmpty || !isPriceNum) {
-          if (!isPriceNum) this.empty_error.price = true;
-          // if (!isLimiteNum)
-          //   this.not_number_error = true;
+          alert("請確認格式");
           return;
         }
-        let filtered_change_meal = this.filterSameKey(index, this.change_meal);
-        const meal_same = Object.keys(filtered_change_meal).length === 0;
-        const original_daily_menu = Object.assign({}, this.daily_menu[index]);
-        const original_meal_id = original_daily_menu.id;
-        const original_flavors = original_daily_menu.flavors;
+        const original_meal = Object.assign({}, this.daily_menu[index]);
+        const original_meal_id = original_meal.id;
         const formated_date = this.Date.parse(this.choose_date).toString(
           "yyyy/MM/d"
         );
-        console.log("before method updateMenuFlavor");
-        const updateMenuFlavor = this.updateMenuFlavors(original_flavors);
-        console.log("after method updateMenuFlavor", updateMenuFlavor);
-        // if (meal_same) {
-        //   this.modify = null;
-        //   console.log("meal_same");
-        //   return;
-        // }
-        filtered_change_meal["menu_date"] = formated_date;
-
-        console.log("filtered_change_meal", filtered_change_meal);
+        let filtered_different_meal = this.filterSameKey(
+          original_meal,
+          index,
+          this.change_meal
+        );
+        const meal_same = Object.keys(filtered_different_meal).length === 0;
+        const filtered_flavors = this.filterDifferentFlavors(
+          original_meal.flavors,
+          this.change_flavors
+        );
+        const flavors_same = !Object.values(filtered_flavors).flat().length;
+        if (meal_same && flavors_same) {
+          this.modify = null;
+          return;
+        }
+        filtered_different_meal["menu_date"] = formated_date;
         this.modify = null;
-        // await this.$store.dispatch("updateDailyMenu", {
-        //   meal_id:original_meal_id,
-        //   change_meal:filtered_change_meal
-        // });
+        await this.$store.dispatch("updateDailyMenu", {
+          meal_id: original_meal_id,
+          change_meal: filtered_different_meal
+        });
 
-        console.log("dispatch retrieveDailyMenu");
+        if (filtered_flavors.delete) {
+          await this.deleteFlavor(filtered_flavors.delete);
+        }
+        await this.addFlavor(filtered_flavors.new);
         this.$store.dispatch("retrieveDailyMenu", {
           menu_date: formated_date
         });
@@ -228,59 +235,41 @@ export default {
         console.error(e);
       }
     },
+    addChangeFlavor(id) {
+      this.change_flavors.push({
+        menu_id: id,
+        choice: this.change_flavor_name
+      });
+      this.change_flavor_name = "";
+    },
     deleteChangeFlavor(index) {
       this.change_flavors.splice(index, 1);
     },
-    updateMenuFlavors(original_flavors) {
+    filterDifferentFlavors(original_flavors, change_flavors) {
       if (original_flavors.length) {
-        const original_flavors_choice = original_flavors.map(
-          flavor => flavor["choice"]
+        const delete_flavors = this.filterDeleteFlavor(
+          original_flavors,
+          change_flavors
         );
-
-        const change_flavors = this.change_flavors.split("/");
-        const filtered_change = change_flavors.filter(
-          flavor => original_flavors_choice.indexOf(flavor) === -1
-        );
-
-        if (!filtered_change.length) {
-          console.log("flavor same");
-          return false;
-        }
-        const filtered_original = original_flavors.filter(flavor => {
-          return change_flavors.indexOf(flavor.choice) === -1;
-        });
-
-        const patch_array = filtered_original.map((flavor, index) => {
-          return this.$store.dispatch("updateMenuFlavor", {
-            flavor_id: flavor.id,
-            change_flavor: filtered_change[index]
-          });
-        });
-        Promise.all(patch_array).then(res => console.log("res", res));
+        const new_flavors = change_flavors.filter(flavor => !flavor.id);
+        return {
+          delete: delete_flavors,
+          new: new_flavors
+        };
       } else {
-        if (this.change_flavors === original_flavors) return;
+        const new_flavors = change_flavors.filter(flavor => !flavor.id);
+        return {
+          new: new_flavors
+        };
       }
-      // if (this.flavor !== original_meal_flavors) {
-      //   if (original_daily_menu.flavors.length > 0) {
-      //     console.log(
-      //       "has flavor,await updateMenuFlavor",
-      //       original_daily_menu.flavors[0].id
-      //     );
-      //     await this.$store.dispatch("updateMenuFlavor", {
-      //       flavor_id: original_daily_menu.flavors[0].id,
-      //       change_flavor: this.flavor
-      //     });
-      //   } else {
-      //     console.log(
-      //       "hasn't flavor,await addMenuFlavor",
-      //       original_meal_flavors
-      //     );
-      //     await this.$store.dispatch("addMenuFlavor", {
-      //       menu_id: original_meal_id,
-      //       choice: this.flavor
-      //     });
-      //   }
-      // }
+    },
+    filterDeleteFlavor(original_flavors, change_flavors) {
+      return original_flavors.filter(o_flavor => {
+        const same = change_flavors.some(c_flavor => {
+          return c_flavor.choice === o_flavor.choice && !!c_flavor.id;
+        });
+        return !same;
+      });
     },
     async deleteMeal(meal_index) {
       const formated_date = this.Date.parse(this.choose_date).toString(
@@ -306,19 +295,25 @@ export default {
       }
     },
     deleteFlavor(flavors) {
+      if (!flavors.length) return;
       return Promise.all(
         flavors.map(flavor => this.$store.dispatch("deleteFlavor", flavor.id))
       );
     },
-    filterSameKey(index, data) {
+    addFlavor(flavors) {
+      if (!flavors.length) return;
+      return this.$store.dispatch("addMenuFlavor", {
+        flavorArray: flavors
+      });
+    },
+    filterSameKey(original_meal, index, data) {
       const change_meal = Object.entries(data);
-      const original_daily_menu = Object.assign({}, this.daily_menu[index]);
       return Object.fromEntries(
         change_meal.filter(item => {
           let key = item[0];
           let value = item[1];
           if (value === "all") value = null;
-          return original_daily_menu[key] !== value;
+          return original_meal[key] !== value;
         })
       );
     },

@@ -17,6 +17,7 @@ export default new Vuex.Store({
     order_detail_statistic:
       JSON.parse(localStorage.getItem("order_detail_statistic")) || [],
     purchase_list: [],
+    member_history_list: {},
     date_range: 7,
     week_range: 4
   },
@@ -32,6 +33,16 @@ export default new Vuex.Store({
     },
     purchase_list(state) {
       return state.purchase_list.sort((a, b) => a.menu_id - b.menu_id);
+    },
+    member_history_list(state) {
+      if (!Object.keys(state.member_history_list).length) return {};
+      state.member_history_list.list = state.member_history_list.list.map(
+        item => {
+          item.menu_date = Date.parse(item.menu_date).toString("MM/dd");
+          return item;
+        }
+      );
+      return state.member_history_list;
     },
     member_order_menu(state) {
       if (!state.member_daily_menu) return [];
@@ -108,6 +119,9 @@ export default new Vuex.Store({
         return item;
       });
       localStorage.setItem("member_daily_menu", JSON.stringify(menu));
+    },
+    retrieveMemberHistoryList(state, list) {
+      state.member_history_list = list;
     },
     retrieveDailyMenu(state, menu) {
       localStorage.setItem("daily_menu", JSON.stringify(menu));
@@ -239,6 +253,18 @@ export default new Vuex.Store({
       try {
         let { data } = await API.GET("/order", state.token, date_range);
         commit("retrievePurchaseList", data);
+      } catch (e) {
+        throw e.response.data.message || e.response.data.error;
+      }
+    },
+    async retrieveMemberHistoryList({ state, commit }, date_range) {
+      try {
+        let { data } = await API.GET(
+          "/personal/count",
+          state.token,
+          date_range
+        );
+        commit("retrieveMemberHistoryList", data);
       } catch (e) {
         throw e.response.data.message || e.response.data.error;
       }

@@ -42,7 +42,7 @@
               >訂單</router-link
             >
             <router-link class="navbar-item" :to="{ name: 'history' }"
-              >歷史訂單</router-link
+              >歷史統計</router-link
             >
             <router-link class="navbar-item" :to="{ name: 'logout' }"
               >登出</router-link

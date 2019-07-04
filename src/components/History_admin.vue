@@ -1,103 +1,160 @@
 <template>
-  <section class="history-admin row">
-    <div class="history__date col-sm-12 col-md-6">
-      <label for="historyDate">周日期</label>
-      <select class="group--select" name="historyDate">
-        <option value="5/27~6/2">5/27~6/2</option>
-        <option value="6/3~6/9">6/3~6/9</option>
-        <option value="6/10~6/16">6/10~6/16</option>
-        <option value="6/17~6/23">6/17~6/23</option>
-      </select>
-    </div>
-    <div class="history__group col-sm-12 col-md-6">
-      <label for="historyDate">團體</label>
-      <select>
-        <option value="好想工作室">好想工作室</option>
-        <option value="Howard家">Howard家</option>
-        <option value="大灣">大灣</option>
-        <option value="佳音">佳音</option>
-        <option value="個人">個人</option>
-      </select>
-    </div>
-    <div class="income-statistic row col-sm-12">
-      <h3>收益</h3>
-      <h2>9999</h2>
-      <h3>元</h3>
-    </div>
-    <div class="person-statistic row col-sm-12">
-      <div class="col-sm-12 col-md-6 col-lg-4">
-        <span>Howard</span>
-        <span>1000</span>
+  <section class="history-boss  section">
+    <div class="history-boss__header">
+      <div class="columns boss-header__title">
+        <div class="column">
+          <h1 class=" title is-2 ">歷史統計</h1>
+        </div>
       </div>
-      <div class="col-sm-12 col-md-6 col-lg-4">
-        <span>chris</span>
-        <span>1000</span>
+      <div class="columns  boss-header__status">
+        <div class="column  status status__date">
+          <h1 class="title is-3">日期</h1>
+          <div class="select">
+            <select
+              v-if="week_range"
+              v-model="status_choose.date"
+              class="group--select"
+              name="historyDate"
+            >
+              <option
+                v-for="(week, index) in week_range"
+                :value="week"
+                :key="index"
+                >{{ week }}</option
+              >
+            </select>
+          </div>
+        </div>
+        <div class="column  status status__group">
+          <h1 class="title is-3">團體</h1>
+          <div class="select">
+            <select
+              v-if="groups"
+              v-model.number="status_choose.group"
+              class="group--select"
+              name="historyDate"
+            >
+              <option value="all">全體</option>
+              <option
+                v-for="(group, index) in groups"
+                :value="group.id"
+                :key="index"
+                >{{ group.name }}</option
+              >
+            </select>
+          </div>
+        </div>
       </div>
-      <div class="col-sm-12 col-md-6 col-lg-4">
-        <span>john</span>
-        <span>1000</span>
-      </div>
-      <div class="col-sm-12 col-md-6 col-lg-4">
-        <span>john</span>
-        <span>1000</span>
-      </div>
-      <div class="col-sm-12 col-md-6 col-lg-4">
-        <span>john</span>
-        <span>1000</span>
-      </div>
-      <div class="col-sm-12 col-md-6 col-lg-4">
-        <span>john</span>
-        <span>1000</span>
-      </div>
-      <div class="col-sm-12 col-md-6 col-lg-4">
-        <span>john</span>
-        <span>1000</span>
-      </div>
-      <div class="col-sm-12 col-md-6 col-lg-4">
-        <span>john</span>
-        <span>1000</span>
-      </div>
-      <div class="col-sm-12 col-md-6 col-lg-4">
-        <span>john</span>
-        <span>1000</span>
-      </div>
-      <div class="col-sm-12 col-md-6 col-lg-4">
-        <span>john</span>
-        <span>1000</span>
-      </div>
-      <div class="col-sm-12 col-md-6 col-lg-4">
-        <span>john</span>
-        <span>1000</span>
-      </div>
-      <div class="col-sm-12 col-md-6 col-lg-4">
-        <span>john</span>
-        <span>1000</span>
-      </div>
+
+      <template v-if="price_statistic">
+        <div class="columns history-boss-priceStatistic__total">
+          <div class="column total__header">
+            <h2 class="title is-4">收益</h2>
+          </div>
+          <div class="column total_price">
+            <h1 class="title is-1">{{ price_statistic.total_price }}</h1>
+          </div>
+          <div class="column total__footer">
+            <h2 class="title is-4">元</h2>
+          </div>
+        </div>
+        <div class="columns history-boss-priceStatistic__paidStatus">
+          <div class="column paidStatus paidStatus__paid">
+            <h2 class="title is-4">已收：{{ price_statistic.paid || 0 }}</h2>
+          </div>
+          <div class="column paidStatus paidStatus__unpaid">
+            <h2 class="title is-4">未收：{{ price_statistic.unpaid }}</h2>
+          </div>
+        </div>
+      </template>
     </div>
   </section>
 </template>
 
 <script>
 export default {
-  name: "history_admin"
+  name: "history_admin",
+  data() {
+    return {
+      status_choose: {
+        date: "",
+        group: "all"
+      }
+    };
+  },
+  created() {
+    this.status_choose.date = this.week_range[0];
+    this.$store.dispatch("retrieveGroups");
+  },
+  computed: {
+    week_range() {
+      return this.$store.getters.week_range;
+    },
+    groups() {
+      return this.$store.getters.groups;
+    },
+    price_statistic() {
+      return this.$store.getters.boss_history_statistic.statistic;
+    },
+    member_statistic() {
+      return this.$store.getters.boss_history_statistic.list;
+    }
+  },
+  watch: {
+    status_choose: {
+      handler: function({ date, group }) {
+        const [start_date, end_date] = date.split("~").map(date => {
+          return this.Date.parse(date).toString("yyyy/MM/dd");
+        });
+        const statistic_parameter = {
+          start_date: start_date,
+          end_date: end_date
+        };
+        if (Number.isInteger(group)) statistic_parameter["group_id"] = group;
+        this.$store.dispatch(
+          "retrieveBossHistoryStatistic",
+          statistic_parameter
+        );
+      },
+      deep: true
+    }
+  }
 };
 </script>
 
 <style scoped lang="scss">
-.history-admin {
-  padding-top: 50px;
-  text-align: center;
-  max-width: 1024px;
-  margin: 0 auto;
-}
-.income-statistic {
-  justify-content: space-evenly;
-  margin: 50px 0;
-}
-.person-statistic > div {
-  border: 1px solid;
-  padding: 20px 40px;
-  justify-content: space-around;
+.status {
   display: flex;
+  h1 {
+    margin-right: 1rem;
+  }
+}
+.column {
+  flex-basis: auto;
+  flex-grow: 0;
+}
+.columns {
+  justify-content: space-between;
+}
+.history-boss {
+  padding: 3rem 5rem;
+  &__header {
+    border-bottom: 1px solid;
+    padding-bottom: 5rem;
+  }
+}
+.boss-header__title {
+  justify-content: center;
+}
+.total__footer {
+  align-self: flex-end;
+}
+@media screen and (max-width: 768px) {
+  .history-boss {
+    padding: 3rem 1.5rem;
+    &-priceStatistic__total {
+      display: flex;
+    }
+  }
 }
 </style>

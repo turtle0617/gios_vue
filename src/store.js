@@ -17,6 +17,7 @@ export default new Vuex.Store({
     order_detail_statistic:
       JSON.parse(localStorage.getItem("order_detail_statistic")) || [],
     purchase_list: [],
+    boss_history_statistic: {},
     member_history_list: {},
     date_range: 7,
     week_range: 4
@@ -43,6 +44,9 @@ export default new Vuex.Store({
         }
       );
       return state.member_history_list;
+    },
+    boss_history_statistic(state) {
+      return state.boss_history_statistic;
     },
     member_order_menu(state) {
       if (!state.member_daily_menu) return [];
@@ -122,6 +126,9 @@ export default new Vuex.Store({
     },
     retrieveMemberHistoryList(state, list) {
       state.member_history_list = list;
+    },
+    retrieveBossHistoryStatistic(state, list) {
+      state.boss_history_statistic = list;
     },
     retrieveDailyMenu(state, menu) {
       localStorage.setItem("daily_menu", JSON.stringify(menu));
@@ -265,6 +272,14 @@ export default new Vuex.Store({
           date_range
         );
         commit("retrieveMemberHistoryList", data);
+      } catch (e) {
+        throw e.response.data.message || e.response.data.error;
+      }
+    },
+    async retrieveBossHistoryStatistic({ state, commit }, date_range) {
+      try {
+        let { data } = await API.GET("/group/count", state.token, date_range);
+        commit("retrieveBossHistoryStatistic", data);
       } catch (e) {
         throw e.response.data.message || e.response.data.error;
       }

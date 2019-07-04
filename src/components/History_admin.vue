@@ -75,9 +75,10 @@
       class="history-boss__memberList columns is-multiline"
     >
       <div
-        class="column is-3 member"
+        class="column is-4 member"
         v-for="(member, index) in member_statistic"
         :key="index"
+        @click="changePaidStatus(index, member.user_id)"
       >
         <div class="member__name">使用者：{{ member.name }}</div>
         <div class="member__owe">
@@ -85,6 +86,17 @@
           <span>
             {{ member.person_paid }}
           </span>
+        </div>
+        <div class="member__paymentStatus">
+          <div
+            v-if="member.payment_status"
+            class="paymentStatus paymentStatus--paid"
+          >
+            已付款
+          </div>
+          <div v-else class="paymentStatus paymentStatus--unpaid">
+            未付款
+          </div>
         </div>
       </div>
     </div>
@@ -118,6 +130,16 @@ export default {
     },
     member_statistic() {
       if (!this.$store.getters.boss_history_statistic.list) return false;
+      // const member_list = this.$store.getters.boss_history_statistic.list;
+      // const fakeMember = new Array(30).fill().map((item, index) => {
+      //   return {
+      //     name: "member" + index,
+      //     payment_status: this.getRandomInt(2),
+      //     person_paid: this.getRandomInt(2000),
+      //     user_id: index
+      //   };
+      // });
+      // return fakeMember;
       return this.$store.getters.boss_history_statistic.list;
     }
   },
@@ -138,6 +160,22 @@ export default {
         );
       },
       deep: true
+    }
+  },
+  methods: {
+    changePaidStatus(index, member_id) {
+      const [start_date, end_date] = this.status_choose.date
+        .split("~")
+        .map(date => {
+          return this.Date.parse(date).toString("yyyy/MM/dd");
+        });
+      console.log(start_date, end_date);
+      this.$store.commit("updateMemberPaidStatus", index);
+      this.$store.dispatch("updateMemberPaidStatus", {
+        start_date: start_date,
+        end_date: end_date,
+        member_id: [member_id]
+      });
     }
   }
 };
@@ -177,10 +215,29 @@ export default {
 }
 .member {
   border: 1px solid;
+  cursor: pointer;
+  position: relative;
   &__owe {
     span {
       font-weight: bold;
     }
+  }
+  &:hover {
+    background-color: #ffdd574f;
+  }
+  &__paymentStatus {
+    position: absolute;
+    top: 35%;
+    right: 5%;
+  }
+}
+.paymentStatus {
+  font-weight: bold;
+  &--paid {
+    color: green;
+  }
+  &--unpaid {
+    color: red;
   }
 }
 @media screen and (max-width: 768px) {

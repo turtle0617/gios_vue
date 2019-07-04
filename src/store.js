@@ -143,6 +143,30 @@ export default new Vuex.Store({
       const key_name = detail.name;
       state.order_detail_statistic[index][key_name] = detail.value;
     },
+    updateMemberPaidStatus(state, index) {
+      const member_payment_status =
+        state.boss_history_statistic.list[index].payment_status;
+      const member_paid = Number(
+        state.boss_history_statistic.list[index].person_paid
+      );
+      state.boss_history_statistic.list[
+        index
+      ].payment_status = !member_payment_status;
+
+      state.boss_history_statistic.statistic.paid = Number(
+        state.boss_history_statistic.statistic.paid
+      );
+      state.boss_history_statistic.statistic.unpaid = Number(
+        state.boss_history_statistic.statistic.unpaid
+      );
+      if (member_payment_status) {
+        state.boss_history_statistic.statistic.paid -= member_paid;
+        state.boss_history_statistic.statistic.unpaid += member_paid;
+      } else {
+        state.boss_history_statistic.statistic.paid += member_paid;
+        state.boss_history_statistic.statistic.unpaid -= member_paid;
+      }
+    },
     generateOrderkDetailStatistic(state) {
       const menu = state.member_daily_menu;
       const profile = state.member_profile;
@@ -287,6 +311,15 @@ export default new Vuex.Store({
     async deletePurchaseMeal({ state, commit }, meal_id) {
       try {
         let res = await API.DELETE("/order", meal_id, state.token);
+        return res;
+      } catch (e) {
+        throw e.response.data.message || e.response.data.error;
+      }
+    },
+    async updateMemberPaidStatus({ state }, data) {
+      try {
+        let res = await API.PATCH(`/paidstatus`, state.token, data);
+        if (typeof res.data === "string") throw res;
         return res;
       } catch (e) {
         throw e.response.data.message || e.response.data.error;

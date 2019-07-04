@@ -79,6 +79,7 @@
         v-for="(member, index) in member_statistic"
         :key="index"
         @click="changePaidStatus(index, member.user_id)"
+        :class="{ isPaying: paying_status[index] }"
       >
         <div class="member__name">使用者：{{ member.name }}</div>
         <div class="member__owe">
@@ -111,7 +112,8 @@ export default {
       status_choose: {
         date: "",
         group: "all"
-      }
+      },
+      paying_status: []
     };
   },
   created() {
@@ -129,17 +131,7 @@ export default {
       return this.$store.getters.boss_history_statistic.statistic;
     },
     member_statistic() {
-      if (!this.$store.getters.boss_history_statistic.list) return false;
-      // const member_list = this.$store.getters.boss_history_statistic.list;
-      // const fakeMember = new Array(30).fill().map((item, index) => {
-      //   return {
-      //     name: "member" + index,
-      //     payment_status: this.getRandomInt(2),
-      //     person_paid: this.getRandomInt(2000),
-      //     user_id: index
-      //   };
-      // });
-      // return fakeMember;
+      if (!this.$store.getters.boss_history_statistic) return false;
       return this.$store.getters.boss_history_statistic.list;
     }
   },
@@ -154,28 +146,38 @@ export default {
           end_date: end_date
         };
         if (Number.isInteger(group)) statistic_parameter["group_id"] = group;
-        this.$store.dispatch(
-          "retrieveBossHistoryStatistic",
-          statistic_parameter
-        );
+        this.$store
+          .dispatch("retrieveBossHistoryStatistic", statistic_parameter)
+          .then(res => {
+            const member_list_length = res.list.length;
+            this.paying_status = new Array(member_list_length).fill(false);
+          })
+          .catch(e => {
+            console.error(e);
+          });
       },
       deep: true
     }
   },
   methods: {
-    changePaidStatus(index, member_id) {
-      const [start_date, end_date] = this.status_choose.date
-        .split("~")
-        .map(date => {
-          return this.Date.parse(date).toString("yyyy/MM/dd");
+    async changePaidStatus(index, member_id) {
+      try {
+        const [start_date, end_date] = this.status_choose.date
+          .split("~")
+          .map(date => {
+            return this.Date.parse(date).toString("yyyy/MM/dd");
+          });
+        this.$set(this.paying_status, index, true);
+        this.$store.commit("updateMemberPaidStatus", index);
+        await this.$store.dispatch("updateMemberPaidStatus", {
+          start_date: start_date,
+          end_date: end_date,
+          member_id: [member_id]
         });
-      console.log(start_date, end_date);
-      this.$store.commit("updateMemberPaidStatus", index);
-      this.$store.dispatch("updateMemberPaidStatus", {
-        start_date: start_date,
-        end_date: end_date,
-        member_id: [member_id]
-      });
+        this.$set(this.paying_status, index, false);
+      } catch (e) {
+        console.error(e);
+      }
     }
   }
 };
@@ -239,6 +241,9 @@ export default {
   &--unpaid {
     color: red;
   }
+}
+.isPaying {
+  pointer-events: none;
 }
 @media screen and (max-width: 768px) {
   .history-boss {

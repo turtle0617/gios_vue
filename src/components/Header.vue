@@ -29,9 +29,6 @@
 
         <nav class="menuNavbar navbar">
           <div class="navbar-menu">
-            <router-link class="navbar-item" :to="{ name: 'bill' }"
-              >收錢</router-link
-            >
             <router-link class="navbar-item" :to="{ name: 'groups' }"
               >管理團體</router-link
             >

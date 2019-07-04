@@ -46,6 +46,8 @@ export default new Vuex.Store({
       return state.member_history_list;
     },
     boss_history_statistic(state) {
+      const isEmpty = !Object.keys(state.boss_history_statistic).length;
+      if (isEmpty) return false;
       return state.boss_history_statistic;
     },
     member_order_menu(state) {
@@ -304,6 +306,7 @@ export default new Vuex.Store({
       try {
         let { data } = await API.GET("/group/count", state.token, date_range);
         commit("retrieveBossHistoryStatistic", data);
+        return data;
       } catch (e) {
         throw e.response.data.message || e.response.data.error;
       }
@@ -319,7 +322,6 @@ export default new Vuex.Store({
     async updateMemberPaidStatus({ state }, data) {
       try {
         let res = await API.PATCH(`/paidstatus`, state.token, data);
-        if (typeof res.data === "string") throw res;
         return res;
       } catch (e) {
         throw e.response.data.message || e.response.data.error;

@@ -11,7 +11,6 @@ import Purchase from "./views/Purchase.vue";
 import History from "./views/History.vue";
 import Statistic from "./views/Statistic.vue";
 import Menu_List from "./views/Menu_List.vue";
-import Bill from "./views/Bill.vue";
 import Groups from "./views/Groups.vue";
 import Logout from "./components/Auth_logout.vue";
 import store from "./store";
@@ -107,15 +106,6 @@ const router = new Router({
       }
     },
     {
-      path: "/bill",
-      name: "bill",
-      component: Bill,
-      meta: {
-        requiresAuth: true,
-        isBoss: true
-      }
-    },
-    {
       path: "/groups",
       name: "groups",
       component: Groups,
@@ -145,7 +135,7 @@ const role = {
     "logout",
     "purchase"
   ],
-  boss: ["statistic", "menu", "bill", "groups", "history", "logout"]
+  boss: ["statistic", "menu", "groups", "history", "logout"]
 };
 router.beforeEach((to, from, next) => {
   const loggedIn = store.getters.loggedIn;

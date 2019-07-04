@@ -52,7 +52,7 @@
             <h2 class="title is-4">收益</h2>
           </div>
           <div class="column total_price">
-            <h1 class="title is-1">{{ price_statistic.total_price }}</h1>
+            <h1 class="title is-1">{{ price_statistic.total_price || 0 }}</h1>
           </div>
           <div class="column total__footer">
             <h2 class="title is-4">元</h2>

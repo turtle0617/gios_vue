@@ -60,13 +60,33 @@
         </div>
         <div class="columns history-boss-priceStatistic__paidStatus">
           <div class="column paidStatus paidStatus__paid">
-            <h2 class="title is-4">已收：{{ price_statistic.paid || 0 }}</h2>
+            <h2 class="title is-4">已收：{{ price_statistic.paid || 0 }}元</h2>
           </div>
           <div class="column paidStatus paidStatus__unpaid">
-            <h2 class="title is-4">未收：{{ price_statistic.unpaid }}</h2>
+            <h2 class="title is-4">
+              未收：{{ price_statistic.unpaid || 0 }} 元
+            </h2>
           </div>
         </div>
       </template>
+    </div>
+    <div
+      v-if="member_statistic"
+      class="history-boss__memberList columns is-multiline"
+    >
+      <div
+        class="column is-3 member"
+        v-for="(member, index) in member_statistic"
+        :key="index"
+      >
+        <div class="member__name">使用者：{{ member.name }}</div>
+        <div class="member__owe">
+          金額：
+          <span>
+            {{ member.person_paid }}
+          </span>
+        </div>
+      </div>
     </div>
   </section>
 </template>
@@ -97,6 +117,7 @@ export default {
       return this.$store.getters.boss_history_statistic.statistic;
     },
     member_statistic() {
+      if (!this.$store.getters.boss_history_statistic.list) return false;
       return this.$store.getters.boss_history_statistic.list;
     }
   },
@@ -142,12 +163,25 @@ export default {
     border-bottom: 1px solid;
     padding-bottom: 5rem;
   }
+  &__memberList {
+    margin: 0;
+    padding-top: 1rem;
+    justify-content: flex-start;
+  }
 }
 .boss-header__title {
   justify-content: center;
 }
 .total__footer {
   align-self: flex-end;
+}
+.member {
+  border: 1px solid;
+  &__owe {
+    span {
+      font-weight: bold;
+    }
+  }
 }
 @media screen and (max-width: 768px) {
   .history-boss {

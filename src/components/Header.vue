@@ -52,9 +52,6 @@
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <div v-if="is_show" class="navbar mobile-nav">
-            <router-link class="navbar-item" :to="{ name: 'bill' }"
-              >收錢</router-link
-            >
             <router-link class="navbar-item" :to="{ name: 'groups' }"
               >管理團體</router-link
             >

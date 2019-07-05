@@ -271,9 +271,9 @@ export default new Vuex.Store({
         throw e.response.data.message || e.response.data.error;
       }
     },
-    async register(context, data) {
+    async register(context, userProfile) {
       try {
-        let res = await API.Register("/member", data);
+        let res = await API.POST("/member", null, userProfile);
         return res.data;
       } catch (e) {
         throw e.response.data.message;
@@ -470,7 +470,7 @@ export default new Vuex.Store({
     },
     async retrieveMemberToken(context, credentials) {
       try {
-        let { data } = await API.Login("/member/login", credentials);
+        let { data } = await API.POST("/member/login", null, credentials);
         if (typeof data === "string") throw data;
         const auth_detail = {
           id: data.id,
@@ -488,7 +488,7 @@ export default new Vuex.Store({
     },
     async retrieveBossToken(context, credentials) {
       try {
-        let { data } = await API.Login("/boss/login", credentials);
+        let { data } = await API.POST("/boss/login", null, credentials);
         if (typeof data === "string") throw data;
         const auth_detail = {
           id: data.id,

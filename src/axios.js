@@ -24,30 +24,12 @@ function POST(url, token, data) {
   return axios.post(domain + url, data);
 }
 
-function Login(url, credentials) {
-  return axios.post(domain + url, {
-    account: credentials.account,
-    password: credentials.password
-  });
-}
-
-function Register(url, data) {
-  return axios.post(domain + url, {
-    name: data.name,
-    account: data.account,
-    password: data.password,
-    group_id: data.group_id
-  });
-}
-
 function DELETE(url, id, token) {
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   return axios.delete(domain + url + "/" + id);
 }
 
 export default {
-  Login,
-  Register,
   DELETE,
   GET,
   POST,

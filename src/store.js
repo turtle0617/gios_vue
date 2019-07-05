@@ -18,6 +18,7 @@ export default new Vuex.Store({
       JSON.parse(localStorage.getItem("order_detail_statistic")) || [],
     purchase_list: [],
     boss_history_statistic: {},
+    boss_menu_statistic: {},
     member_history_list: {},
     date_range: 7,
     week_range: 4
@@ -49,6 +50,11 @@ export default new Vuex.Store({
       const isEmpty = !Object.keys(state.boss_history_statistic).length;
       if (isEmpty) return false;
       return state.boss_history_statistic;
+    },
+    boss_menu_statistic(state) {
+      const isEmpty = !Object.keys(state.boss_menu_statistic).length;
+      if (isEmpty) return false;
+      return state.boss_menu_statistic;
     },
     member_order_menu(state) {
       if (!state.member_daily_menu) return [];
@@ -135,6 +141,9 @@ export default new Vuex.Store({
     retrieveDailyMenu(state, menu) {
       localStorage.setItem("daily_menu", JSON.stringify(menu));
       state.daily_menu = menu;
+    },
+    retrieveBossMenuStatistic(state, menu) {
+      state.boss_menu_statistic = menu;
     },
     updateMemberOrderAmount(state, detail) {
       const index = detail.index;
@@ -306,6 +315,15 @@ export default new Vuex.Store({
       try {
         let { data } = await API.GET("/group/count", state.token, date_range);
         commit("retrieveBossHistoryStatistic", data);
+        return data;
+      } catch (e) {
+        throw e.response.data.message || e.response.data.error;
+      }
+    },
+    async retrieveBossMenuStatistic({ state, commit }, dateAndGroup) {
+      try {
+        let { data } = await API.GET("/count/menu", state.token, dateAndGroup);
+        commit("retrieveBossMenuStatistic", data);
         return data;
       } catch (e) {
         throw e.response.data.message || e.response.data.error;

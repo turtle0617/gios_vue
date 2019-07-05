@@ -91,16 +91,22 @@ export default new Vuex.Store({
     week_range(state) {
       const range = new Array(state.week_range).fill(0);
       return range.map((item, index) => {
-        const first_day_of_week = Date.mon().add({
-          weeks: index
-        });
-        const last_day_of_week = Date.mon().add({
-          weeks: index,
-          days: 6
-        });
+        const first_day_of_week = Date.parse("today - 1 month")
+          .first()
+          .mon()
+          .add({
+            weeks: index
+          });
+        const last_day_of_week = Date.parse("today - 1 month")
+          .first()
+          .mon()
+          .add({
+            weeks: index,
+            days: 6
+          });
         return `${first_day_of_week.toString(
-          "M/dd"
-        )}~${last_day_of_week.toString("M/dd")}`;
+          "MM/dd"
+        )}~${last_day_of_week.toString("MM/dd")}`;
       });
     }
   },

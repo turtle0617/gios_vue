@@ -117,7 +117,8 @@ export default {
     };
   },
   created() {
-    this.status_choose.date = this.week_range[0];
+    const lastWeek_index = this.week_range.length - 1;
+    this.status_choose.date = this.week_range[lastWeek_index];
     this.$store.dispatch("retrieveGroups");
   },
   computed: {

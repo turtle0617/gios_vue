@@ -43,7 +43,7 @@
         價格
       </div>
     </div>
-    <div v-if="member_history_list.list.length" class="member-history__list">
+    <div v-if="member_history_list.list" class="member-history__list">
       <div
         class="list-meal__container columns"
         v-for="meal in member_history_list.list"
@@ -80,7 +80,8 @@ export default {
     };
   },
   created() {
-    this.choose_date = this.week_range[0];
+    const lastWeek_index = this.week_range.length - 1;
+    this.choose_date = this.week_range[lastWeek_index];
   },
   computed: {
     week_range() {
@@ -92,7 +93,6 @@ export default {
   },
   watch: {
     choose_date: function(date) {
-      // console.log(date);
       const [start_date, end_date] = date.split("~").map(date => {
         return this.Date.parse(date).toString("yyyy/MM/dd");
       });

@@ -483,6 +483,7 @@ export default new Vuex.Store({
         context.commit("initialAuthDetail", auth_detail);
         context.commit("initialMemberProfile", data);
       } catch (e) {
+        console.log("e", e);
         throw e;
       }
     },

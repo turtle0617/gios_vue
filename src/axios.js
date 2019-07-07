@@ -1,4 +1,6 @@
 import axios from "axios";
+import router from "./router";
+import store from "./store";
 
 const domain = "http://3.130.129.213/api";
 
@@ -7,6 +9,12 @@ const responseHandler = {
     const hasError = res.data.hasOwnProperty("error");
     if (hasError) return Promise.reject(res.data);
     Promise.resolve(res);
+  },
+  "401": res => {
+    if (res.data.error.includes("not exist")) {
+      router.push({ name: "home" });
+    }
+    return Promise.reject(res.data.error);
   },
   "422": res => {
     return Promise.reject(res.data.error);
@@ -30,16 +38,27 @@ function GET(url, token, param) {
     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   }
 
-  if (param)
-    return axios.get(domain + url, {
-      params: param
-    });
-  return axios
-    .get(domain + url)
-    .catch(res => res.response)
-    .then(
-      res => responseHandler[res.status](res) || exceptionResponseHandler(res)
-    );
+  if (param) {
+    return axios
+      .get(domain + url, {
+        params: param
+      })
+      .catch(res => res.response)
+      .then(res => {
+        return (
+          responseHandler[res.status](res) || exceptionResponseHandler(res)
+        );
+      });
+  } else {
+    return axios
+      .get(domain + url)
+      .catch(res => res.response)
+      .then(res => {
+        return (
+          responseHandler[res.status](res) || exceptionResponseHandler(res)
+        );
+      });
+  }
 }
 
 function PATCH(url, token, data) {

@@ -231,6 +231,11 @@ export default new Vuex.Store({
     updateGroups(state, data) {
       state.groups[data.index] = data.change_group;
     },
+    clearToken(state) {
+      state.token = null;
+      state.login_role = "guest";
+      localStorage.clear();
+    },
     deleteDailyMeal(state, index) {
       state.daily_menu.splice(index, 1);
     },
@@ -250,13 +255,16 @@ export default new Vuex.Store({
     generateOrderkDetailStatistic({ commit }) {
       commit("generateOrderkDetailStatistic");
     },
+    clearToken({ commit }) {
+      commit("clearToken");
+    },
     async addMemberOrder({ state }, data) {
       try {
         let res = await API.POST("/order", state.token, data);
         if (typeof res.data === "string") throw res;
         return res.data;
       } catch (e) {
-        throw e.response.data.message || e.response.data.error;
+        throw e;
       }
     },
     async updateMemberOrder({ state, commit }, { order_id, change_meal }) {
@@ -268,7 +276,7 @@ export default new Vuex.Store({
         );
         return data;
       } catch (e) {
-        throw e.response.data.message || e.response.data.error;
+        throw e;
       }
     },
     async register(context, userProfile) {
@@ -276,7 +284,7 @@ export default new Vuex.Store({
         let res = await API.POST("/member", null, userProfile);
         return res.data;
       } catch (e) {
-        throw e.response.data.message;
+        throw e;
       }
     },
     async retrieveMemberDailyMenu({ state, commit }, date) {
@@ -285,7 +293,7 @@ export default new Vuex.Store({
         commit("retrieveMemberDailyMenu", data);
         return data;
       } catch (e) {
-        throw e.response.data.message;
+        throw e;
       }
     },
     async retrieveDailyMenu({ state, commit }, date) {
@@ -294,7 +302,7 @@ export default new Vuex.Store({
         commit("retrieveDailyMenu", data);
         return data;
       } catch (e) {
-        throw e.response.data.message;
+        throw e;
       }
     },
     async retrievePurchaseList({ state, commit }, date_range) {
@@ -302,7 +310,7 @@ export default new Vuex.Store({
         let { data } = await API.GET("/order", state.token, date_range);
         commit("retrievePurchaseList", data);
       } catch (e) {
-        throw e.response.data.message || e.response.data.error;
+        throw e;
       }
     },
     async retrieveMemberHistoryList({ state, commit }, date_range) {
@@ -314,7 +322,7 @@ export default new Vuex.Store({
         );
         commit("retrieveMemberHistoryList", data);
       } catch (e) {
-        throw e.response.data.message || e.response.data.error;
+        throw e;
       }
     },
     async retrieveBossHistoryStatistic({ state, commit }, date_range) {
@@ -323,7 +331,7 @@ export default new Vuex.Store({
         commit("retrieveBossHistoryStatistic", data);
         return data;
       } catch (e) {
-        throw e.response.data.message || e.response.data.error;
+        throw e;
       }
     },
     async retrieveBossMenuStatistic({ state, commit }, dateAndGroup) {
@@ -332,7 +340,7 @@ export default new Vuex.Store({
         commit("retrieveBossMenuStatistic", data);
         return data;
       } catch (e) {
-        throw e.response.data.message || e.response.data.error;
+        throw e;
       }
     },
     async deletePurchaseMeal({ state, commit }, meal_id) {
@@ -340,7 +348,7 @@ export default new Vuex.Store({
         let res = await API.DELETE("/order", meal_id, state.token);
         return res;
       } catch (e) {
-        throw e.response.data.message || e.response.data.error;
+        throw e;
       }
     },
     async updateMemberPaidStatus({ state }, data) {
@@ -348,7 +356,7 @@ export default new Vuex.Store({
         let res = await API.PATCH(`/paidstatus`, state.token, data);
         return res;
       } catch (e) {
-        throw e.response.data.message || e.response.data.error;
+        throw e;
       }
     },
     async addDailyMenu({ state }, data) {
@@ -357,7 +365,7 @@ export default new Vuex.Store({
         if (typeof res.data === "string") throw res;
         return res.data.id;
       } catch (e) {
-        throw e.response.data.message;
+        throw e;
       }
     },
     async addMenuFlavor({ state }, data) {
@@ -366,7 +374,7 @@ export default new Vuex.Store({
         if (typeof res.data === "string") throw res;
         return res;
       } catch (e) {
-        throw e.response.data.message;
+        throw e;
       }
     },
     async updateDailyMenu({ state, commit }, data) {
@@ -380,7 +388,7 @@ export default new Vuex.Store({
         commit("updateDailyMenu", res.data);
         return res;
       } catch (e) {
-        throw e.response.data.message;
+        throw e;
       }
     },
     async updateMenuFlavor({ state, commit }, data) {
@@ -393,7 +401,7 @@ export default new Vuex.Store({
         if (typeof res.data === "string") throw res;
         commit("updateDailyMenu", res.data);
       } catch (e) {
-        throw e.response.data.message;
+        throw e;
       }
     },
     async deleteDailyMeal({ state, commit }, data) {
@@ -419,7 +427,7 @@ export default new Vuex.Store({
         if (typeof res.data === "string") throw res;
         dispatch("retrieveGroups");
       } catch (e) {
-        throw e.response.data.message;
+        throw e;
       }
     },
     async updateGroups({ state, dispatch }, data) {
@@ -483,7 +491,6 @@ export default new Vuex.Store({
         context.commit("initialAuthDetail", auth_detail);
         context.commit("initialMemberProfile", data);
       } catch (e) {
-        console.log("e", e);
         throw e;
       }
     },

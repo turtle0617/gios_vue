@@ -9,6 +9,7 @@ const responseHandler = {
     if (hasError) return Promise.reject(res.data);
     Promise.resolve(res);
   },
+  "201": res => Promise.resolve(res),
   "401": res => {
     if (res.data.error.includes("not exist")) {
       alert("登入過期，請重新登入");

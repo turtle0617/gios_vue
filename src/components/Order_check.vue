@@ -96,8 +96,8 @@ export default {
   data() {
     return {
       over_time: false,
-      loading_status:{
-        addMemberOrder:false
+      loading_status: {
+        addMemberOrder: false
       }
     };
   },

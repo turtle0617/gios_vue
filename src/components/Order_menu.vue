@@ -90,16 +90,34 @@ export default {
     };
   },
   created() {
-    const first_date = this.date_range[0];
-    const formated_date = this.Date.parse(first_date).toString("yyyy/MM/dd");
     this.choose_date = this.date_range[0];
-    this.$store.dispatch("retrieveGroups").then(() => {
-      this.checkOverTime(this.member_order_timeLimit, this.date_range);
-    });
+    this.$store.dispatch("retrieveGroups");
   },
   computed: {
     date_range() {
-      return this.$store.getters.date_range;
+      const timeLimit = this.$store.getters.member_order_timeLimit;
+      let date_range = this.$store.getters.date_range;
+      const over_time = Date.compare(
+        Date.today().setTimeToNow(),
+        Date.parse(timeLimit)
+      );
+      if (over_time) {
+        const tomorrow = Date.today()
+          .add(1)
+          .day()
+          .toString("MM/dd");
+        date_range = date_range
+          .map(date => {
+            if (date === tomorrow)
+              return Date.parse(date)
+                .add(7)
+                .day()
+                .toString("MM/dd");
+            return date;
+          })
+          .sort();
+      }
+      return date_range;
     },
     member_order_menu() {
       return this.$store.getters.member_order_menu;
@@ -147,16 +165,6 @@ export default {
       this.$router.push({
         name: "order_check"
       });
-    },
-    checkOverTime(timeLimit, date_range) {
-      const over_time = Date.compare(
-        Date.today().setTimeToNow(),
-        Date.parse(timeLimit)
-      );
-      if (timeLimit && over_time === 1) {
-        this.disable_date = date_range[0];
-        this.choose_date = date_range[1];
-      }
     }
   }
 };

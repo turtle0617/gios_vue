@@ -95,13 +95,13 @@ export default new Vuex.Store({
           .first()
           .mon()
           .add({
-            weeks: index
+            weeks: index + 1
           });
         const last_day_of_week = Date.parse("today - 1 month")
           .first()
           .mon()
           .add({
-            weeks: index,
+            weeks: index + 1,
             days: 6
           });
         return `${first_day_of_week.toString(

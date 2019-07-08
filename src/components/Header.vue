@@ -47,11 +47,15 @@
           </div>
         </nav>
 
-        <div class="link-select navbar-burger burger " @click="showDropDown">
+        <div
+          class="link-select navbar-burger burger"
+          ref="dropdownMenu"
+          @click="visible = !visible"
+        >
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
-          <div v-if="is_show" class="navbar mobile-nav">
+          <div v-if="visible" class="navbar mobile-nav">
             <router-link class="navbar-item" :to="{ name: 'groups' }"
               >管理團體</router-link
             >
@@ -84,8 +88,7 @@ export default {
   name: "Header",
   data() {
     return {
-      visible: false,
-      is_show: false
+      visible: false
     };
   },
   destroyed() {
@@ -93,9 +96,7 @@ export default {
   },
   computed: {
     loggedIn() {
-      if (this.$store.getters.loggedIn === "member") {
-        document.addEventListener("click", this.documentClick);
-      }
+      document.addEventListener("click", this.documentClick);
       return this.$store.getters.loggedIn;
     }
   },
@@ -106,9 +107,6 @@ export default {
       if (el !== target && !el.contains(target)) {
         this.visible = false;
       }
-    },
-    showDropDown() {
-      this.is_show = !this.is_show;
     }
   }
 };
@@ -154,6 +152,9 @@ export default {
   background-color: #f9f9f9;
   min-width: 160px;
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  a:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
 }
 .menuNavbar {
   border: none;

@@ -420,35 +420,31 @@ export default new Vuex.Store({
         throw e;
       }
     },
-    async addGroup({ state, dispatch }, data) {
+    async addGroup({ state }, data) {
       try {
         let res = await API.POST("/groups", state.token, data);
-        dispatch("retrieveGroups");
         return res;
       } catch (e) {
         throw e;
       }
     },
-    async updateGroups({ state, dispatch }, data) {
+    async updateGroups({ state }, data) {
       try {
         let res = await API.PATCH(
           `/groups/${data.id}`,
           state.token,
           data.change_group
         );
-        dispatch("retrieveGroups");
         return res;
       } catch (e) {
         throw e;
       }
     },
-    async deleteGroup({ state, dispatch }, group_id) {
+    async deleteGroup({ state }, group_id) {
       try {
         let res = await API.DELETE("/groups", group_id, state.token);
-        await dispatch("retrieveGroups");
         return res;
       } catch (e) {
-        dispatch("retrieveGroups");
         throw e;
       }
     },

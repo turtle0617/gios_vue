@@ -176,29 +176,35 @@ export default {
   },
   methods: {
     async addGroup() {
-      if (!this.new_groupName) return (this.error = true);
-      const isSame = this.isSameGroupName(this.new_groupName);
-      if (isSame) {
-        this.error = true;
-        return;
-      }
-      const new_group = {
-        name: this.new_groupName,
-        time_limit: this.new_groupTimelimit
-      };
-      if (new_group.time_limit) {
-        if (!this.new_groupTime) {
-          this.error_time = !this.error_time;
+      try {
+        if (!this.new_groupName) return (this.error = true);
+        const isSame = this.isSameGroupName(this.new_groupName);
+        if (isSame) {
+          this.error = true;
           return;
         }
-        new_group["preset_time"] = this.new_groupTime;
+        const new_group = {
+          name: this.new_groupName,
+          time_limit: this.new_groupTimelimit
+        };
+        if (new_group.time_limit) {
+          if (!this.new_groupTime) {
+            this.error_time = !this.error_time;
+            return;
+          }
+          new_group["preset_time"] = this.new_groupTime;
+        }
+        this.loading_status.addGroup = true;
+        await this.$store.dispatch("addGroup", new_group).catch(err => {
+          console.error(err);
+        });
+        await this.$store.dispatch("retrieveGroups");
+        this.new_groupName = "";
+        this.loading_status.addGroup = false;
+      } catch (e) {
+        console.error(e);
+        this.loading_status.addGroup = false;
       }
-      this.loading_status.addGroup = true;
-      await this.$store.dispatch("addGroup", new_group).catch(err => {
-        console.error(err);
-      });
-      this.new_groupName = "";
-      this.loading_status.addGroup = false;
     },
     modifyGroup(name, timelimit, preset_time, index = null) {
       this.modify = index;
@@ -209,48 +215,61 @@ export default {
       this.change_group.preset_time = preset_time;
     },
     async updateGroup(id, index) {
-      const change_name = this.change_group.name.replace(/\s/g, "");
-      const same_name = this.isSameGroupName(change_name);
-      const filtered_change_group = this.filterSameKey(
-        index,
-        Object.assign({}, this.change_group)
-      );
-      const all_same = Object.keys(filtered_change_group).length === 0;
-      if (all_same) {
-        this.modify = null;
-        return;
-      }
-      if ((same_name && same_name.id !== id) || change_name === "") {
-        this.changeName_error = !this.changeName_error;
-        return;
-      }
-      if (parseInt(this.change_group.time_limit)) {
-        if (!this.change_group.preset_time) {
-          this.changeTime_error = !this.changeTime_error;
+      try {
+        const change_name = this.change_group.name.replace(/\s/g, "");
+        const same_name = this.isSameGroupName(change_name);
+        const filtered_change_group = this.filterSameKey(
+          index,
+          Object.assign({}, this.change_group)
+        );
+        const all_same = Object.keys(filtered_change_group).length === 0;
+        if (all_same) {
+          this.modify = null;
           return;
         }
-        filtered_change_group["preset_time"] = this.parseTime(
-          this.change_group.preset_time
-        );
+        if ((same_name && same_name.id !== id) || change_name === "") {
+          this.changeName_error = !this.changeName_error;
+          return;
+        }
+        if (parseInt(this.change_group.time_limit)) {
+          if (!this.change_group.preset_time) {
+            this.changeTime_error = !this.changeTime_error;
+            return;
+          }
+          filtered_change_group["preset_time"] = this.parseTime(
+            this.change_group.preset_time
+          );
+        }
+        this.loading_status.updateGroup = index;
+        await this.$store
+          .dispatch("updateGroups", {
+            id: id,
+            change_group: filtered_change_group
+          })
+          .catch(err => {
+            console.error(err.response.data.message);
+          });
+        await this.$store.dispatch("retrieveGroups");
+        this.modify = null;
+        this.loading_status.updateGroup = null;
+      } catch (e) {
+        console.error(e);
+        this.loading_status.updateGroup = null;
       }
-      this.loading_status.updateGroup = index;
-      await this.$store
-        .dispatch("updateGroups", {
-          id: id,
-          change_group: filtered_change_group
-        })
-        .catch(err => {
-          console.error(err.response.data.message);
-        });
-      this.modify = null;
-      this.loading_status.updateGroup = null;
     },
     async deleteGroup(group_id, index) {
-      this.loading_status.deleteGroup = index;
-      await this.$store.dispatch("deleteGroup", group_id).catch(err => {
-        console.error(err);
-      });
-      this.loading_status.deleteGroup = null;
+      try {
+        this.loading_status.deleteGroup = index;
+        await this.$store.dispatch("deleteGroup", group_id).catch(err => {
+          console.error(err);
+        });
+        await this.$store.dispatch("retrieveGroups");
+        this.loading_status.deleteGroup = null;
+      } catch (e) {
+        console.error(e);
+        await this.$store.dispatch("retrieveGroups");
+        this.loading_status.deleteGroup = null;
+      }
     },
     isSameGroupName(name, groups = this.groups) {
       return groups.find(group => group.name === name);

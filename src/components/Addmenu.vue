@@ -309,6 +309,7 @@ export default {
         this.loading_status.addMeal = false;
       } catch (e) {
         console.error(e);
+        this.loading_status.addMeal = false;
       }
     },
     removeEmptyRow(menu) {

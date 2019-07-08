@@ -249,6 +249,7 @@ export default {
         this.loading_status.updateMeal = null;
       } catch (e) {
         console.error(e);
+        this.loading_status.updateMeal = null;
       }
     },
     addChangeFlavor(id) {
@@ -310,6 +311,7 @@ export default {
           menu_date: formated_date
         });
         console.error(e);
+        this.loading_status.deleteMeal = null;
       }
     },
     deleteFlavor(flavors) {

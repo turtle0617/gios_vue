@@ -26,7 +26,6 @@
             >田阿姨便當</router-link
           >
         </div>
-
         <nav class="menuNavbar navbar">
           <div class="navbar-menu">
             <router-link class="navbar-item" :to="{ name: 'groups' }"
@@ -92,11 +91,17 @@ export default {
     };
   },
   destroyed() {
-    document.removeEventListener("click", this.documentClick);
+    const role = this.loggedIn;
+    if(role !== "guest"){
+      document.removeEventListener("click", this.documentClick);
+    }
   },
   computed: {
     loggedIn() {
-      document.addEventListener("click", this.documentClick);
+      const role = this.$store.getters.loggedIn;
+      if(role !== "guest"){
+        document.addEventListener("click", this.documentClick);
+      }
       return this.$store.getters.loggedIn;
     }
   },
@@ -104,6 +109,7 @@ export default {
     documentClick(e) {
       let el = this.$refs.dropdownMenu;
       let target = e.target;
+      if(!el) return;
       if (el !== target && !el.contains(target)) {
         this.visible = false;
       }

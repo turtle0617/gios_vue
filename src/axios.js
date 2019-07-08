@@ -1,6 +1,5 @@
 import axios from "axios";
 import router from "./router";
-import store from "./store";
 
 const domain = "http://3.130.129.213/api";
 
@@ -12,7 +11,8 @@ const responseHandler = {
   },
   "401": res => {
     if (res.data.error.includes("not exist")) {
-      router.push({ name: "home" });
+      alert("登入過期，請重新登入");
+      router.push({ name: "home", params: { tokenExist: true } });
     }
     return Promise.reject(res.data.error);
   },

@@ -138,6 +138,9 @@ const role = {
   boss: ["statistic", "menu", "groups", "history", "logout"]
 };
 router.beforeEach((to, from, next) => {
+  if (to.params.tokenExist) {
+    store.dispatch("clearToken");
+  }
   const loggedIn = store.getters.loggedIn;
   const pages = role[loggedIn];
   if (pages.includes(to.name)) {

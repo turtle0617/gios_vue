@@ -231,11 +231,6 @@ export default new Vuex.Store({
     updateGroups(state, data) {
       state.groups[data.index] = data.change_group;
     },
-    clearToken(state) {
-      state.token = null;
-      state.login_role = "guest";
-      localStorage.clear();
-    },
     deleteDailyMeal(state, index) {
       state.daily_menu.splice(index, 1);
     },
@@ -256,7 +251,7 @@ export default new Vuex.Store({
       commit("generateOrderkDetailStatistic");
     },
     clearToken({ commit }) {
-      commit("clearToken");
+      commit("destroyAuthDetail");
     },
     async addMemberOrder({ state }, data) {
       try {

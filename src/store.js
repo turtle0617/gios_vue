@@ -256,7 +256,6 @@ export default new Vuex.Store({
     async addMemberOrder({ state }, data) {
       try {
         let res = await API.POST("/order", state.token, data);
-        if (typeof res.data === "string") throw res;
         return res.data;
       } catch (e) {
         throw e;
@@ -338,7 +337,7 @@ export default new Vuex.Store({
         throw e;
       }
     },
-    async deletePurchaseMeal({ state, commit }, meal_id) {
+    async deletePurchaseMeal({ state }, meal_id) {
       try {
         let res = await API.DELETE("/order", meal_id, state.token);
         return res;
@@ -357,7 +356,6 @@ export default new Vuex.Store({
     async addDailyMenu({ state }, data) {
       try {
         let res = await API.POST("/menus", state.token, data);
-        if (typeof res.data === "string") throw res;
         return res.data.id;
       } catch (e) {
         throw e;
@@ -366,7 +364,6 @@ export default new Vuex.Store({
     async addMenuFlavor({ state }, data) {
       try {
         let res = await API.POST("/flavors", state.token, data);
-        if (typeof res.data === "string") throw res;
         return res;
       } catch (e) {
         throw e;
@@ -379,7 +376,6 @@ export default new Vuex.Store({
           state.token,
           data.change_meal
         );
-        if (typeof res.data === "string") throw res;
         commit("updateDailyMenu", res.data);
         return res;
       } catch (e) {
@@ -393,7 +389,6 @@ export default new Vuex.Store({
           state.token,
           data.change_flavor
         );
-        if (typeof res.data === "string") throw res;
         commit("updateDailyMenu", res.data);
       } catch (e) {
         throw e;
@@ -419,23 +414,21 @@ export default new Vuex.Store({
     async addGroup({ state, dispatch }, data) {
       try {
         let res = await API.POST("/groups", state.token, data);
-        if (typeof res.data === "string") throw res;
         dispatch("retrieveGroups");
+        return res;
       } catch (e) {
         throw e;
       }
     },
     async updateGroups({ state, dispatch }, data) {
       try {
-        console.log(data);
         let res = await API.PATCH(
           `/groups/${data.id}`,
           state.token,
           data.change_group
         );
-        console.log(res);
-        if (typeof res.data === "string") throw res;
         dispatch("retrieveGroups");
+        return res;
       } catch (e) {
         throw e;
       }

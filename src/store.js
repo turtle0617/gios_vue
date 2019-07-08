@@ -427,11 +427,13 @@ export default new Vuex.Store({
     },
     async updateGroups({ state, dispatch }, data) {
       try {
+        console.log(data);
         let res = await API.PATCH(
           `/groups/${data.id}`,
           state.token,
           data.change_group
         );
+        console.log(res);
         if (typeof res.data === "string") throw res;
         dispatch("retrieveGroups");
       } catch (e) {

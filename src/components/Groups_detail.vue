@@ -210,11 +210,6 @@ export default {
         );
       }
       this.modify = null;
-
-      this.$store.dispatch("updateGroups", {
-        index: index,
-        change_group: Object.assign({}, this.change_group)
-      });
       this.$store
         .dispatch("updateGroups", {
           id: id,

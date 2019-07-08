@@ -51,12 +51,17 @@
             >
               <div class="list-item list-item__status column">
                 <button
+                  :class="{
+                    'is-loading': loading_status.deletePurchaseMeal === index
+                  }"
+                  :disabled="loading_status.deletePurchaseMeal === index"
                   class="button is-danger"
-                  @click="deletePurchaseMeal(meal)"
+                  @click="deletePurchaseMeal(meal, index)"
                 >
                   刪除
                 </button>
                 <button
+                  :disabled="loading_status.deletePurchaseMeal === index"
                   class="button is-info"
                   @click="modifyPurchaseMeal(meal, index)"
                 >
@@ -92,12 +97,17 @@
             >
               <div class="list-item list-item__status column">
                 <button
+                  :class="{
+                    'is-loading': loading_status.updatePurchaseMeal === index
+                  }"
+                  :disabled="loading_status.updatePurchaseMeal === index"
                   class="button is-info"
-                  @click="updatePurchaseMeal(meal)"
+                  @click="updatePurchaseMeal(meal, index)"
                 >
                   送出
                 </button>
                 <button
+                  :disabled="loading_status.updatePurchaseMeal === index"
                   class="button is-light"
                   @click="modifyPurchaseMeal(meal)"
                 >
@@ -167,6 +177,10 @@ export default {
   name: "purchase_list",
   data() {
     return {
+      loading_status: {
+        updatePurchaseMeal: null,
+        deletePurchaseMeal: null
+      },
       choose_date: "",
       modify: null,
       menu_flavors: null,
@@ -292,7 +306,7 @@ export default {
         this.change_meal.flavor_id = choice_id;
       }
     },
-    async updatePurchaseMeal(original_meal) {
+    async updatePurchaseMeal(original_meal, index) {
       try {
         const filtered_change = this.filterBeModifiedProperty(
           this.change_meal,
@@ -304,27 +318,33 @@ export default {
           this.modifyPurchaseMeal();
           return;
         }
+        this.loading_status.updatePurchaseMeal = index;
         await this.$store.dispatch("updateMemberOrder", {
           order_id: original_meal.id,
           change_meal: filtered_change
         });
         this.modifyPurchaseMeal();
-        this.getPurchaseList(this.choose_date);
+        await this.getPurchaseList(this.choose_date);
+        this.loading_status.updatePurchaseMeal = null;
       } catch (e) {
+        this.loading_status.updatePurchaseMeal = null;
         console.log(e);
       }
     },
-    async deletePurchaseMeal({ id }) {
+    async deletePurchaseMeal({ id }, index) {
       try {
+        this.loading_status.deletePurchaseMeal = index;
         await this.$store.dispatch("deletePurchaseMeal", id);
-        this.getPurchaseList(this.choose_date);
+        await this.getPurchaseList(this.choose_date);
+        this.loading_status.deletePurchaseMeal = null;
       } catch (e) {
+        this.loading_status.deletePurchaseMeal = null;
         console.log(e);
       }
     },
     getPurchaseList(date) {
       const formated_date = this.Date.parse(date).toString("yyyy/MM/dd");
-      this.$store.dispatch("retrievePurchaseList", {
+      return this.$store.dispatch("retrievePurchaseList", {
         start_date: formated_date,
         end_date: formated_date
       });

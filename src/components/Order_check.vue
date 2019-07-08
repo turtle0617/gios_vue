@@ -72,12 +72,15 @@
     <div class="button__container columns">
       <router-link
         class="button is-light is-medium"
+        :disabled="loading_status.addMemberOrder"
         :to="{ name: 'order_menu' }"
       >
         上一頁
       </router-link>
       <button
         type="button"
+        :class="{ 'is-loading': loading_status.addMemberOrder }"
+        :disabled="loading_status.addMemberOrder"
         class="button is-info is-medium"
         @click="addMemberOrder"
       >
@@ -92,16 +95,15 @@ export default {
   name: "order_check",
   data() {
     return {
-      over_time: false
+      over_time: false,
+      loading_status:{
+        addMemberOrder:false
+      }
     };
   },
   computed: {
     member_order_check() {
       return this.$store.getters.member_order_check;
-    },
-    member_order_timeLimit() {
-      const timeLimit = this.$store.getters.member_order_timeLimit;
-      return timeLimit;
     }
   },
   methods: {
@@ -130,32 +132,20 @@ export default {
     async addMemberOrder() {
       try {
         const filtered_orders = this.filterNotToNeedPostValue();
-        const is_over_time = this.checkOverTime(this.member_order_timeLimit);
-        if (is_over_time) {
-          alert("超過時間囉~");
-          this.$router.push({ name: "order_menu" });
-        }
+        this.loading_status.addMemberOrder = true;
         await this.$store.dispatch("addMemberOrder", {
           menuArray: filtered_orders
         });
+        this.loading_status.addMemberOrder = false;
         this.$router.push({ name: "purchase" });
       } catch (e) {
         console.error(e);
+        this.loading_status.addMemberOrder = false;
         if (e === "over order time") {
           alert("超過時間囉~");
           this.$router.push({ name: "order_menu" });
         }
       }
-    },
-    checkOverTime(timeLimit) {
-      const over_time = Date.compare(
-        Date.today().setTimeToNow(),
-        Date.parse(timeLimit)
-      );
-      if (timeLimit && over_time === 1) {
-        return true;
-      }
-      return false;
     }
   }
 };

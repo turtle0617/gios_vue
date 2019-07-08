@@ -79,6 +79,14 @@ export default new Vuex.Store({
     member_profile(state) {
       return state.member_profile;
     },
+    member_order_timeLimit(state) {
+      const member_profile = state.member_profile;
+      const member_group = state.groups.find(
+        group => group.id === member_profile.group_id
+      );
+      if (!member_group.preset_time) return null;
+      return Date.parse(member_group.preset_time).toString("HH:mm");
+    },
     date_range(state) {
       const range = new Array(state.date_range).fill(0);
       return range.map((item, index) => {

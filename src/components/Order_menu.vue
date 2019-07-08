@@ -9,13 +9,14 @@
               v-for="(date, index) in date_range"
               :value="date"
               :key="index"
+              :disabled="date === disable_date"
               >{{ date }}</option
             >
           </select>
         </div>
       </div>
-      <div class="menu-title__deadline column">
-        <label>收單時間 ： 16:00</label>
+      <div v-if="member_order_timeLimit" class="menu-title__deadline column">
+        <label>收單時間 ： {{ member_order_timeLimit }}</label>
       </div>
     </div>
     <div class="columns menu__detailContainer">
@@ -84,15 +85,16 @@ export default {
   name: "order_table",
   data() {
     return {
-      choose_date: ""
+      choose_date: "",
+      disable_date: ""
     };
   },
   created() {
     const first_date = this.date_range[0];
     const formated_date = this.Date.parse(first_date).toString("yyyy/MM/dd");
     this.choose_date = this.date_range[0];
-    this.$store.dispatch("retrieveMemberDailyMenu", {
-      menu_date: formated_date
+    this.$store.dispatch("retrieveGroups").then(() => {
+      this.checkOverTime(this.member_order_timeLimit, this.date_range);
     });
   },
   computed: {
@@ -101,6 +103,10 @@ export default {
     },
     member_order_menu() {
       return this.$store.getters.member_order_menu;
+    },
+    member_order_timeLimit() {
+      const timeLimit = this.$store.getters.member_order_timeLimit;
+      return timeLimit;
     }
   },
   watch: {
@@ -141,6 +147,16 @@ export default {
       this.$router.push({
         name: "order_check"
       });
+    },
+    checkOverTime(timeLimit, date_range) {
+      const over_time = Date.compare(
+        Date.today().setTimeToNow(),
+        Date.parse(timeLimit)
+      );
+      if (timeLimit && over_time === 1) {
+        this.disable_date = date_range[0];
+        this.choose_date = date_range[1];
+      }
     }
   }
 };

@@ -92,14 +92,14 @@ export default {
   },
   destroyed() {
     const role = this.loggedIn;
-    if(role !== "guest"){
+    if (role !== "guest") {
       document.removeEventListener("click", this.documentClick);
     }
   },
   computed: {
     loggedIn() {
       const role = this.$store.getters.loggedIn;
-      if(role !== "guest"){
+      if (role !== "guest") {
         document.addEventListener("click", this.documentClick);
       }
       return this.$store.getters.loggedIn;
@@ -109,7 +109,7 @@ export default {
     documentClick(e) {
       let el = this.$refs.dropdownMenu;
       let target = e.target;
-      if(!el) return;
+      if (!el) return;
       if (el !== target && !el.contains(target)) {
         this.visible = false;
       }

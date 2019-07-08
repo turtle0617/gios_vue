@@ -196,8 +196,8 @@
       </tbody>
     </table>
     <button
-      type="button"
-      name="button"
+      :class="{ 'is-loading': loading_status.addMeal }"
+      :disabled="loading_status.addMeal"
       class="button is-info"
       @click.prevent="addMeal"
     >
@@ -212,6 +212,9 @@ export default {
   props: ["choose_date"],
   data() {
     return {
+      loading_status: {
+        addMeal: false
+      },
       main_meals: [
         {
           type: 0,
@@ -291,6 +294,7 @@ export default {
           return;
         }
         menu = this.mealAddDate(menu);
+        this.loading_status.addMeal = true;
         await Promise.all(
           menu.map(async meal => {
             const meal_id = await this.$store.dispatch("addDailyMenu", meal);
@@ -299,9 +303,10 @@ export default {
           })
         );
         this.resetMealForm();
-        this.$store.dispatch("retrieveDailyMenu", {
+        await this.$store.dispatch("retrieveDailyMenu", {
           menu_date: formated_date
         });
+        this.loading_status.addMeal = false;
       } catch (e) {
         console.error(e);
       }

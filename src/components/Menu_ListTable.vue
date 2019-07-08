@@ -14,10 +14,15 @@
       </thead>
       <tbody>
         <template v-for="(meal, index) in daily_menu">
-          <tr v-if="modify !== index" class="meal-show" :key="meal.id">
+          <tr v-if="modify !== index" class="meal-show" :key="index">
             <td class="menu-list__button">
               <div class="list-button">
-                <button class="button is-danger" @click="deleteMeal(index)">
+                <button
+                  :class="{ 'is-loading': loading_status.deleteMeal === index }"
+                  :disabled="loading_status.deleteMeal === index"
+                  class="button is-danger"
+                  @click="deleteMeal(index)"
+                >
                   刪除
                 </button>
                 <button class="button is-info" @click="modifyMeal(meal, index)">
@@ -49,7 +54,12 @@
           <tr v-else class="meal-modify" :key="meal.id">
             <td class="menu-list__button">
               <div class="list-button">
-                <button class="button is-info" @click="updateMeal(index)">
+                <button
+                  :class="{ 'is-loading': loading_status.updateMeal === index }"
+                  :disabled="loading_status.updateMeal === index"
+                  class="button is-info"
+                  @click="updateMeal(index)"
+                >
                   送出
                 </button>
                 <button class="button is-light" @click="modifyMeal(meal)">
@@ -151,6 +161,10 @@ export default {
   props: ["choose_date"],
   data() {
     return {
+      loading_status: {
+        updateMeal: null,
+        deleteMeal: null
+      },
       modify: null,
       change_meal: {
         name: null,
@@ -218,7 +232,7 @@ export default {
           return;
         }
         filtered_different_meal["menu_date"] = formated_date;
-        this.modify = null;
+        this.loading_status.updateMeal = index;
         await this.$store.dispatch("updateDailyMenu", {
           meal_id: original_meal_id,
           change_meal: filtered_different_meal
@@ -228,9 +242,11 @@ export default {
           await this.deleteFlavor(filtered_flavors.delete);
         }
         await this.addFlavor(filtered_flavors.new);
-        this.$store.dispatch("retrieveDailyMenu", {
+        await this.$store.dispatch("retrieveDailyMenu", {
           menu_date: formated_date
         });
+        this.modify = null;
+        this.loading_status.updateMeal = null;
       } catch (e) {
         console.error(e);
       }
@@ -277,6 +293,7 @@ export default {
       );
       try {
         const flavors = this.daily_menu[meal_index].flavors.slice();
+        this.loading_status.deleteMeal = meal_index;
         await this.$store.dispatch("deleteDailyMeal", {
           id: this.daily_menu[meal_index].id,
           index: meal_index
@@ -284,9 +301,10 @@ export default {
         if (flavors.length > 0) {
           await this.deleteFlavor(flavors);
         }
-        this.$store.dispatch("retrieveDailyMenu", {
+        await this.$store.dispatch("retrieveDailyMenu", {
           menu_date: formated_date
         });
+        this.loading_status.deleteMeal = null;
       } catch (e) {
         this.$store.dispatch("retrieveDailyMenu", {
           menu_date: formated_date

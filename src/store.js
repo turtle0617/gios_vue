@@ -80,7 +80,7 @@ export default new Vuex.Store({
       return state.member_profile;
     },
     member_order_timeLimit(state) {
-      if (!state.groups) return null;
+      if (!state.groups || !state.member_profile) return null;
       const member_profile = state.member_profile;
       const member_group = state.groups.find(
         group => group.id === member_profile.group_id
@@ -405,8 +405,8 @@ export default new Vuex.Store({
     },
     async deleteDailyMeal({ state, commit }, data) {
       try {
-        commit("deleteDailyMeal", data.index);
         let res = await API.DELETE("/menus", data.id, state.token);
+        commit("deleteDailyMeal", data.index);
         return res;
       } catch (e) {
         throw e;
@@ -445,7 +445,7 @@ export default new Vuex.Store({
     async deleteGroup({ state, dispatch }, group_id) {
       try {
         let res = await API.DELETE("/groups", group_id, state.token);
-        dispatch("retrieveGroups");
+        await dispatch("retrieveGroups");
         return res;
       } catch (e) {
         dispatch("retrieveGroups");

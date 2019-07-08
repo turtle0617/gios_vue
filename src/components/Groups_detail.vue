@@ -39,7 +39,14 @@
           ></date-picker>
           <span v-if="error_time">請填寫時間</span>
         </div>
-        <button class="button is-info" @click="addGroup">新增</button>
+        <button
+          :class="{ 'is-loading': loading_status.addGroup }"
+          :disabled="loading_status.addGroup"
+          class="button is-info"
+          @click="addGroup"
+        >
+          新增
+        </button>
       </div>
     </div>
     <div
@@ -69,7 +76,12 @@
         >
           修改
         </button>
-        <button class="button is-danger" @click="deleteGroup(group.id)">
+        <button
+          :class="{ 'is-loading': loading_status.deleteGroup === index }"
+          :disabled="loading_status.deleteGroup === index"
+          class="button is-danger"
+          @click="deleteGroup(group.id, index)"
+        >
           刪除
         </button>
       </div>
@@ -105,11 +117,16 @@
           ></date-picker>
           <span v-if="changeTime_error">請填寫時間</span>
         </div>
-        <button class="button is-info" @click="updateGroup(group.id, index)">
+        <button
+          :class="{ 'is-loading': loading_status.updateGroup === index }"
+          :disabled="loading_status.updateGroup === index"
+          class="button is-info"
+          @click="updateGroup(group.id, index)"
+        >
           送出
         </button>
         <button
-          class="button "
+          class="button"
           @click="modifyGroup(group.name, group.time_limit, group.preset_time)"
         >
           取消
@@ -124,6 +141,11 @@ export default {
   name: "Groups_detail",
   data() {
     return {
+      loading_status: {
+        addGroup: false,
+        updateGroup: null,
+        deleteGroup: null
+      },
       new_groupName: "",
       new_groupTime: null,
       new_groupTimelimit: 0,
@@ -153,7 +175,7 @@ export default {
     }
   },
   methods: {
-    addGroup() {
+    async addGroup() {
       if (!this.new_groupName) return (this.error = true);
       const isSame = this.isSameGroupName(this.new_groupName);
       if (isSame) {
@@ -171,9 +193,12 @@ export default {
         }
         new_group["preset_time"] = this.new_groupTime;
       }
-      this.$store.dispatch("addGroup", new_group).catch(err => {
+      this.loading_status.addGroup = true;
+      await this.$store.dispatch("addGroup", new_group).catch(err => {
         console.error(err);
       });
+      this.new_groupName = "";
+      this.loading_status.addGroup = false;
     },
     modifyGroup(name, timelimit, preset_time, index = null) {
       this.modify = index;
@@ -183,7 +208,7 @@ export default {
       this.change_group.time_limit = timelimit;
       this.change_group.preset_time = preset_time;
     },
-    updateGroup(id, index) {
+    async updateGroup(id, index) {
       const change_name = this.change_group.name.replace(/\s/g, "");
       const same_name = this.isSameGroupName(change_name);
       const filtered_change_group = this.filterSameKey(
@@ -191,7 +216,6 @@ export default {
         Object.assign({}, this.change_group)
       );
       const all_same = Object.keys(filtered_change_group).length === 0;
-      // const all_same = JSON.stringify(filtered_change_group) === JSON.stringify(this.change_group);
       if (all_same) {
         this.modify = null;
         return;
@@ -209,8 +233,8 @@ export default {
           this.change_group.preset_time
         );
       }
-      this.modify = null;
-      this.$store
+      this.loading_status.updateGroup = index;
+      await this.$store
         .dispatch("updateGroups", {
           id: id,
           change_group: filtered_change_group
@@ -218,11 +242,15 @@ export default {
         .catch(err => {
           console.error(err.response.data.message);
         });
+      this.modify = null;
+      this.loading_status.updateGroup = null;
     },
-    deleteGroup(group_id) {
-      this.$store.dispatch("deleteGroup", group_id).catch(err => {
+    async deleteGroup(group_id, index) {
+      this.loading_status.deleteGroup = index;
+      await this.$store.dispatch("deleteGroup", group_id).catch(err => {
         console.error(err);
       });
+      this.loading_status.deleteGroup = null;
     },
     isSameGroupName(name, groups = this.groups) {
       return groups.find(group => group.name === name);
@@ -259,6 +287,7 @@ export default {
 </script>
 <style scoped lang="scss">
 @import "@/assets/scss/form.scss";
+
 .groups_detail {
   justify-content: space-between;
 }

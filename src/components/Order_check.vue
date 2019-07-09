@@ -120,14 +120,13 @@ export default {
       return this.member_order_check.map(item => {
         const filtered = {
           menu_id: item.menu_id,
-          quantity: item.quantity,
+          quantity: item.quantity
         };
         if (item.flavor_id) filtered["flavor_id"] = item.flavor_id;
         if (item.user_rice) filtered["user_rice"] = item.user_rice;
         if (item.user_vegetable)
           filtered["user_vegetable"] = item.user_vegetable;
-        if(item.note)
-          filtered["note"] = item.user_vegetable;
+        if (item.note) filtered["note"] = item.user_vegetable;
         return filtered;
       });
     },

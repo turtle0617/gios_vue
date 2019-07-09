@@ -36,6 +36,7 @@
           <div
             v-for="(meal, index) in member_order_menu"
             :key="index"
+            :class="{ 'sold-out': meal.quantity_limit === 0 }"
             class="menu-list__items columns is-mobile"
           >
             <div class="list-item list-item__name column is-two-fifths ">
@@ -46,8 +47,14 @@
               <div v-if="meal.meal_note" class="menu-name__note">
                 <span>{{ meal.meal_note }}</span>
               </div>
-              <div v-if="meal.quantity_limit" class="menu-name__quantityLimit">
-                <span>限量 {{ meal.quantity_limit }} 份</span>
+              <div
+                v-if="Number.isInteger(meal.quantity_limit)"
+                class="menu-name__quantityLimit"
+              >
+                <span v-if="meal.quantity_limit"
+                  >限量 {{ meal.quantity_limit }} 份</span
+                >
+                <span v-else>已售完</span>
               </div>
             </div>
             <div class="list-item list-item__price column">
@@ -257,6 +264,10 @@ export default {
     top: 30%;
     right: 20%;
   }
+}
+.sold-out {
+  pointer-events: none;
+  background-color: rgba(122, 122, 122, 0.4);
 }
 @media screen and (max-width: 767px) {
   .section {

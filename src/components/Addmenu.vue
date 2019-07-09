@@ -219,7 +219,7 @@ export default {
         {
           type: 0,
           name: null,
-          price: null,
+          price: 70,
           quantity_limit: null,
           group_id: null,
           flavor: null,
@@ -250,7 +250,7 @@ export default {
     addRow(name) {
       const meal = {
         name: null,
-        price: null,
+        price: 70,
         quantity_limit: null,
         group_id: null,
         flavor: null,
@@ -286,11 +286,22 @@ export default {
         const all_price_Interger = menu.every(meal =>
           Number.isInteger(meal.price)
         );
+        const all_limite_Interger = menu.every(meal => {
+          if (!meal.quantity_limit) return true;
+          if (meal.quantity_limit && Number.isInteger(meal.quantity_limit)) {
+            return true;
+          }
+          return false;
+        });
         const formated_date = this.Date.parse(this.choose_date).toString(
           "yyyy/MM/d"
         );
         if (!all_price_Interger) {
           alert("請檢查格式");
+          return;
+        }
+        if (!all_limite_Interger) {
+          alert("限量需填數字");
           return;
         }
         menu = this.mealAddDate(menu);

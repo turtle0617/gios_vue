@@ -192,7 +192,7 @@ export default {
   padding-left: 5rem;
   padding-right: 5rem;
 }
-.menu-header__title{
+.menu-header__title {
   text-align: center;
 }
 .menu__title {

@@ -100,14 +100,14 @@ export default new Vuex.Store({
     week_range(state) {
       const range = new Array(state.week_range).fill(0);
       return range.map((item, index) => {
-        const first_day_of_week = Date.parse("today - 1 month")
-          .first()
+        const first_day_of_week = Date.today()
+          .addMonths(-1)
           .mon()
           .add({
             weeks: index + 1
           });
-        const last_day_of_week = Date.parse("today - 1 month")
-          .first()
+        const last_day_of_week = Date.today()
+          .addMonths(-1)
           .mon()
           .add({
             weeks: index + 1,

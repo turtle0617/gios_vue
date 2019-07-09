@@ -374,7 +374,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.purchase-header__title{
+.section {
+  padding-left: 6rem;
+  padding-right: 6rem;
+}
+.purchase-header__title {
   text-align: center;
 }
 .purchase-title {
@@ -433,6 +437,10 @@ export default {
       display: block;
       margin-right: 2rem;
     }
+  }
+  .section {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
   }
   .member-purchase__header {
     display: none;

@@ -31,8 +31,8 @@ export default {
 };
 </script>
 <style lang="scss">
-  .profile-header__title{
-    text-align: center;
-    padding-top: 4rem;
-  }
+.profile-header__title {
+  text-align: center;
+  padding-top: 4rem;
+}
 </style>

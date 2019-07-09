@@ -162,7 +162,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.history-header__title{
+.section {
+  padding-left: 6rem;
+  padding-right: 6rem;
+}
+.history-header__title {
   text-align: center;
 }
 .status {
@@ -209,6 +213,10 @@ export default {
       margin-right: 2rem;
       font-weight: bolder;
     }
+  }
+  .section {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
   }
   .member-history__header {
     display: none;

@@ -212,7 +212,7 @@ export default {
 span {
   color: red;
 }
-.section{
+.section {
   padding-top: 1rem;
 }
 </style>

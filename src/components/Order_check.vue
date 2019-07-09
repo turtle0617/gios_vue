@@ -208,11 +208,11 @@ export default {
     display: inline-flex;
   }
 }
-@media screen and( max-width:768px){
-  .button__container{
+@media screen and( max-width:768px) {
+  .button__container {
     text-align: center;
   }
-  .meal__container{
+  .meal__container {
     margin-top: 1rem;
   }
 }

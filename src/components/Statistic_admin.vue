@@ -46,6 +46,9 @@
         </div>
       </div>
     </div>
+    <div v-if="specialDay" class="specialDay">
+      <h1 class="title is-1">紫米飯日</h1>
+    </div>
     <div class="menu-statistic__meal" v-if="menu_statistic.statistic">
       <div class="statistic-meal__header columns">
         <div class="column is-4 meal-header meal-header__name">
@@ -119,10 +122,14 @@ export default {
       status_choose: {
         date: "",
         group: "all"
-      }
+      },
+      specialDay: false
     };
   },
   created() {
+    if (this.isSpecialDay("wednesday")) {
+      this.specialDay = true;
+    }
     this.status_choose.date = this.date_range[0];
     this.$store.dispatch("retrieveGroups");
   },
@@ -207,12 +214,54 @@ export default {
           conver_vegetable = "無";
       }
       return conver_vegetable;
+    },
+    isSpecialDay(day) {
+      switch (day) {
+        case "monday":
+          return Date.today()
+            .is()
+            .monday();
+        case "tuesday":
+          return Date.today()
+            .is()
+            .tuesday();
+        case "wednesday":
+          return Date.today()
+            .is()
+            .wednesday();
+        case "thursday":
+          return Date.today()
+            .is()
+            .thursday();
+        case "friday":
+          return Date.today()
+            .is()
+            .friday();
+        case "saturday":
+          return Date.today()
+            .is()
+            .saturday();
+        case "sunday":
+          return Date.today()
+            .is()
+            .sunday();
+        default:
+          return "not match";
+      }
     }
   }
 };
 </script>
 
 <style scoped lang="scss">
+.specialDay {
+  margin-bottom: 2rem;
+  .title {
+    color: purple;
+    font-family: cursive;
+    text-align: center;
+  }
+}
 .statistic-boss {
   padding: 3rem 5rem;
 }

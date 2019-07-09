@@ -13,9 +13,10 @@
         <div class="input-box control" :class="{ error: empty_error.account }">
           <input
             type="text"
-            class=" input"
+            class="input"
             id="login__account"
             placeholder=" "
+            @keydown.enter.prevent
             @focus="empty_error.account = false"
             v-model="account"
           />
@@ -28,6 +29,7 @@
           <input
             type="password"
             id="login__userCode"
+            class="input"
             placeholder=" "
             @focus="empty_error.password = false"
             v-model="password"

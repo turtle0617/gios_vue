@@ -7,6 +7,7 @@
           <input
             type="text"
             v-model.trim="member.name"
+            @keydown.enter.prevent
             @focus="empty_error.name = false"
             id="register__name"
             class="input"
@@ -24,6 +25,7 @@
           <input
             type="text"
             v-model.trim="member.account"
+            @keydown.enter.prevent
             @focus="empty_error.account = false"
             id="register__account"
             class="input"

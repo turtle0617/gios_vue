@@ -13,6 +13,7 @@
           <input
             type="text"
             id="login__account"
+            @keydown.enter.prevent
             placeholder="請輸入使用者名稱"
             class="input"
             v-model="account"

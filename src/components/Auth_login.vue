@@ -36,8 +36,15 @@
           <label for="login__userCode">密碼</label>
         </div>
       </div>
-      <button class="button is-info" type="submit">登入</button>
-      <router-link :to="{ name: 'register' }">
+      <button
+        :class="{ 'is-loading': loading_status.login }"
+        :disabled="loading_status.login"
+        class="button is-info is-medium"
+        type="submit"
+      >
+        登入
+      </button>
+      <router-link :disabled="loading_status.login" :to="{ name: 'register' }">
         註冊
       </router-link>
     </form>
@@ -55,27 +62,31 @@ export default {
         account: false,
         password: false
       },
-      error: false
+      error: false,
+      loading_status: {
+        login: false
+      }
     };
   },
   methods: {
-    login() {
-      const is_empty = this.detectEmpty();
-      if (is_empty) return;
-      this.$store
-        .dispatch("retrieveMemberToken", {
+    async login() {
+      try {
+        const is_empty = this.detectEmpty();
+        if (is_empty) return;
+        this.loading_status.login = true;
+        await this.$store.dispatch("retrieveMemberToken", {
           account: this.account,
           password: this.password
-        })
-        .then(response => {
-          this.$router.push({
-            name: "order"
-          });
-        })
-        .catch(err => {
-          this.error = !this.error;
-          console.error("login ERROR", err);
         });
+        this.loading_status.login = false;
+        this.$router.push({
+          name: "order"
+        });
+      } catch (e) {
+        this.loading_status.login = false;
+        this.error = !this.error;
+        console.error("login ERROR", e);
+      }
     },
     detectEmpty() {
       const detected = {

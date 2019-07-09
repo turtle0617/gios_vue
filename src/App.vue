@@ -17,7 +17,7 @@ body {
 }
 .update-error {
   background-color: #ed516038;
-  padding: 10px 0;
+  padding: 1rem;
   border-left: 5px solid #eb818b;
   color: #ff253a;
   margin-bottom: 1rem;

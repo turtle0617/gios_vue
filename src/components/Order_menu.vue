@@ -176,6 +176,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.section {
+  padding-left: 5rem;
+  padding-right: 5rem;
+}
 .menu__title {
   align-items: flex-end;
 }
@@ -204,7 +208,7 @@ export default {
   &__next {
     position: fixed;
     bottom: 1rem;
-    right: 1rem;
+    right: 5rem;
     box-shadow: 6px 5px 10px 0 rgba(0, 0, 0, 0.3);
   }
 }
@@ -255,6 +259,13 @@ export default {
   }
 }
 @media screen and (max-width: 767px) {
+  .section {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  .member-menu__next {
+    right: 1rem;
+  }
   .menu-name__quantityLimit {
     position: static;
   }

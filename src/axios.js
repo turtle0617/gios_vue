@@ -18,7 +18,9 @@ const responseHandler = {
     return Promise.reject(res.data.error);
   },
   "422": res => {
-    return Promise.reject(res.data.error);
+    if (res.data.error) return Promise.reject(res.data.error);
+    if (res.data.message) return Promise.reject(res.data.message);
+    return Promise.reject(res.data);
   },
   "500": res => {
     alert("伺服器錯誤，請聯絡管理員");

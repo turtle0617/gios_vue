@@ -2,7 +2,7 @@
   <section class="login-detail">
     <form @submit.prevent="login">
       <h1>店家登入</h1>
-      <div v-if="error" class="field errorMessage">
+      <div v-if="error" class="field update-error">
         <span>你的帳號或密碼不正確，請稍後再試</span>
       </div>
       <div class="field">
@@ -33,7 +33,14 @@
           />
         </div>
       </div>
-      <button class="button is-info" type="submit">登入</button>
+      <button
+        :class="{ 'is-loading': loading_status.login }"
+        :disabled="loading_status.login"
+        class="button is-info is-medium"
+        type="submit"
+      >
+        登入
+      </button>
     </form>
   </section>
 </template>
@@ -45,26 +52,30 @@ export default {
     return {
       account: "",
       password: "",
-      error: false
+      error: false,
+      loading_status: {
+        login: false
+      }
     };
   },
   methods: {
-    login() {
-      if (!this.account || !this.password) return;
-      this.$store
-        .dispatch("retrieveBossToken", {
+    async login() {
+      try {
+        if (!this.account || !this.password) return;
+        this.loading_status.login = true;
+        await this.$store.dispatch("retrieveBossToken", {
           account: this.account,
           password: this.password
-        })
-        .then(() => {
-          this.$router.push({
-            name: "statistic"
-          });
-        })
-        .catch(err => {
-          this.error = true;
-          console.error("login ERROR", err);
         });
+        this.loading_status.login = false;
+        this.$router.push({
+          name: "statistic"
+        });
+      } catch (e) {
+        this.loading_status.login = false;
+        this.error = true;
+        console.error("login ERROR", e);
+      }
     }
   }
 };

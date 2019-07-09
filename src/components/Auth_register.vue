@@ -1,5 +1,5 @@
 <template>
-  <section class="register-detail col-sm-12 col-md-6 col-lg-4 ">
+  <section class="register-detail">
     <form @submit.prevent="register">
       <h1>註冊</h1>
       <div class="field">
@@ -17,7 +17,10 @@
         </div>
       </div>
       <div class="field">
-        <div class="input-box control" :class="{ error: empty_error.account }">
+        <div
+          class="input-box control"
+          :class="{ error: empty_error.account || account_been_taken }"
+        >
           <input
             type="text"
             v-model.trim="member.account"
@@ -27,6 +30,7 @@
             placeholder=" "
           />
           <span v-if="empty_error.account">不得為空</span>
+          <span v-if="account_been_taken">帳戶重複，請重新輸入</span>
           <label for="register__account">使用者帳戶</label>
         </div>
       </div>
@@ -58,8 +62,15 @@
           <label for="register__group">團體</label>
         </div>
       </div>
-      <button class="button is-info" type="submit">註冊</button>
-      <router-link :to="{ name: 'home' }">
+      <button
+        :class="{ 'is-loading': loading_status.register }"
+        :disabled="loading_status.register"
+        class="button is-info is-medium"
+        type="submit"
+      >
+        註冊
+      </button>
+      <router-link :to="{ name: 'home' }" :disabled="loading_status.register">
         登入
       </router-link>
     </form>
@@ -81,7 +92,11 @@ export default {
         name: false,
         account: false,
         password: false
-      }
+      },
+      loading_status: {
+        register: false
+      },
+      account_been_taken: false
     };
   },
   created() {
@@ -96,22 +111,26 @@ export default {
     }
   },
   methods: {
-    register() {
-      const is_empty = this.detectEmpty();
-      if (is_empty) return;
-      this.$store
-        .dispatch("register", this.member)
-        .then(res => {
-          this.$router.push({
-            name: "home",
-            params: {
-              account: res.account
-            }
-          });
-        })
-        .catch(err => {
-          console.error("register ERROR", err);
+    async register() {
+      try {
+        const is_empty = this.detectEmpty();
+        if (is_empty) return;
+        this.loading_status.register = true;
+        const res = await this.$store.dispatch("register", this.member);
+        this.$router.push({
+          name: "home",
+          params: {
+            account: res.account
+          }
         });
+        this.loading_status.register = false;
+      } catch (e) {
+        console.error("register ERROR", e);
+        this.loading_status.register = false;
+        if (e.includes("invalid")) {
+          this.account_been_taken = true;
+        }
+      }
     },
     detectEmpty() {
       const detected = {

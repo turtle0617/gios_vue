@@ -205,6 +205,15 @@ export default {
   margin-top: 1rem;
   :first-child {
     margin-right: 1rem;
+    display: inline-flex;
+  }
+}
+@media screen and( max-width:768px){
+  .button__container{
+    text-align: center;
+  }
+  .meal__container{
+    margin-top: 1rem;
   }
 }
 </style>

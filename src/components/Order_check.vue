@@ -93,6 +93,7 @@
 <script>
 export default {
   name: "order_check",
+  props: ["choose_date"],
   data() {
     return {
       over_time: false,
@@ -129,9 +130,44 @@ export default {
         return filtered;
       });
     },
+    async checkQuantityLimite(order) {
+      const merge_same_meal = order.reduce((acc, cur) => {
+        if (!acc[cur.menu_id]) {
+          acc[cur.menu_id] = 1;
+        } else {
+          acc[cur.menu_id] += 1;
+        }
+        return acc;
+      }, {});
+      const formated_date = this.Date.parse(this.choose_date).toString(
+        "yyyy/MM/dd"
+      );
+      const filterd_menu_has_limite = await this.$store
+        .dispatch("retrieveMemberDailyMenu", {
+          menu_date: formated_date
+        })
+        .then(menu => menu.filter(menu => menu.quantity_limit));
+      // if true mean some meal out of limite
+      return filterd_menu_has_limite.some(meal => {
+        if (merge_same_meal[meal.id]) {
+          if (merge_same_meal[meal.id] > meal.quantity_limit) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+        return false;
+      });
+    },
     async addMemberOrder() {
       try {
         const filtered_orders = this.filterNotToNeedPostValue();
+        const out_of_limite = await this.checkQuantityLimite(filtered_orders);
+        if (out_of_limite) {
+          alert("限量商品低於下單數量，請重新下單喔~");
+          this.$router.push({ name: "order_menu" });
+          return;
+        }
         this.loading_status.addMemberOrder = true;
         await this.$store.dispatch("addMemberOrder", {
           menuArray: filtered_orders
@@ -143,7 +179,15 @@ export default {
         this.loading_status.addMemberOrder = false;
         if (e === "over order time") {
           alert("超過時間囉~");
-          this.$router.push({ name: "order_menu" });
+          this.$router.push({
+            name: "order_menu"
+          });
+        }
+        if (e.includes("remain")) {
+          alert("限量商品低於下單數量，請重新下單喔~");
+          this.$router.push({
+            name: "order_menu"
+          });
         }
       }
     }

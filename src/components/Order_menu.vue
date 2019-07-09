@@ -43,11 +43,11 @@
                 <span>{{ meal.name }}</span
                 ><br />
               </div>
-              <div
-                v-if="meal.meal_note"
-                class="menu-name__note content is-small"
-              >
+              <div v-if="meal.meal_note" class="menu-name__note">
                 <span>{{ meal.meal_note }}</span>
+              </div>
+              <div v-if="meal.quantity_limit" class="menu-name__quantityLimit">
+                <span>限量 {{ meal.quantity_limit }} 份</span>
               </div>
             </div>
             <div class="list-item list-item__price column">
@@ -55,12 +55,14 @@
             </div>
             <div class="list-item list-item__amount column">
               <font-awesome-icon
-                @click="addMeal(index, meal.id)"
+                class="amount__button amount__button--plus"
+                @click="addMeal(index, meal.id, meal.quantity_limit)"
                 icon="plus-circle"
                 size="lg"
               ></font-awesome-icon>
               <label for="quantity">{{ meal.amount }}</label>
               <font-awesome-icon
+                class="amount__button amount__button--minus"
                 icon="minus-circle"
                 size="lg"
                 @click="minusMeal(index, meal.id)"
@@ -97,6 +99,7 @@ export default {
     date_range() {
       const timeLimit = this.$store.getters.member_order_timeLimit;
       let date_range = this.$store.getters.date_range;
+      if (!timeLimit) return date_range;
       const over_time = Date.compare(
         Date.today().setTimeToNow(),
         Date.parse(timeLimit)
@@ -136,8 +139,9 @@ export default {
     }
   },
   methods: {
-    addMeal(index, id) {
+    addMeal(index, id, limit) {
       const member_order_menu = this.member_order_menu[index];
+      if (limit && member_order_menu.amount >= limit) return;
       const meal_amount = {
         index: index,
         amount: 1
@@ -163,7 +167,8 @@ export default {
       }
       this.$store.dispatch("generateOrderkDetailStatistic");
       this.$router.push({
-        name: "order_check"
+        name: "order_check",
+        params: { choose_date: this.choose_date }
       });
     }
   }
@@ -214,9 +219,7 @@ export default {
   padding-top: 1rem;
   padding-bottom: 1rem;
   &__name {
-    > div {
-      width: 100%;
-    }
+    position: relative;
   }
   &__amount {
     justify-content: space-between;
@@ -226,8 +229,34 @@ export default {
     border-right: 1px solid;
   }
 }
-.menu-name__note {
-  color: #7b4a4a;
-  font-weight: 900;
+.amount__button {
+  cursor: pointer;
+  &:active {
+    opacity: 0.5;
+  }
+}
+.menu-name {
+  &__title {
+    width: 100%;
+  }
+  &__note {
+    color: #7b4a4a;
+    font-weight: 900;
+    font-size: 0.9rem;
+    width: 100%;
+  }
+  &__quantityLimit {
+    width: auto;
+    color: red;
+    font-weight: 900;
+    position: absolute;
+    top: 30%;
+    right: 20%;
+  }
+}
+@media screen and (max-width: 767px) {
+  .menu-name__quantityLimit {
+    position: static;
+  }
 }
 </style>

@@ -61,6 +61,7 @@ const router = new Router({
           path: "check",
           name: "order_check",
           component: order_check,
+          props: route => ({ choose_date: route.params.choose_date }),
           beforeEnter(to, from, next) {
             if (!store.getters.member_order_check.length) {
               next({ name: "order_menu" });

@@ -126,7 +126,7 @@ export default {
         if (item.user_rice) filtered["user_rice"] = item.user_rice;
         if (item.user_vegetable)
           filtered["user_vegetable"] = item.user_vegetable;
-        if (item.note) filtered["note"] = item.user_vegetable;
+        if (item.note) filtered["note"] = item.note;
         return filtered;
       });
     },

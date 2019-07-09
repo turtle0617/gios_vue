@@ -11,7 +11,7 @@ export default new Vuex.Store({
     member_profile: JSON.parse(localStorage.getItem("user_profile")) || null,
     user_id: localStorage.getItem("user_id") || null,
     groups: JSON.parse(localStorage.getItem("groups")) || null,
-    daily_menu: JSON.parse(localStorage.getItem("daily_menu")) || null,
+    daily_menu: JSON.parse(localStorage.getItem("daily_menu")) || [],
     member_daily_menu:
       JSON.parse(localStorage.getItem("member_daily_menu")) || null,
     order_detail_statistic:
@@ -31,10 +31,10 @@ export default new Vuex.Store({
       return state.groups;
     },
     daily_menu(state) {
-      return state.daily_menu;
+      return state.daily_menu.sort((a, b) => b.id - a.id);
     },
     purchase_list(state) {
-      return state.purchase_list.sort((a, b) => a.menu_id - b.menu_id);
+      return state.purchase_list.sort((a, b) => b.id - a.id);
     },
     member_history_list(state) {
       if (!Object.keys(state.member_history_list).length) return {};

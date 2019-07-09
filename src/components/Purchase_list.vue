@@ -1,5 +1,10 @@
 <template>
   <section class="purchase section">
+    <div class="columns purchase-header__title">
+      <div class="column">
+        <h1 class=" title is-2 ">訂單資訊</h1>
+      </div>
+    </div>
     <div class="purchase__title columns content ">
       <div class="purchase-title__date column ">
         <label for="purchaseDate">日期</label>
@@ -369,6 +374,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.purchase-header__title{
+  text-align: center;
+}
 .purchase-title {
   &__date {
     label {

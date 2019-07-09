@@ -1,5 +1,10 @@
 <template>
   <section class="menu section">
+    <div class="columns menu-header__title">
+      <div class="column">
+        <h1 class=" title is-2 ">訂餐</h1>
+      </div>
+    </div>
     <div class="menu__title columns content ">
       <div class="menu-title__date column is-two-fifths">
         <label for="menuDate">日期</label>
@@ -186,6 +191,9 @@ export default {
 .section {
   padding-left: 5rem;
   padding-right: 5rem;
+}
+.menu-header__title{
+  text-align: center;
 }
 .menu__title {
   align-items: flex-end;

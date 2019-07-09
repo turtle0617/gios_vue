@@ -1,5 +1,10 @@
 <template>
   <section class="section">
+    <div class="columns history-header__title">
+      <div class="column">
+        <h1 class=" title is-2 ">歷史訂單</h1>
+      </div>
+    </div>
     <div class="columns  member-history__status">
       <div class="column is-one-third status status__date">
         <h1 class="title is-3">日期</h1>
@@ -157,6 +162,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.history-header__title{
+  text-align: center;
+}
 .status {
   display: flex;
   h1 {

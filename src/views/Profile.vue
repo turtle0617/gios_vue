@@ -2,10 +2,15 @@
   <div class="profile">
     <Header />
     <div class="container">
-      <div class="row profile-account">
+      <div class="columns profile-header__title">
+        <div class="column">
+          <h1 class=" title is-2 ">個人檔案</h1>
+        </div>
+      </div>
+      <div class="profile-account">
         <Profile_account />
       </div>
-      <div class="row ">
+      <div class="">
         <Profile_code />
       </div>
     </div>
@@ -25,3 +30,9 @@ export default {
   }
 };
 </script>
+<style lang="scss">
+  .profile-header__title{
+    text-align: center;
+    padding-top: 4rem;
+  }
+</style>

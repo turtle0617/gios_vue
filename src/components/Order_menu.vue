@@ -101,7 +101,7 @@ export default {
         Date.today().setTimeToNow(),
         Date.parse(timeLimit)
       );
-      if (over_time) {
+      if (over_time === 1) {
         const tomorrow = Date.today()
           .add(1)
           .day()

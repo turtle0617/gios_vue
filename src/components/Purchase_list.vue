@@ -204,7 +204,7 @@ export default {
         Date.today().setTimeToNow(),
         Date.parse(timeLimit)
       );
-      if (over_time) {
+      if (over_time === 1) {
         const tomorrow = Date.today()
           .add(1)
           .day()
@@ -352,8 +352,8 @@ export default {
     filterBeModifiedProperty(change, original) {
       let filtered = {};
       for (let key in change) {
+        if (!original[key]) original[key] = null;
         if (change[key] !== original[key]) {
-          console.log(change[key], original[key]);
           filtered[key] = change[key];
         }
       }

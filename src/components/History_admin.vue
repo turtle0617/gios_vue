@@ -168,9 +168,12 @@ export default {
           .map(date => {
             return this.Date.parse(date).toString("yyyy/MM/dd");
           });
-        const is_this_week = Date.today().between(this.Date.parse(start_date), this.Date.parse(end_date));
-        if(is_this_week){
-          alert('當週還不能付款喔');
+        const is_this_week = Date.today().between(
+          this.Date.parse(start_date),
+          this.Date.parse(end_date)
+        );
+        if (is_this_week) {
+          alert("當週還不能付款喔");
           return;
         }
         this.$set(this.paying_status, index, true);

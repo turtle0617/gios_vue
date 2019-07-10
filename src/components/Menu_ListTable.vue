@@ -419,4 +419,9 @@ export default {
     color: red;
   }
 }
+@media screen and (max-width: 767px) {
+  .section {
+    overflow: scroll;
+  }
+}
 </style>

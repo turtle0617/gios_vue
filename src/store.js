@@ -99,7 +99,7 @@ export default new Vuex.Store({
     },
     week_range(state) {
       const range = new Array(state.week_range).fill(0);
-      range.map((item, index) => {
+      return range.map((item, index) => {
         const first_day_of_week = Date.sun()
           .mon()
           .addWeeks(-3)

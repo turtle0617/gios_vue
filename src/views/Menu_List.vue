@@ -65,6 +65,7 @@ export default {
   margin-bottom: 1rem;
   display: flex;
   align-items: flex-end;
+  padding-left: 1.5rem;
   label {
     font-size: 1.5rem;
   }

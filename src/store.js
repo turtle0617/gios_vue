@@ -247,6 +247,7 @@ export default new Vuex.Store({
       state.token = null;
       state.login_role = "guest";
       state.user_id = null;
+      localStorage.clear();
     }
   },
   actions: {

@@ -35,7 +35,8 @@ function exceptionResponseHandler(res) {
     return Promise.reject(res);
   }
 }
-
+axios.defaults.headers.common["Content-Security-Policy"] =
+  "upgrade-insecure-requests";
 function GET(url, token, param) {
   if (token) {
     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;

@@ -250,7 +250,7 @@ export default {
     addRow(name) {
       const meal = {
         name: null,
-        price: 70,
+        price: null,
         quantity_limit: null,
         group_id: null,
         flavor: null,
@@ -259,6 +259,7 @@ export default {
       };
       if (name === "main_meals") {
         meal["type"] = 0;
+        meal["price"] = 70;
         this.main_meals.push(meal);
       } else {
         meal["type"] = 1;

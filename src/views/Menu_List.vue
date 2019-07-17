@@ -1,7 +1,7 @@
 <template>
   <div class="menu">
     <Header />
-    <div class="menu-date container">
+    <section class="menu-date section">
       <label for="orderDate">日期</label>
       <div class="select">
         <select class="group--select" name="orderDate" v-model="choose_date">
@@ -13,7 +13,7 @@
           >
         </select>
       </div>
-    </div>
+    </section>
     <Addmenu :choose_date="choose_date" />
     <Menu_ListTable :choose_date="choose_date" />
   </div>
@@ -65,7 +65,6 @@ export default {
   margin-bottom: 1rem;
   display: flex;
   align-items: flex-end;
-  padding-left: 1.5rem;
   label {
     font-size: 1.5rem;
   }

@@ -1,7 +1,7 @@
 import axios from "axios";
 import router from "./router";
 
-const domain = "http://3.130.129.213/api";
+const domain = "https://turtleeat.club/api/api";
 
 const responseHandler = {
   "200": res => {

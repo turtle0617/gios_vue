@@ -333,7 +333,7 @@ export default {
         this.loading_status.updatePurchaseMeal = null;
       } catch (e) {
         this.loading_status.updatePurchaseMeal = null;
-        console.log(e);
+        console.error(e);
       }
     },
     async deletePurchaseMeal({ id }, index) {
@@ -344,7 +344,7 @@ export default {
         this.loading_status.deletePurchaseMeal = null;
       } catch (e) {
         this.loading_status.deletePurchaseMeal = null;
-        console.log(e);
+        console.error(e);
       }
     },
     getPurchaseList(date) {

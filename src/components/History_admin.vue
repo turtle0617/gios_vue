@@ -6,13 +6,13 @@
           <h1 class=" title is-2 ">歷史統計</h1>
         </div>
       </div>
-      <div class="columns  boss-header__status">
-        <div class="column  status status__date">
+      <div class="columns boss-header__date">
+        <div class="column date__container">
           <h1 class="title is-3">日期</h1>
           <div class="select">
             <select
               v-if="week_range"
-              v-model="status_choose.date"
+              v-model="choose_date"
               class="group--select"
               name="historyDate"
             >
@@ -25,36 +25,16 @@
             </select>
           </div>
         </div>
-        <div class="column  status status__group">
-          <h1 class="title is-3">團體</h1>
-          <div class="select">
-            <select
-              v-if="groups"
-              v-model.number="status_choose.group"
-              class="group--select"
-              name="historyDate"
-            >
-              <option value="all">全體</option>
-              <option
-                v-for="(group, index) in groups"
-                :value="group.id"
-                :key="index"
-                >{{ group.name }}</option
-              >
-            </select>
-          </div>
-        </div>
       </div>
-
       <template v-if="price_statistic">
-        <div class="columns history-boss-priceStatistic__total">
-          <div class="column total__header">
-            <h2 class="title is-4">收益</h2>
+        <div class="columns allPriceStatistic">
+          <div class="column allPriceStatistic__header">
+            <h2 class="title is-4">全體收益</h2>
           </div>
-          <div class="column total_price">
+          <div class="column allPriceStatistic__price">
             <h1 class="title is-1">{{ price_statistic.total_price || 0 }}</h1>
           </div>
-          <div class="column total__footer">
+          <div class="column allPriceStatistic__footer">
             <h2 class="title is-4">元</h2>
           </div>
         </div>
@@ -70,56 +50,34 @@
         </div>
       </template>
     </div>
-    <div
-      v-if="member_statistic"
-      class="history-boss__memberList columns is-multiline"
-    >
-      <div
-        class="column is-4 member"
-        v-for="(member, index) in member_statistic"
-        :key="index"
-        @click="changePaidStatus(index, member.user_id)"
-        :class="{ isPaying: paying_status[index] }"
-      >
-        <div class="member__name">使用者：{{ member.name }}</div>
-        <div class="member__owe">
-          金額：
-          <span>
-            {{ member.person_paid }}
-          </span>
-        </div>
-        <div class="member__paymentStatus">
-          <div
-            v-if="member.payment_status"
-            class="paymentStatus paymentStatus--paid"
-          >
-            已付款
-          </div>
-          <div v-else class="paymentStatus paymentStatus--unpaid">
-            未付款
-          </div>
-        </div>
-      </div>
-    </div>
+    <template v-for="(group, group_name) in groups_statistic">
+      <Group_statistic
+        :count_statistic="group"
+        :group_name="group_name"
+        :start_date="start_date"
+        :end_date="end_date"
+        :key="group_name"
+      />
+    </template>
   </section>
 </template>
 
 <script>
+import Group_statistic from "@/components/History_admin--group";
 export default {
   name: "history_admin",
+  components: {
+    Group_statistic
+  },
   data() {
     return {
-      status_choose: {
-        date: "",
-        group: "all"
-      },
-      paying_status: []
+      choose_date: ""
     };
   },
   created() {
     const lastWeek_index = this.week_range.length - 1;
-    this.status_choose.date = this.week_range[lastWeek_index];
-    this.$store.dispatch("retrieveGroups");
+    this.choose_date = this.week_range[lastWeek_index];
+    if (!this.groups) this.$store.dispatch("retrieveGroups");
   },
   computed: {
     week_range() {
@@ -129,76 +87,65 @@ export default {
       return this.$store.getters.groups;
     },
     price_statistic() {
-      return this.$store.getters.boss_history_statistic.statistic;
+      return this.$store.getters.boss_history_statistic_all.statistic;
     },
-    member_statistic() {
-      if (!this.$store.getters.boss_history_statistic) return false;
-      return this.$store.getters.boss_history_statistic.list;
+    groups_statistic() {
+      return this.$store.getters.boss_history_statistic_groups;
+    },
+    start_date() {
+      return this.choose_date.split("~").map(date => {
+        return this.Date.parse(date).toString("yyyy/MM/dd");
+      })[0];
+    },
+    end_date() {
+      return this.choose_date.split("~").map(date => {
+        return this.Date.parse(date).toString("yyyy/MM/dd");
+      })[1];
     }
   },
   watch: {
-    status_choose: {
-      handler: function({ date, group }) {
-        const [start_date, end_date] = date.split("~").map(date => {
-          return this.Date.parse(date).toString("yyyy/MM/dd");
-        });
-        const statistic_parameter = {
-          start_date: start_date,
-          end_date: end_date
-        };
-        if (Number.isInteger(group)) statistic_parameter["group_id"] = group;
-        this.$store
-          .dispatch("retrieveBossHistoryStatistic", statistic_parameter)
-          .then(res => {
-            const member_list_length = res.list.length;
-            this.paying_status = new Array(member_list_length).fill(false);
-          })
-          .catch(e => {
-            console.error(e);
-          });
-      },
-      deep: true
+    choose_date: function(date) {
+      const date_parameter = {
+        start_date: this.start_date,
+        end_date: this.end_date
+      };
+      this.retrieveHistoryStatisticWithAll(date_parameter);
+      this.retrieveHistoryStatisticWithGroup(date_parameter);
     }
   },
   methods: {
-    async changePaidStatus(index, member_id) {
-      try {
-        const [start_date, end_date] = this.status_choose.date
-          .split("~")
-          .map(date => {
-            return this.Date.parse(date).toString("yyyy/MM/dd");
-          });
-        const is_this_week = Date.today().between(
-          this.Date.parse(start_date),
-          this.Date.parse(end_date)
-        );
-        if (is_this_week) {
-          alert("當週還不能付款喔");
-          return;
-        }
-        this.$set(this.paying_status, index, true);
-        this.$store.commit("updateMemberPaidStatus", index);
-        await this.$store.dispatch("updateMemberPaidStatus", {
-          start_date: start_date,
-          end_date: end_date,
-          member_id: [member_id]
+    retrieveHistoryStatisticWithAll(date_parameter) {
+      return this.$store
+        .dispatch("retrieveBossHistoryStatisticAll", date_parameter)
+        .catch(e => {
+          console.error(e);
         });
-        this.$set(this.paying_status, index, false);
-      } catch (e) {
-        console.error(e);
-      }
+    },
+    retrieveHistoryStatisticWithGroup({ start_date, end_date }) {
+      return Promise.all(
+        this.groups.map(group => {
+          const param_with_statictic = {
+            start_date,
+            end_date,
+            group_id: group.id,
+            group_name: group.name
+          };
+          return this.$store
+            .dispatch(
+              "retrieveBossHistoryStatisticWithGroup",
+              param_with_statictic
+            )
+            .catch(e => {
+              console.error(e);
+            });
+        })
+      );
     }
   }
 };
 </script>
 
 <style scoped lang="scss">
-.status {
-  display: flex;
-  h1 {
-    margin-right: 1rem;
-  }
-}
 .column {
   flex-basis: auto;
   flex-grow: 0;
@@ -206,8 +153,11 @@ export default {
 .columns {
   justify-content: space-between;
 }
+
 .history-boss {
   padding: 3rem 5rem;
+  width: 80%;
+  margin: 0 auto;
   &__header {
     border-bottom: 1px solid;
     padding-bottom: 5rem;
@@ -218,48 +168,27 @@ export default {
     justify-content: flex-start;
   }
 }
+.date__container {
+  display: flex;
+  .title {
+    margin-right: 1rem;
+  }
+}
 .boss-header__title {
   justify-content: center;
 }
-.total__footer {
+.allPriceStatistic__price {
+  margin-left: -2rem;
+}
+.allPriceStatistic__footer {
   align-self: flex-end;
-}
-.member {
-  border: 1px solid;
-  cursor: pointer;
-  position: relative;
-  &__owe {
-    span {
-      font-weight: bold;
-    }
-  }
-  &:hover {
-    background-color: #ffdd574f;
-  }
-  &__paymentStatus {
-    position: absolute;
-    top: 35%;
-    right: 5%;
-  }
-}
-.paymentStatus {
-  font-weight: bold;
-  &--paid {
-    color: green;
-  }
-  &--unpaid {
-    color: red;
-  }
-}
-.isPaying {
-  pointer-events: none;
 }
 @media screen and (max-width: 768px) {
   .history-boss {
     padding: 3rem 1.5rem;
-    &-priceStatistic__total {
-      display: flex;
-    }
+  }
+  .allPriceStatistic {
+    display: flex;
   }
 }
 </style>

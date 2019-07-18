@@ -17,7 +17,8 @@ export default new Vuex.Store({
     order_detail_statistic:
       JSON.parse(localStorage.getItem("order_detail_statistic")) || [],
     purchase_list: [],
-    boss_history_statistic: {},
+    boss_history_statistic_all: {},
+    boss_history_statistic_groups: {},
     boss_menu_statistic: {},
     member_history_list: {},
     date_range: 7,
@@ -46,10 +47,17 @@ export default new Vuex.Store({
       );
       return state.member_history_list;
     },
-    boss_history_statistic(state) {
-      const isEmpty = !Object.keys(state.boss_history_statistic).length;
+    boss_history_statistic_all(state) {
+      const isEmpty = !Object.keys(state.boss_history_statistic_all).length;
       if (isEmpty) return false;
-      return state.boss_history_statistic;
+      return state.boss_history_statistic_all;
+    },
+    boss_history_statistic_groups(state) {
+      const same_with_groups =
+        state.groups.length ===
+        Object.keys(state.boss_history_statistic_groups).length;
+      if (!same_with_groups) return false;
+      return state.boss_history_statistic_groups;
     },
     boss_menu_statistic(state) {
       const isEmpty = !Object.keys(state.boss_menu_statistic).length;
@@ -150,8 +158,16 @@ export default new Vuex.Store({
     retrieveMemberHistoryList(state, list) {
       state.member_history_list = list;
     },
-    retrieveBossHistoryStatistic(state, list) {
-      state.boss_history_statistic = list;
+    retrieveBossHistoryStatisticAll(state, list) {
+      state.boss_history_statistic_all = list;
+    },
+    retrieveBossHistoryStatisticWithGroup(state, data) {
+      const group_name = data.group_name;
+      Vue.set(
+        state.boss_history_statistic_groups,
+        group_name,
+        data.group_statistic
+      );
     },
     retrieveDailyMenu(state, menu) {
       localStorage.setItem("daily_menu", JSON.stringify(menu));
@@ -169,31 +185,41 @@ export default new Vuex.Store({
       const key_name = detail.name;
       state.order_detail_statistic[index][key_name] = detail.value;
     },
-    updateMemberPaidStatus(state, index) {
+    updateMemberPaidStatus(state, { group_name, index }) {
       const member_payment_status =
-        state.boss_history_statistic.list[index].payment_status;
-      const member_paid = Number(
-        state.boss_history_statistic.list[index].person_paid
+        state.boss_history_statistic_groups[group_name].list[index]
+          .payment_status;
+      const member_paidAmount = Number(
+        state.boss_history_statistic_groups[group_name].list[index].person_paid
       );
-      state.boss_history_statistic.list[
+
+      state.boss_history_statistic_groups[group_name].list[
         index
       ].payment_status = !member_payment_status;
 
-      state.boss_history_statistic.statistic.paid = Number(
-        state.boss_history_statistic.statistic.paid
+      state.boss_history_statistic_groups[group_name].statistic.paid = Number(
+        state.boss_history_statistic_groups[group_name].statistic.paid
       );
-      state.boss_history_statistic.statistic.unpaid = Number(
-        state.boss_history_statistic.statistic.unpaid
+      state.boss_history_statistic_groups[group_name].statistic.unpaid = Number(
+        state.boss_history_statistic_groups[group_name].statistic.unpaid
       );
       if (member_payment_status) {
-        state.boss_history_statistic.statistic.paid -= member_paid;
-        state.boss_history_statistic.statistic.unpaid += member_paid;
+        state.boss_history_statistic_groups[
+          group_name
+        ].statistic.paid -= member_paidAmount;
+        state.boss_history_statistic_groups[
+          group_name
+        ].statistic.unpaid += member_paidAmount;
       } else {
-        state.boss_history_statistic.statistic.paid += member_paid;
-        state.boss_history_statistic.statistic.unpaid -= member_paid;
+        state.boss_history_statistic_groups[
+          group_name
+        ].statistic.paid += member_paidAmount;
+        state.boss_history_statistic_groups[
+          group_name
+        ].statistic.unpaid -= member_paidAmount;
       }
     },
-    generateOrderkDetailStatistic(state) {
+    generateOrderDetailStatistic(state) {
       const menu = state.member_daily_menu;
       const profile = state.member_profile;
       state.order_detail_statistic = menu
@@ -257,8 +283,8 @@ export default new Vuex.Store({
     updateOrderDetailStatistic({ commit }, detail) {
       commit("updateOrderDetailStatistic", detail);
     },
-    generateOrderkDetailStatistic({ commit }) {
-      commit("generateOrderkDetailStatistic");
+    generateOrderDetailStatistic({ commit }) {
+      commit("generateOrderDetailStatistic");
     },
     clearToken({ commit }) {
       commit("destroyAuthDetail");
@@ -271,7 +297,7 @@ export default new Vuex.Store({
         throw e;
       }
     },
-    async updateMemberOrder({ state, commit }, { order_id, change_meal }) {
+    async updateMemberOrder({ state }, { order_id, change_meal }) {
       try {
         let { data } = await API.PATCH(
           `/order/${order_id}`,
@@ -329,10 +355,29 @@ export default new Vuex.Store({
         throw e;
       }
     },
-    async retrieveBossHistoryStatistic({ state, commit }, date_range) {
+    async retrieveBossHistoryStatisticAll({ state, commit }, date_range) {
       try {
         let { data } = await API.GET("/group/count", state.token, date_range);
-        commit("retrieveBossHistoryStatistic", data);
+        commit("retrieveBossHistoryStatisticAll", data);
+        return data;
+      } catch (e) {
+        throw e;
+      }
+    },
+    async retrieveBossHistoryStatisticWithGroup(
+      { state, commit },
+      dateAndGroup
+    ) {
+      try {
+        let { data } = await API.GET("/group/count", state.token, {
+          start_date: dateAndGroup.start_date,
+          end_date: dateAndGroup.end_date,
+          group_id: dateAndGroup.group_id
+        });
+        commit("retrieveBossHistoryStatisticWithGroup", {
+          group_statistic: data,
+          group_name: dateAndGroup.group_name
+        });
         return data;
       } catch (e) {
         throw e;

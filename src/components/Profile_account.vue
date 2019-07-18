@@ -166,14 +166,12 @@ export default {
       );
       if (!Object.keys(profile).length) return;
       profile["yourpassword"] = this.member_password;
-      console.log(profile);
       this.$store
         .dispatch("updateMemberProfile", Object.assign({}, profile))
         .then(res => {
           this.success = !this.success;
         })
         .catch(err => {
-          console.log(err, err === "error password");
           if (err === "error password") {
             this.error = !this.error;
           }

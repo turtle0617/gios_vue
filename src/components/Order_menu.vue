@@ -177,7 +177,7 @@ export default {
         alert("請新增餐點");
         return;
       }
-      this.$store.dispatch("generateOrderkDetailStatistic");
+      this.$store.dispatch("generateOrderDetailStatistic");
       this.$router.push({
         name: "order_check",
         params: { choose_date: this.choose_date }

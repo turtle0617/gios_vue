@@ -93,7 +93,7 @@ export default new Vuex.Store({
       const member_group = state.groups.find(
         group => group.id === member_profile.group_id
       );
-      if (!member_group.preset_time) return null;
+      if (!member_group.time_limit) return null;
       return Date.parse(member_group.preset_time).toString("HH:mm");
     },
     date_range(state) {

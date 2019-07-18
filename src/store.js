@@ -486,14 +486,14 @@ export default new Vuex.Store({
         throw e;
       }
     },
-    async deleteGroup({ state }, group_id) {
-      try {
-        let res = await API.DELETE("/groups", group_id, state.token);
-        return res;
-      } catch (e) {
-        throw e;
-      }
-    },
+    // async deleteGroup({ state }, group_id) {
+    //   try {
+    //     let res = await API.DELETE("/groups", group_id, state.token);
+    //     return res;
+    //   } catch (e) {
+    //     throw e;
+    //   }
+    // },
     async retrieveGroups(context) {
       try {
         let { data } = await API.GET("/groups");

@@ -76,14 +76,14 @@
         >
           修改
         </button>
-        <button
+        <!-- <button
           :class="{ 'is-loading': loading_status.deleteGroup === index }"
           :disabled="loading_status.deleteGroup === index"
           class="button is-danger"
           @click="deleteGroup(group.id, index)"
         >
           刪除
-        </button>
+        </button> -->
       </div>
       <div class="group-modify" v-else>
         <div class="groupName input-box" :class="{ error: changeName_error }">
@@ -257,20 +257,20 @@ export default {
         this.loading_status.updateGroup = null;
       }
     },
-    async deleteGroup(group_id, index) {
-      try {
-        this.loading_status.deleteGroup = index;
-        await this.$store.dispatch("deleteGroup", group_id).catch(err => {
-          console.error(err);
-        });
-        await this.$store.dispatch("retrieveGroups");
-        this.loading_status.deleteGroup = null;
-      } catch (e) {
-        console.error(e);
-        await this.$store.dispatch("retrieveGroups");
-        this.loading_status.deleteGroup = null;
-      }
-    },
+    // async deleteGroup(group_id, index) {
+    //   try {
+    //     this.loading_status.deleteGroup = index;
+    //     await this.$store.dispatch("deleteGroup", group_id).catch(err => {
+    //       console.error(err);
+    //     });
+    //     await this.$store.dispatch("retrieveGroups");
+    //     this.loading_status.deleteGroup = null;
+    //   } catch (e) {
+    //     console.error(e);
+    //     await this.$store.dispatch("retrieveGroups");
+    //     this.loading_status.deleteGroup = null;
+    //   }
+    // },
     isSameGroupName(name, groups = this.groups) {
       return groups.find(group => group.name === name);
     },

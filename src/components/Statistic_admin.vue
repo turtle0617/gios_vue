@@ -264,6 +264,8 @@ export default {
 }
 .statistic-boss {
   padding: 3rem 5rem;
+  width: 80%;
+  margin: 0 auto;
 }
 .status {
   display: flex;

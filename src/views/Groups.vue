@@ -1,9 +1,7 @@
 <template>
   <div class="groups">
     <Header />
-    <div class="container">
-      <Groups_detail />
-    </div>
+    <Groups_detail />
   </div>
 </template>
 

@@ -1,7 +1,9 @@
 <template>
   <header class="header hero">
-    <div class="header__notification notification">
-      <template v-if="loggedIn === 'member'">
+    <template v-if="loggedIn === 'member'">
+      <div
+        class="header__notification header__notification--member notification"
+      >
         <router-link :to="{ name: 'home' }" class="logo"
           >田阿姨便當</router-link
         >
@@ -19,8 +21,10 @@
             <router-link :to="{ name: 'logout' }">登出</router-link>
           </div>
         </div>
-      </template>
-      <template v-else-if="loggedIn === 'boss'">
+      </div>
+    </template>
+    <template v-else-if="loggedIn === 'boss'">
+      <div class="header__notification header__notification--boss notification">
         <div class="navbar">
           <router-link :to="{ name: 'statistic' }" class="logo navbar-brand"
             >田阿姨便當</router-link
@@ -72,13 +76,17 @@
             >
           </div>
         </div>
-      </template>
-      <template v-else>
+      </div>
+    </template>
+    <template v-else>
+      <div
+        class="header__notification header__notification--guest notification"
+      >
         <router-link :to="{ name: 'home' }" class="logo"
           >田阿姨便當</router-link
         >
-      </template>
-    </div>
+      </div>
+    </template>
   </header>
 </template>
 
@@ -118,12 +126,21 @@ export default {
 };
 </script>
 <style scoped lang="scss">
+.header {
+  background-color: whitesmoke;
+}
 .header__notification {
   display: flex;
   justify-content: space-between;
   align-items: center;
   a:not(.button):not(.dropdown-item) {
     text-decoration: none;
+  }
+  &--boss {
+    width: 80%;
+    margin: 0 auto;
+    padding-left: 5rem;
+    padding-left: 5rem;
   }
 }
 .logo {

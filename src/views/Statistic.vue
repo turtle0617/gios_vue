@@ -1,9 +1,7 @@
 <template>
   <div class="statistic">
     <Header />
-    <div class="container">
-      <Statistic_admin />
-    </div>
+    <Statistic_admin />
   </div>
 </template>
 

@@ -26,29 +26,30 @@
           </div>
         </div>
       </div>
-      <template v-if="price_statistic">
-        <div class="columns allPriceStatistic">
-          <div class="column allPriceStatistic__header">
-            <h2 class="title is-4">全體收益</h2>
+      <div v-if="price_statistic" class="columns allGroupStatus">
+        <div class="column is-3 allGroupStatus-title">
+          <h2 class="title is-4">全體收益</h2>
+        </div>
+
+        <div class="column is-6 allGroupStatus-income">
+          <h1 class="title is-1 allGroupStatus-income__title">
+            {{ price_statistic.total_price || 0 }}
+          </h1>
+          <p class="subtitle allGroupStatus-income__unit">
+            <span>收益</span>
+            <span>元</span>
+          </p>
+        </div>
+
+        <div class="column is-3 allGroupStatus-paidStatus">
+          <div class="paidStatus allGroupStatus-paidStatus__paid">
+            <span>已收：{{ price_statistic.paid || 0 }}元</span>
           </div>
-          <div class="column allPriceStatistic__price">
-            <h1 class="title is-1">{{ price_statistic.total_price || 0 }}</h1>
-          </div>
-          <div class="column allPriceStatistic__footer">
-            <h2 class="title is-4">元</h2>
+          <div class="paidStatus allGroupStatus-paidStatus__unpaid">
+            <span> 未收：{{ price_statistic.unpaid || 0 }} 元 </span>
           </div>
         </div>
-        <div class="columns history-boss-priceStatistic__paidStatus">
-          <div class="column paidStatus paidStatus__paid">
-            <h2 class="title is-4">已收：{{ price_statistic.paid || 0 }}元</h2>
-          </div>
-          <div class="column paidStatus paidStatus__unpaid">
-            <h2 class="title is-4">
-              未收：{{ price_statistic.unpaid || 0 }} 元
-            </h2>
-          </div>
-        </div>
-      </template>
+      </div>
     </div>
     <template v-for="(group, group_name) in groups_statistic">
       <Group_statistic
@@ -146,14 +147,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.column {
-  flex-basis: auto;
-  flex-grow: 0;
-}
-.columns {
-  justify-content: space-between;
-}
-
 .history-boss {
   padding: 3rem 5rem;
   width: 80%;
@@ -175,14 +168,41 @@ export default {
   }
 }
 .boss-header__title {
+  text-align: center;
+}
+
+.allGroupStatus-income {
+  display: flex;
+  align-items: flex-end;
   justify-content: center;
+  h1 {
+    font-size: 7rem;
+    margin: 0;
+  }
+  p {
+    text-align: left;
+    margin-bottom: 1rem;
+    margin-left: 0.5rem;
+    font-size: 1rem;
+  }
+  span {
+    display: block;
+  }
 }
-.allPriceStatistic__price {
-  margin-left: -2rem;
+
+.allGroupStatus-paidStatus {
+  font-size: 1rem;
+  text-align: right;
+  margin-top: auto;
+  padding-bottom: 1rem;
+  &__paid {
+    width: 100%;
+  }
+  &__unpaid {
+    width: 100%;
+  }
 }
-.allPriceStatistic__footer {
-  align-self: flex-end;
-}
+
 @media screen and (max-width: 768px) {
   .history-boss {
     padding: 3rem 1.5rem;

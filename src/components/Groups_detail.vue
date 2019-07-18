@@ -309,6 +309,9 @@ export default {
 
 .groups_detail {
   justify-content: space-between;
+  padding: 3rem 5rem;
+  width: 80%;
+  margin: 0 auto;
 }
 .group-info {
   text-align: center;

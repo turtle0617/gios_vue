@@ -1,38 +1,26 @@
 <template>
   <div class="group">
-    <div class="group__header">
-      <div class="columns group-header__title">
-        <div class="column">
-          <h1 class=" title is-2 ">團體：{{ group_name }}</h1>
+    <div class="columns group__header">
+      <div class="column is-3  group-name">
+        <h1 class="title is-3 ">{{ group_name }}</h1>
+      </div>
+      <div class="column is-6 group-income">
+        <h1 class="title is-1 group-income__title">
+          {{ count_statistic.statistic.total_price || 0 }}
+        </h1>
+        <p class="subtitle group-income__unit">
+          <span>收益</span>
+          <span>元</span>
+        </p>
+      </div>
+      <div class="column is-3 group-paymentStatus">
+        <div class="paidStatus group-paymentStatus__paid">
+          <span> 已收：{{ count_statistic.statistic.paid || 0 }}元 </span>
+        </div>
+        <div class="paidStatus group-paymentStatus__unpaid">
+          <span> 未收：{{ count_statistic.statistic.unpaid || 0 }} 元 </span>
         </div>
       </div>
-      <template v-if="count_statistic.statistic">
-        <div class="columns group-priceStatistic">
-          <div class="column priceStatistic__header">
-            <h2 class="title is-4">收益</h2>
-          </div>
-          <div class="column priceStatistic_price">
-            <h1 class="title is-1">
-              {{ count_statistic.statistic.total_price || 0 }}
-            </h1>
-          </div>
-          <div class="column priceStatistic__footer">
-            <h2 class="title is-4">元</h2>
-          </div>
-        </div>
-        <div class="columns group-priceStatistic__paidStatus">
-          <div class="column paidStatus paidStatus__paid">
-            <h2 class="title is-4">
-              已收：{{ count_statistic.statistic.paid || 0 }}元
-            </h2>
-          </div>
-          <div class="column paidStatus paidStatus__unpaid">
-            <h2 class="title is-4">
-              未收：{{ count_statistic.statistic.unpaid || 0 }} 元
-            </h2>
-          </div>
-        </div>
-      </template>
     </div>
     <div
       v-if="count_statistic.list"
@@ -112,12 +100,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.column {
-  flex-basis: auto;
-  flex-grow: 0;
+.group {
+  color: rgba(87, 87, 87, 1);
 }
-.columns {
-  justify-content: space-between;
+.title {
+  color: rgba(87, 87, 87, 1);
 }
 .group-header__title {
   justify-content: flex-start;
@@ -136,13 +123,42 @@ export default {
   }
 }
 
-.priceStatistic__footer {
-  align-self: flex-end;
+.group-income {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  h1 {
+    font-size: 6rem;
+    margin: 0;
+  }
+  p {
+    text-align: left;
+    margin-bottom: 1rem;
+    margin-left: 0.5rem;
+    font-size: 1rem;
+  }
+  span {
+    display: block;
+  }
 }
+
+.group-paymentStatus {
+  font-size: 1rem;
+  text-align: right;
+  margin-top: auto;
+  padding-bottom: 1rem;
+  &__paid {
+    width: 100%;
+  }
+  &__unpaid {
+    width: 100%;
+  }
+}
+
 .member {
-  border: 1px solid;
   cursor: pointer;
   position: relative;
+  border: 1px solid;
   &__owe {
     span {
       font-weight: bold;
@@ -156,6 +172,15 @@ export default {
     top: 35%;
     right: 5%;
   }
+}
+.member:nth-of-type(3n + 1) {
+  border-color: #e9e9e9 #000000 #e9e9e9 #e9e9e9;
+}
+.member:nth-of-type(3n + 2) {
+  border-color: #e9e9e9 #e9e9e9 #e9e9e9 #000000;
+}
+.member:nth-of-type(3n + 3) {
+  border-color: #e9e9e9 #e9e9e9 #e9e9e9 #000000;
 }
 .paymentStatus {
   font-weight: bold;

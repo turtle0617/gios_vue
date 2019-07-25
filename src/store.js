@@ -102,7 +102,22 @@ export default new Vuex.Store({
         const date = Date.today()
           .add(index + 1)
           .day();
+        // const is_weekDay = date.is().weekday();
         return date.toString("MM/dd");
+        // if (is_weekDay)
+        // return date
+        //   .add(7)
+        //   .day()
+        //   .toString("MM/dd");
+      });
+    },
+    date_rang_with_note(state) {
+      const range = new Array(state.date_range).fill(0);
+      return range.map((item, index) => {
+        return Date.today()
+          .add(index + 1)
+          .day()
+          .toString("MM/dd(ddd)");
       });
     },
     week_range(state) {

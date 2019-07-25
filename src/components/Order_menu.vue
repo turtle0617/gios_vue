@@ -14,8 +14,8 @@
               v-for="(date, index) in date_range"
               :value="date"
               :key="index"
-              :disabled="date === disable_date"
-              >{{ date }}</option
+            >
+              {{ date_rang_with_note[index] }}</option
             >
           </select>
         </div>
@@ -96,11 +96,10 @@
 
 <script>
 export default {
-  name: "order_table",
+  name: "orderMenu",
   data() {
     return {
-      choose_date: "",
-      disable_date: ""
+      choose_date: ""
     };
   },
   created() {
@@ -109,37 +108,32 @@ export default {
   },
   computed: {
     date_range() {
-      const timeLimit = this.$store.getters.member_order_timeLimit;
-      let date_range = this.$store.getters.date_range;
-      if (!timeLimit) return date_range;
-      const over_time = Date.compare(
+      const over_order_time = Date.compare(
         Date.today().setTimeToNow(),
-        Date.parse(timeLimit)
+        Date.parse(this.member_order_timeLimit)
       );
-      if (over_time === 1) {
-        const tomorrow = Date.today()
-          .add(1)
-          .day()
-          .toString("MM/dd");
-        date_range = date_range
-          .map(date => {
-            if (date === tomorrow)
-              return Date.parse(date)
-                .add(7)
-                .day()
-                .toString("MM/dd");
-            return date;
-          })
-          .sort();
+      if (over_order_time && this.member_order_timeLimit) {
+        return this.moveDayOfDayRange(this.$store.getters.date_range);
       }
-      return date_range;
+      return this.$store.getters.date_range;
+    },
+    date_rang_with_note() {
+      const over_order_time = Date.compare(
+        Date.today().setTimeToNow(),
+        Date.parse(this.member_order_timeLimit)
+      );
+      if (over_order_time && this.member_order_timeLimit) {
+        return this.moveDayOfDayRangeNote(
+          this.$store.getters.date_rang_with_note
+        );
+      }
+      return this.$store.getters.date_rang_with_note;
     },
     member_order_menu() {
       return this.$store.getters.member_order_menu;
     },
     member_order_timeLimit() {
-      const timeLimit = this.$store.getters.member_order_timeLimit;
-      return timeLimit;
+      return this.$store.getters.member_order_timeLimit;
     }
   },
   watch: {
@@ -180,7 +174,43 @@ export default {
       this.$store.dispatch("generateOrderDetailStatistic");
       this.$router.push({
         name: "order_check",
-        params: { choose_date: this.choose_date }
+        params: {
+          choose_date: this.choose_date
+        }
+      });
+    },
+    moveDayOfDayRange(date_range) {
+      const move_day = Date.today()
+        .add(1)
+        .day()
+        .toString("MM/dd");
+      const move_dayIndex = date_range.indexOf(move_day);
+      if (move_dayIndex !== -1)
+        date_range[move_dayIndex] = Date.parse(date_range[6])
+          .add(1)
+          .day()
+          .toString("MM/dd");
+      return date_range.sort((a, b) => {
+        return Date.compare(Date.parse(a), Date.parse(b));
+      });
+    },
+    moveDayOfDayRangeNote(date_range_note) {
+      const move_day = Date.today()
+        .add(1)
+        .day()
+        .toString("MM/dd(ddd)");
+      const move_dayIndex = date_range_note.indexOf(move_day);
+      if (move_dayIndex !== -1)
+        date_range_note[move_dayIndex] = Date.parse(
+          date_range_note[6].replace(/\(\w*\)/, "")
+        )
+          .add(1)
+          .day()
+          .toString("MM/dd(ddd)");
+      return date_range_note.sort((a, b) => {
+        a = a.replace(/\(\w*\)/, "");
+        b = b.replace(/\(\w*\)/, "");
+        return Date.compare(Date.parse(a), Date.parse(b));
       });
     }
   }

@@ -97,12 +97,19 @@
 <script>
 export default {
   name: "orderMenu",
+  props: ["notReload", "date"],
   data() {
     return {
-      choose_date: ""
+      choose_date: "",
+      reload_menu: false
     };
   },
   created() {
+    if (this.notReload) {
+      this.choose_date = this.date;
+      this.reload_menu = true;
+      return;
+    }
     if (!this.$store.getters.groups) {
       this.$store.dispatch("retrieveGroups").then(() => {
         this.choose_date = this.date_range[0];
@@ -137,6 +144,10 @@ export default {
   },
   watch: {
     choose_date: function(date) {
+      if (this.reload_menu) {
+        this.reload_menu = false;
+        return;
+      }
       const formated_date = this.Date.parse(date).toString("yyyy/MM/dd");
       this.$store.dispatch("retrieveMemberDailyMenu", {
         menu_date: formated_date

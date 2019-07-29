@@ -55,6 +55,10 @@ const router = new Router({
         {
           path: "menu",
           name: "order_menu",
+          props: route => ({
+            notReload: route.params.notReload ? route.params.notReload : false,
+            date: route.params.date ? route.params.date : null
+          }),
           component: order_menu,
           beforeEnter(to, from, next) {
             if (from.name === "register") {

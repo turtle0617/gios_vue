@@ -73,7 +73,10 @@
       <router-link
         class="button is-light is-medium"
         :disabled="loading_status.addMemberOrder"
-        :to="{ name: 'order_menu' }"
+        :to="{
+          name: 'order_menu',
+          params: { notReload: true, date: choose_date }
+        }"
       >
         上一頁
       </router-link>

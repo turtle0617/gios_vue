@@ -76,7 +76,10 @@
           </button>
         </div>
         <div class="registerLink">
-          <router-link :to="{ name: 'home' }" :disabled="loading_status.register">
+          <router-link
+            :to="{ name: 'home' }"
+            :disabled="loading_status.register"
+          >
             登入
           </router-link>
         </div>

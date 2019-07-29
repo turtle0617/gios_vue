@@ -103,7 +103,7 @@ export default {
     };
   },
   created() {
-    if(!this.$store.getters.groups){
+    if (!this.$store.getters.groups) {
       this.$store.dispatch("retrieveGroups").then(() => {
         this.choose_date = this.date_range[0];
       });
@@ -118,7 +118,7 @@ export default {
           Date.today().setTimeToNow(),
           Date.parse(this.member_order_timeLimit)
         );
-        if(~over_order_time)
+        if (~over_order_time)
           return this.moveDayOfDayRange(this.$store.getters.date_range);
       }
       return this.$store.getters.date_range;

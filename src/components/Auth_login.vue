@@ -50,7 +50,10 @@
           </button>
         </div>
         <div class="registerLink">
-          <router-link :disabled="loading_status.login"  :to="{ name: 'register' }">
+          <router-link
+            :disabled="loading_status.login"
+            :to="{ name: 'register' }"
+          >
             註冊
           </router-link>
         </div>

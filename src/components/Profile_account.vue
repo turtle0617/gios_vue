@@ -123,7 +123,14 @@
           </label>
         </div>
       </div>
-      <button class="button is-info" type="submit">儲存變更</button>
+      <button
+        class="button is-info"
+        :class="{ 'is-loading': loading_status.changeProfile }"
+        :disabled="loading_status.changeProfile"
+        type="submit"
+      >
+        儲存變更
+      </button>
     </form>
   </section>
 </template>
@@ -134,49 +141,55 @@ export default {
   data() {
     return {
       member_profile: null,
-      original_profile: null,
       member_password: "",
       isEmpty: false,
       success: false,
-      error: false
+      error: false,
+      loading_status: {
+        changeProfile: false
+      }
     };
   },
   created() {
     this.$store.dispatch("retrieveGroups");
-    this.member_profile = Object.assign({}, this.$store.getters.member_profile);
-    this.original_profile = Object.assign(
-      {},
-      this.$store.getters.member_profile
-    );
+    this.member_profile = Object.assign({}, this.original_profile);
   },
   computed: {
     groups() {
       return this.$store.getters.groups;
+    },
+    original_profile() {
+      return this.$store.getters.member_profile;
     }
   },
   methods: {
-    changeProfile() {
-      if (!this.member_password) {
-        this.isEmpty = true;
-        return;
+    async changeProfile() {
+      try {
+        if (!this.member_password) {
+          this.isEmpty = true;
+          return;
+        }
+        const profile = this.filterDifferentData(
+          this.original_profile,
+          this.member_profile
+        );
+        if (!Object.keys(profile).length) return;
+        profile["yourpassword"] = this.member_password;
+        this.success = false;
+        this.loading_status.changeProfile = true;
+        await this.$store.dispatch(
+          "updateMemberProfile",
+          Object.assign({}, profile)
+        );
+        this.loading_status.changeProfile = false;
+        this.success = true;
+      } catch (e) {
+        this.loading_status.changeProfile = false;
+        if (e === "error password") {
+          this.error = !this.error;
+        }
+        throw new Error(e);
       }
-      const profile = this.filterDifferentData(
-        this.original_profile,
-        this.member_profile
-      );
-      if (!Object.keys(profile).length) return;
-      profile["yourpassword"] = this.member_password;
-      this.$store
-        .dispatch("updateMemberProfile", Object.assign({}, profile))
-        .then(res => {
-          this.success = !this.success;
-        })
-        .catch(err => {
-          if (err === "error password") {
-            this.error = !this.error;
-          }
-          throw new Error(err);
-        });
     },
     hideSuccesMessage() {
       this.success = false;

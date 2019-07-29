@@ -55,7 +55,13 @@ const router = new Router({
         {
           path: "menu",
           name: "order_menu",
-          component: order_menu
+          component: order_menu,
+          beforeEnter(to, from, next) {
+            if (from.name === "register") {
+              alert("可以到個人檔案填寫常用資訊喔！");
+            }
+            next();
+          }
         },
         {
           path: "check",

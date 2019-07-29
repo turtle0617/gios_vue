@@ -128,11 +128,12 @@ export default {
         if (is_empty) return;
         this.loading_status.register = true;
         const res = await this.$store.dispatch("register", this.member);
+        await this.$store.dispatch("retrieveMemberToken", {
+          account: this.member.account,
+          password: this.member.password
+        });
         this.$router.push({
-          name: "home",
-          params: {
-            account: res.account
-          }
+          name: "order"
         });
         this.loading_status.register = false;
       } catch (e) {

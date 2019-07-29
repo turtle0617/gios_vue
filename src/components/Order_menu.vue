@@ -103,7 +103,6 @@ export default {
     };
   },
   created() {
-    console.log(this.$store.getters.groups);
     if(!this.$store.getters.groups){
       this.$store.dispatch("retrieveGroups").then(() => {
         this.choose_date = this.date_range[0];

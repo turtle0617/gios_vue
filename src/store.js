@@ -88,7 +88,7 @@ export default new Vuex.Store({
       return state.member_profile;
     },
     member_order_timeLimit(state) {
-      if (!state.groups && !state.member_profile) return null;
+      if (!state.groups || !state.member_profile) return null;
       const member_profile = state.member_profile;
       const member_group = state.groups.find(
         group => group.id === member_profile.group_id

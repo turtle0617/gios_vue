@@ -14,6 +14,9 @@ import Header from "@/components/Header.vue";
 
 export default {
   name: "home",
+  created(){
+    this.$store.dispatch("retrieveGroups")
+  },
   components: {
     Auth_login,
     Header

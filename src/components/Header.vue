@@ -196,4 +196,9 @@ export default {
     color: black;
   }
 }
+@media screen and (max-width: 768px) {
+  .header__notification {
+    padding: 2rem 1rem;
+  }
+}
 </style>

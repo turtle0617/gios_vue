@@ -299,7 +299,7 @@ export default {
   pointer-events: none;
   background-color: rgba(122, 122, 122, 0.4);
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 768px) {
   .section {
     padding-left: 1.5rem;
     padding-right: 1.5rem;

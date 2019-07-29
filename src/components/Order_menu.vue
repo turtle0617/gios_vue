@@ -27,13 +27,13 @@
     <div class="columns menu__detailContainer">
       <div class="member-menu column">
         <div class="member-menu__header columns is-mobile">
-          <div class="column is-two-fifths menu-header__name">
+          <div class="column is-4 menu-header__name">
             名稱
           </div>
-          <div class="column menu-header__price">
+          <div class="column is-3 menu-header__price">
             價格
           </div>
-          <div class="column menu-header__amount">
+          <div class="column is-5 menu-header__amount">
             數量
           </div>
         </div>
@@ -44,7 +44,7 @@
             :class="{ 'sold-out': meal.quantity_limit === 0 }"
             class="menu-list__items columns is-mobile"
           >
-            <div class="list-item list-item__name column is-two-fifths ">
+            <div class="list-item list-item__name column is-4 ">
               <div class="menu-name__title">
                 <span>{{ meal.name }}</span
                 ><br />
@@ -62,33 +62,33 @@
                 <span v-else>已售完</span>
               </div>
             </div>
-            <div class="list-item list-item__price column">
+            <div class="list-item list-item__price column is-3">
               {{ meal.price }}
             </div>
-            <div class="list-item list-item__amount column">
-              <font-awesome-icon
-                class="amount__button amount__button--plus"
-                @click="addMeal(index, meal.id, meal.quantity_limit)"
-                icon="plus-circle"
-                size="lg"
-              ></font-awesome-icon>
-              <label for="quantity">{{ meal.amount }}</label>
+            <div class="list-item list-item__amount column is-5">
               <font-awesome-icon
                 class="amount__button amount__button--minus"
                 icon="minus-circle"
                 size="lg"
                 @click="minusMeal(index, meal.id)"
               ></font-awesome-icon>
+              <label for="quantity">{{ meal.amount }}</label>
+              <font-awesome-icon
+                class="amount__button amount__button--plus"
+                @click="addMeal(index, meal.id, meal.quantity_limit)"
+                icon="plus-circle"
+                size="lg"
+              ></font-awesome-icon>
             </div>
           </div>
-          <button
-            type="button"
-            @click="checkDetail"
-            class="button is-link member-menu__next"
-          >
-            下一頁
-          </button>
         </div>
+        <button
+          type="button"
+          @click="checkDetail"
+          class="button is-link member-menu__next"
+        >
+          下一頁
+        </button>
       </div>
     </div>
   </section>
@@ -199,17 +199,27 @@ export default {
 
 <style scoped lang="scss">
 .section {
-  padding-left: 5rem;
-  padding-right: 5rem;
+  padding: 0 10rem;
 }
-.menu-header__title {
-  text-align: center;
+.menu-header {
+  &__title {
+    text-align: center;
+  }
+  &__amount {
+    text-align: center;
+  }
+  &__price {
+    border-left: 1px solid;
+    border-right: 1px solid;
+  }
 }
+
 .menu__title {
   align-items: flex-end;
 }
 .menu-title {
   &__date {
+    padding-left: 0;
     label {
       margin-right: 1rem;
       font-size: 1.5rem;
@@ -220,11 +230,12 @@ export default {
   }
 }
 .member-menu {
+  position: relative;
+  padding-bottom: 5rem;
   &__header {
     border: 1px solid;
   }
   &__list {
-    position: relative;
     & > div {
       border: 1px solid;
       border-top: none;
@@ -233,14 +244,11 @@ export default {
   &__next {
     position: fixed;
     bottom: 1rem;
-    right: 5rem;
+    right: 10rem;
     box-shadow: 6px 5px 10px 0 rgba(0, 0, 0, 0.3);
   }
 }
-.menu-header__price {
-  border-left: 1px solid;
-  border-right: 1px solid;
-}
+
 .list-item {
   display: flex;
   align-items: center;
@@ -251,7 +259,11 @@ export default {
     position: relative;
   }
   &__amount {
-    justify-content: space-between;
+    justify-content: center;
+    label {
+      font-size: 1.5rem;
+      padding: 0 1rem;
+    }
   }
   &__price {
     border-left: 1px solid;

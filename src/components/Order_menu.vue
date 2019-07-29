@@ -110,12 +110,6 @@ export default {
       this.reload_menu = true;
       return;
     }
-    if (!this.$store.getters.groups) {
-      this.$store.dispatch("retrieveGroups").then(() => {
-        this.choose_date = this.date_range[0];
-      });
-      return;
-    }
     this.choose_date = this.date_range[0];
   },
   computed: {

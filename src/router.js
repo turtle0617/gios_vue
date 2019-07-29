@@ -63,8 +63,11 @@ const router = new Router({
           beforeEnter(to, from, next) {
             if (from.name === "register") {
               alert("可以到個人檔案填寫常用資訊喔！");
+              return next();
             }
-            next();
+            store.dispatch("retrieveGroups").then(() => {
+              next();
+            });
           }
         },
         {

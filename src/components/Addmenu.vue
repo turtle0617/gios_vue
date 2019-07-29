@@ -398,6 +398,12 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.addmenu {
+  padding-top: 0;
+}
+.table td {
+  vertical-align: middle;
+}
 .addrow {
   cursor: pointer;
   margin-left: 1rem;
@@ -416,7 +422,6 @@ export default {
     }
   }
   &--show {
-    padding: 0 1rem;
     text-align: left;
     label {
       padding-left: 1rem;
@@ -424,6 +429,7 @@ export default {
   }
 }
 .flavor--item {
+  padding-right: 1rem;
   & > :first-child {
     color: red;
     cursor: pointer;

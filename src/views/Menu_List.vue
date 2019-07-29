@@ -9,7 +9,7 @@
             v-for="(day, index) in date_range"
             :key="index"
             :value="day"
-            >{{ day }}</option
+            >{{ date_rang_with_note[index] }}</option
           >
         </select>
       </div>
@@ -44,6 +44,11 @@ export default {
   computed: {
     date_range() {
       return this.$store.getters.date_range;
+    },
+    date_rang_with_note() {
+      return this.date_range.map(date =>
+        Date.parse(date).toString("MM/dd (ddd)")
+      );
     }
   },
   watch: {
@@ -63,10 +68,12 @@ export default {
 .menu-date {
   margin-top: 50px;
   margin-bottom: 1rem;
+  padding-bottom: 0;
   display: flex;
   align-items: flex-end;
   label {
     font-size: 1.5rem;
+    margin-right: 0.5rem;
   }
 }
 </style>

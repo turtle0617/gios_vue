@@ -88,7 +88,7 @@ export default new Vuex.Store({
       return state.member_profile;
     },
     member_order_timeLimit(state) {
-      if (!state.groups || !state.member_profile) return null;
+      if (!state.groups && !state.member_profile) return null;
       const member_profile = state.member_profile;
       const member_group = state.groups.find(
         group => group.id === member_profile.group_id
@@ -98,27 +98,18 @@ export default new Vuex.Store({
     },
     date_range(state) {
       const range = new Array(state.date_range).fill(0);
-      return range.map((item, index) => {
-        const date = Date.today()
-          .add(index + 1)
-          .day();
-        // const is_weekDay = date.is().weekday();
-        return date.toString("MM/dd");
-        // if (is_weekDay)
-        // return date
-        //   .add(7)
-        //   .day()
-        //   .toString("MM/dd");
-      });
-    },
-    date_rang_with_note(state) {
-      const range = new Array(state.date_range).fill(0);
-      return range.map((item, index) => {
-        return Date.today()
-          .add(index + 1)
-          .day()
-          .toString("MM/dd(ddd)");
-      });
+      return range
+        .map((item, index) => {
+          const date = Date.today()
+            .add(index + 1)
+            .day();
+          return date.toString("MM/dd");
+        })
+        .filter(date =>
+          Date.parse(date)
+            .is()
+            .weekday()
+        );
     },
     week_range(state) {
       const range = new Array(state.week_range).fill(0);

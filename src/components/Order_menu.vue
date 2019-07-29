@@ -103,31 +103,31 @@ export default {
     };
   },
   created() {
+    console.log(this.$store.getters.groups);
+    if(!this.$store.getters.groups){
+      this.$store.dispatch("retrieveGroups").then(() => {
+        this.choose_date = this.date_range[0];
+      });
+      return;
+    }
     this.choose_date = this.date_range[0];
-    this.$store.dispatch("retrieveGroups");
   },
   computed: {
     date_range() {
-      const over_order_time = Date.compare(
-        Date.today().setTimeToNow(),
-        Date.parse(this.member_order_timeLimit)
-      );
-      if (over_order_time && this.member_order_timeLimit) {
-        return this.moveDayOfDayRange(this.$store.getters.date_range);
+      if (this.member_order_timeLimit) {
+        const over_order_time = Date.compare(
+          Date.today().setTimeToNow(),
+          Date.parse(this.member_order_timeLimit)
+        );
+        if(~over_order_time)
+          return this.moveDayOfDayRange(this.$store.getters.date_range);
       }
       return this.$store.getters.date_range;
     },
     date_rang_with_note() {
-      const over_order_time = Date.compare(
-        Date.today().setTimeToNow(),
-        Date.parse(this.member_order_timeLimit)
+      return this.date_range.map(date =>
+        Date.parse(date).toString("MM/dd (ddd)")
       );
-      if (over_order_time && this.member_order_timeLimit) {
-        return this.moveDayOfDayRangeNote(
-          this.$store.getters.date_rang_with_note
-        );
-      }
-      return this.$store.getters.date_rang_with_note;
     },
     member_order_menu() {
       return this.$store.getters.member_order_menu;
@@ -180,38 +180,19 @@ export default {
       });
     },
     moveDayOfDayRange(date_range) {
-      const move_day = Date.today()
-        .add(1)
-        .day()
-        .toString("MM/dd");
-      const move_dayIndex = date_range.indexOf(move_day);
-      if (move_dayIndex !== -1)
-        date_range[move_dayIndex] = Date.parse(date_range[6])
-          .add(1)
-          .day()
-          .toString("MM/dd");
-      return date_range.sort((a, b) => {
-        return Date.compare(Date.parse(a), Date.parse(b));
-      });
-    },
-    moveDayOfDayRangeNote(date_range_note) {
-      const move_day = Date.today()
-        .add(1)
-        .day()
-        .toString("MM/dd(ddd)");
-      const move_dayIndex = date_range_note.indexOf(move_day);
-      if (move_dayIndex !== -1)
-        date_range_note[move_dayIndex] = Date.parse(
-          date_range_note[6].replace(/\(\w*\)/, "")
-        )
-          .add(1)
-          .day()
-          .toString("MM/dd(ddd)");
-      return date_range_note.sort((a, b) => {
-        a = a.replace(/\(\w*\)/, "");
-        b = b.replace(/\(\w*\)/, "");
-        return Date.compare(Date.parse(a), Date.parse(b));
-      });
+      const range = new Array(7).fill(0);
+      return range
+        .map((item, index) => {
+          const date = Date.today()
+            .add(index + 2)
+            .day();
+          return date.toString("MM/dd");
+        })
+        .filter(date =>
+          Date.parse(date)
+            .is()
+            .weekday()
+        );
     }
   }
 };

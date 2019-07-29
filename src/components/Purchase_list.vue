@@ -18,7 +18,7 @@
               v-for="(date, index) in date_range"
               :value="date"
               :key="index"
-              >{{ date }}</option
+              >{{ date_rang_with_note[index] }}</option
             >
           </select>
         </div>
@@ -203,29 +203,20 @@ export default {
   },
   computed: {
     date_range() {
-      const timeLimit = this.$store.getters.member_order_timeLimit;
-      let date_range = this.$store.getters.date_range;
-      const over_time = Date.compare(
-        Date.today().setTimeToNow(),
-        Date.parse(timeLimit)
-      );
-      if (over_time === 1) {
-        const tomorrow = Date.today()
-          .add(1)
-          .day()
-          .toString("MM/dd");
-        date_range = date_range
-          .map(date => {
-            if (date === tomorrow)
-              return Date.parse(date)
-                .add(7)
-                .day()
-                .toString("MM/dd");
-            return date;
-          })
-          .sort();
+      if (this.member_order_timeLimit) {
+        const over_order_time = Date.compare(
+          Date.today().setTimeToNow(),
+          Date.parse(this.member_order_timeLimit)
+        );
+        if (~over_order_time)
+          return this.moveDayOfDayRange(this.$store.getters.date_range);
       }
-      return date_range;
+      return this.$store.getters.date_range;
+    },
+    date_rang_with_note() {
+      return this.date_range.map(date =>
+        Date.parse(date).toString("MM/dd (ddd)")
+      );
     },
     purchase_list() {
       return this.$store.getters.purchase_list;
@@ -368,6 +359,21 @@ export default {
       for (let key in object) {
         object[key] = null;
       }
+    },
+    moveDayOfDayRange(date_range) {
+      const range = new Array(7).fill(0);
+      return range
+        .map((item, index) => {
+          const date = Date.today()
+            .add(index + 2)
+            .day();
+          return date.toString("MM/dd");
+        })
+        .filter(date =>
+          Date.parse(date)
+            .is()
+            .weekday()
+        );
     }
   }
 };

@@ -64,17 +64,23 @@
           <label for="register__group">團體</label>
         </div>
       </div>
-      <button
-        :class="{ 'is-loading': loading_status.register }"
-        :disabled="loading_status.register"
-        class="button is-info is-medium"
-        type="submit"
-      >
-        註冊
-      </button>
-      <router-link :to="{ name: 'home' }" :disabled="loading_status.register">
-        登入
-      </router-link>
+      <div class="submitStatus">
+        <div class="loginLink">
+          <button
+            :class="{ 'is-loading': loading_status.register }"
+            :disabled="loading_status.register"
+            class="button is-info is-medium"
+            type="submit"
+          >
+            註冊
+          </button>
+        </div>
+        <div class="registerLink">
+          <router-link :to="{ name: 'home' }" :disabled="loading_status.register">
+            登入
+          </router-link>
+        </div>
+      </div>
     </form>
   </section>
 </template>

@@ -38,17 +38,23 @@
           <label for="login__userCode">密碼</label>
         </div>
       </div>
-      <button
-        :class="{ 'is-loading': loading_status.login }"
-        :disabled="loading_status.login"
-        class="button is-info is-medium"
-        type="submit"
-      >
-        登入
-      </button>
-      <router-link :disabled="loading_status.login" :to="{ name: 'register' }">
-        註冊
-      </router-link>
+      <div class="submitStatus">
+        <div class="loginLink">
+          <button
+            :class="{ 'is-loading': loading_status.login }"
+            :disabled="loading_status.login"
+            class="button is-info is-medium"
+            type="submit"
+          >
+            登入
+          </button>
+        </div>
+        <div class="registerLink">
+          <router-link :disabled="loading_status.login"  :to="{ name: 'register' }">
+            註冊
+          </router-link>
+        </div>
+      </div>
     </form>
   </section>
 </template>

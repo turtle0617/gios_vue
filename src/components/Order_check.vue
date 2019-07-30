@@ -164,19 +164,26 @@ export default {
     },
     async addMemberOrder() {
       try {
+        this.loading_status.addMemberOrder = true;
         const filtered_orders = this.filterNotToNeedPostValue();
         const out_of_limite = await this.checkQuantityLimite(filtered_orders);
         if (out_of_limite) {
           alert("限量商品低於下單數量，請重新下單喔~");
-          this.$router.push({ name: "order_menu" });
+          this.$router.push({
+            name: "order_menu"
+          });
           return;
         }
-        this.loading_status.addMemberOrder = true;
         await this.$store.dispatch("addMemberOrder", {
           menuArray: filtered_orders
         });
         this.loading_status.addMemberOrder = false;
-        this.$router.push({ name: "purchase" });
+        this.$router.push({
+          name: "purchase",
+          params: {
+            order_date: this.choose_date
+          }
+        });
       } catch (e) {
         console.error(e);
         this.loading_status.addMemberOrder = false;
@@ -211,7 +218,7 @@ export default {
     display: inline-flex;
   }
 }
-@media screen and( max-width:768px) {
+@media screen and(max-width:768px) {
   .button__container {
     text-align: center;
   }

@@ -90,6 +90,7 @@ const router = new Router({
       path: "/purchase",
       name: "purchase",
       component: Purchase,
+      props: route => ({ order_date: route.params.order_date }),
       meta: {
         requiresAuth: true
       }

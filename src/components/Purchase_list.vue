@@ -180,6 +180,7 @@
 <script>
 export default {
   name: "purchase_list",
+  props: ["order_date"],
   data() {
     return {
       loading_status: {
@@ -198,6 +199,10 @@ export default {
     };
   },
   created() {
+    if (this.order_date) {
+      this.choose_date = this.order_date;
+      return;
+    }
     this.choose_date = this.date_range[0];
     this.$store.dispatch("retrieveGroups");
   },

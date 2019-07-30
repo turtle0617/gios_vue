@@ -1,6 +1,7 @@
 <template>
-  <section class="section">
-    <table class="menu-list table is-fullwidth">
+  <section class="menu-list section">
+    <h2 class="title is-2">餐點：</h2>
+    <table class="menu-list__table table is-fullwidth">
       <thead>
         <tr>
           <th class="menu-list__button"></th>
@@ -371,7 +372,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.menu-list {
+.menu-list{
+  padding-top: 0;
+}
+.menu-list__table {
   td {
     vertical-align: middle;
   }

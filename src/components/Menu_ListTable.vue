@@ -372,7 +372,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.menu-list{
+.menu-list {
   padding-top: 0;
 }
 .menu-list__table {

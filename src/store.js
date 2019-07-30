@@ -62,6 +62,9 @@ export default new Vuex.Store({
     boss_menu_statistic(state) {
       const isEmpty = !Object.keys(state.boss_menu_statistic).length;
       if (isEmpty) return false;
+      state.boss_menu_statistic.list = state.boss_menu_statistic.list.sort(
+        (a, b) => a.menu_name.charCodeAt() - b.menu_name.charCodeAt()
+      );
       return state.boss_menu_statistic;
     },
     member_order_menu(state) {

@@ -82,13 +82,21 @@
             </div>
           </div>
         </div>
-        <button
-          type="button"
-          @click="checkDetail"
-          class="button is-link member-menu__next"
-        >
-          下一頁
-        </button>
+        <div class="member-menu__status">
+          <div class="member-menu__status--priceStatistic">
+            金額
+            <span>{{ meal_total_price }}</span>
+          </div>
+          <div class="member-menu__status--checkMeal">
+            <button
+              type="button"
+              @click="checkDetail"
+              class="button is-link member-menu__next"
+            >
+              下一頁
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -134,6 +142,12 @@ export default {
     },
     member_order_timeLimit() {
       return this.$store.getters.member_order_timeLimit;
+    },
+    meal_total_price() {
+      return this.member_order_menu.reduce((acc, curr) => {
+        acc += curr["amount"] * curr["price"];
+        return acc;
+      }, 0);
     }
   },
   watch: {
@@ -247,11 +261,35 @@ export default {
       border-top: none;
     }
   }
-  &__next {
+  &__status {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
     position: fixed;
     bottom: 1rem;
     right: 20%;
-    box-shadow: 6px 5px 10px 0 rgba(0, 0, 0, 0.3);
+    &--priceStatistic {
+      display: flex;
+      margin-right: 2rem;
+      align-items: flex-end;
+      font-size: 1.5rem;
+      background-color: transparent;
+      span {
+        padding-left: 0.5rem;
+        color: red;
+        font-weight: bold;
+        &::after {
+          content: "元";
+          font-size: 1rem;
+          font-weight: normal;
+          color: black;
+          padding-left: 0.5rem;
+        }
+      }
+    }
+    &--checkMeal {
+      box-shadow: 6px 5px 10px 0 rgba(0, 0, 0, 0.3);
+    }
   }
 }
 
@@ -311,7 +349,7 @@ export default {
     padding-left: 1.5rem;
     padding-right: 1.5rem;
   }
-  .member-menu__next {
+  .member-menu__status {
     right: 1rem;
   }
   .menu-name__quantityLimit {

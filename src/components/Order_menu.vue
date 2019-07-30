@@ -204,7 +204,8 @@ export default {
 
 <style scoped lang="scss">
 .section {
-  padding: 0 10rem;
+  width: 60%;
+  margin: 0 auto;
 }
 .menu-header {
   &__title {
@@ -249,7 +250,7 @@ export default {
   &__next {
     position: fixed;
     bottom: 1rem;
-    right: 10rem;
+    right: 20%;
     box-shadow: 6px 5px 10px 0 rgba(0, 0, 0, 0.3);
   }
 }
@@ -306,6 +307,7 @@ export default {
 }
 @media screen and (max-width: 768px) {
   .section {
+    width: 100%;
     padding-left: 1.5rem;
     padding-right: 1.5rem;
   }

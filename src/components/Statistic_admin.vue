@@ -17,10 +17,10 @@
               name="historyDate"
             >
               <option
-                v-for="(week, index) in date_range"
-                :value="week"
+                v-for="(date, index) in date_range"
+                :value="date"
                 :key="index"
-                >{{ week }}</option
+                >{{ date_rang_with_note[index] }}</option
               >
             </select>
           </div>
@@ -136,6 +136,11 @@ export default {
   computed: {
     date_range() {
       return this.$store.getters.date_range;
+    },
+    date_rang_with_note() {
+      return this.date_range.map(date =>
+        Date.parse(date).toString("MM/dd (ddd)")
+      );
     },
     groups() {
       return this.$store.getters.groups;

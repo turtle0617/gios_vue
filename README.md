@@ -1,10 +1,12 @@
+# [Demo](https://turtleeat.club/)
+https://turtleeat.club/
 
 ## 動機:
 
 好想工作室常會跟一間私人廚房 ”田阿姨“ 訂購便當，都是使用 Google Sheets 做點餐及統計，遇到了下列問題：
 
-1.Google Sheets 手機界面不友善，填寫只能透過桌機或筆電
-2.需要每日人工截圖統計表給”田阿姨“
+1. Google Sheets 手機界面不友善，填寫只能透過桌機或筆電
+2. 需要每日人工截圖統計表給”田阿姨“
 
 ## 功能:
 

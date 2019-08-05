@@ -85,6 +85,7 @@ export default {
         const is_empty = this.detectEmpty();
         if (is_empty) return;
         this.loading_status.login = true;
+        this.error = false;
         await this.$store.dispatch("retrieveMemberToken", {
           account: this.account,
           password: this.password
@@ -95,7 +96,7 @@ export default {
         });
       } catch (e) {
         this.loading_status.login = false;
-        this.error = !this.error;
+        this.error = true;
         console.error("login ERROR", e);
       }
     },

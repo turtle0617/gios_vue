@@ -63,6 +63,7 @@ export default {
     async login() {
       try {
         if (!this.account || !this.password) return;
+        this.error = false;
         this.loading_status.login = true;
         await this.$store.dispatch("retrieveBossToken", {
           account: this.account,

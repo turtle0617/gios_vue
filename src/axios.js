@@ -13,7 +13,12 @@ const responseHandler = {
   "401": res => {
     if (res.data.error.includes("not exist")) {
       alert("登入過期，請重新登入");
-      router.push({ name: "home", params: { tokenExist: true } });
+      router.push({
+        name: "home",
+        params: {
+          tokenExist: true
+        }
+      });
     }
     return Promise.reject(res.data.error);
   },
@@ -37,32 +42,24 @@ function exceptionResponseHandler(res) {
 }
 axios.defaults.headers.common["Content-Security-Policy"] =
   "upgrade-insecure-requests";
+
 function GET(url, token, param) {
   if (token) {
     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   }
-
+  var userRequest;
   if (param) {
-    return axios
-      .get(domain + url, {
-        params: param
-      })
-      .catch(res => res.response)
-      .then(res => {
-        return (
-          responseHandler[res.status](res) || exceptionResponseHandler(res)
-        );
-      });
+    userRequest = axios.get(domain + url, {
+      params: param
+    });
   } else {
-    return axios
-      .get(domain + url)
-      .catch(res => res.response)
-      .then(res => {
-        return (
-          responseHandler[res.status](res) || exceptionResponseHandler(res)
-        );
-      });
+    userRequest = axios.get(domain + url);
   }
+  return userRequest
+    .catch(res => res.response)
+    .then(
+      res => responseHandler[res.status](res) || exceptionResponseHandler(res)
+    );
 }
 
 function PATCH(url, token, data) {
